@@ -1,0 +1,20 @@
+# Pycharm stuff
+.idea
+
+# Virtual Environments
+.venv/
+venv/
+.env/
+env/
+
+# Node
+node_modules/
+*/static/*/node_modules/
+
+# Django
+core/settings.py
+dynamic_forms/migrations/
+
+# Databases
+*.sqlite3
+db.sqlite3
