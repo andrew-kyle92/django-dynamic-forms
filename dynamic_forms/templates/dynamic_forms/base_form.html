@@ -4,29 +4,75 @@
 <div class="container row m-auto my-3">
     <div id="side-nav" class="col-3">
         <div class="nav-section">
+            <button class="dropdown-caret border-bottom mb-3 btn w-100 text-start fs-4" type="button" data-bs-toggle="collapse" data-bs-target="#formSection" aria-expanded="true" aria-controls="formSection"><i class="fa-solid fa-caret-up" data-rotation="0"></i> Form Data</button>
+            <div id="formSection" class="collapse show">
+                <form method="post" action="{% url 'new-form' %}" novalidate>
+                    {% csrf_token %}
+                {% if form.non_field_errors %}
+                    {{ form.non_field_errors }}
+                {% endif %}
 
+                {% for field in form %}
+                    <div class="form-group mb-3">
+                        <label for="{{ field.name }}" class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.choices %}
+                            {{ choices }}
+                        {% endif %}
+                    {% if field.help_text %}
+                        <div class="form-text">{{ field.help_text }}</div>
+                    {% endif %}
+                    </div>
+
+                    {# Field errors #}
+                    {% if field.errors %}
+                        {{ field.errors }}
+                    {% endif %}
+                {% endfor %}
+                </form>
+            </div>
         </div>
 
         <div class="nav-section">
             <button class="dropdown-caret border-bottom mb-3 btn w-100 text-start fs-4" type="button" data-bs-toggle="collapse" data-bs-target="#inputSection" aria-expanded="false" aria-controls="inputSection"><i class="fa-solid fa-caret-up" data-rotation="0"></i> Form Inputs</button>
             <ul id="inputSection" class="nav flex-column collapse">
-                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1"><span><i class="fa-solid fa-font"></i></span> Text Input</li>
-                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1"><span><i class="fa-solid fa-font"></i></span> Text Area</li>
-                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1"><span><i class="fa-solid fa-envelope"></i></span> Email Input</li>
-                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1"><span><i class="fa-solid fa-calendar-days"></i></span> Date Input</li>
-                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1"><span><i class="fa-solid fa-calendar-days"></i></span> Datetime Input</li>
-                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1"><span><i class="fa-regular fa-square-caret-down"></i></span> Dropdown Input</li>
-                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1"><span><i class="fa-regular fa-square-caret-down"></i></span> Multi-Select Dropdown Input</li>
-                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1"><span><i class="fa-solid fa-hashtag"></i></span> Integer Input</li>
-                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1"><span><i class="fa-solid fa-hashtag"></i></span> Decimal Input</li>
-                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1"><span><i class="fa-regular fa-circle-dot"></i></span> Radio Input</li>
-                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1"><span><i class="fa-regular fa-square-check"></i></span> Checkbox Input</li>
-                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1"><span><i class="fa-solid fa-file"></i></span> File Input</li>
+                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1" draggable="true"><span><i class="fa-solid fa-font"></i></span> Text Input</li>
+                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1" draggable="true"><span><i class="fa-solid fa-font"></i></span> Text Area</li>
+                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1" draggable="true"><span><i class="fa-solid fa-envelope"></i></span> Email Input</li>
+                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1" draggable="true"><span><i class="fa-solid fa-calendar-days"></i></span> Date Input</li>
+                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1" draggable="true"><span><i class="fa-solid fa-calendar-days"></i></span> Datetime Input</li>
+                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1" draggable="true"><span><i class="fa-regular fa-square-caret-down"></i></span> Dropdown Input</li>
+                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1" draggable="true"><span><i class="fa-regular fa-square-caret-down"></i></span> Multi-Select Dropdown Input</li>
+                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1" draggable="true"><span><i class="fa-solid fa-hashtag"></i></span> Integer Input</li>
+                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1" draggable="true"><span><i class="fa-solid fa-hashtag"></i></span> Decimal Input</li>
+                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1" draggable="true"><span><i class="fa-regular fa-circle-dot"></i></span> Radio Input</li>
+                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1" draggable="true"><span><i class="fa-regular fa-square-check"></i></span> Checkbox Input</li>
+                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1" draggable="true"><span><i class="fa-solid fa-file"></i></span> File Input</li>
             </ul>
         </div>
     </div>
-    <div id="formDiv" class="col-9">
 
+    <!-- Rough Form Outline Section -->
+    <div id="formDiv" class="col-9">
+        <!-- Form Name - can't be deleted and mandatory -->
+        <fieldset id="formHeader" class="border border-4 border-secondary mb-3 rounded-2">
+            <legend>Form Name</legend>
+            <h3 id="formHeaderText" class="py-2 px-3 align-middle"></h3>
+        </fieldset>
+        <!-- The rest of the form elements will be added below -->
+        <div class="form-objects">
+            <div class="form-row">
+                <fieldset id="textInput" class="mb-3 border border-3 border-secondary rounded-2"
+                          data-settings='{
+                            inputs: ["label", "placeholder", "help_text", "floating_labels", "required", "classes"]
+                          }'
+                >
+                    <legend>Text Input <span class="input-settings"><i class="fa-solid fa-gear"></i></span></legend>
+                    <label class="form-label">Input Label</label>
+                    <input class="form-control" type="text">
+                </fieldset>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

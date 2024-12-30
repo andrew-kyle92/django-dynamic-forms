@@ -4,7 +4,7 @@ from django.db import models
 # form field types
 class BaseFieldModel(models.Model):
     """Abstract base class for all field input model types"""
-    label = models.CharField(max_length=255, blank=True, null=True, help_text="Label for field input")
+    label = models.CharField(max_length=255, help_text="Label for field input")
     placeholder = models.CharField(max_length=255, blank=True, null=True, help_text="Placeholder for field input")
     help_text = models.CharField(max_length=255, blank=True, null=True, help_text="Help text for field input")
     floating_label = models.BooleanField(default=False, help_text="Label for floating field label, see <a href='https://getbootstrap.com/docs/5.3/forms/floating-labels/'>https://getbootstrap.com/docs/5.3/forms/floating-labels/</a> for more info.")
@@ -47,7 +47,7 @@ class DateTimeInput(BaseFieldModel):
 
 class DropDownInput(BaseFieldModel):
     """Model for choice input field"""
-    input = models.CharField(max_length=255, blank=True, null=True, choices=[])
+    input = models.CharField(max_length=255, blank=True, null=True)
     choices = models.TextField(blank=True, null=True)
 
 
