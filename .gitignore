@@ -1,5 +1,6 @@
 # Pycharm stuff
 .idea
+*/__pycache__/
 
 # Virtual Environments
 .venv/
@@ -14,6 +15,7 @@ node_modules/
 # Django
 core/settings.py
 dynamic_forms/migrations/
+*/migrations/
 
 # Databases
 *.sqlite3

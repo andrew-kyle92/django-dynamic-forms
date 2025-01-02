@@ -1,3 +1,255 @@
+// ***** Color Palette Options *****
+// ** 1. Minimal and Clean
+// Primary: #FFFFFF (White)
+// Secondary: #F8F9FA (Light Gray)
+// Accent: #007BFF (Blue)
+// Text: #212529 (Dark Gray)
+// Highlight: #FFC107 (Amber)
+// Use Case: Great for professional or corporate web apps focused on simplicity and usability.
+
+// ** 2. Vibrant and Playful
+// Primary: #FF6F61 (Coral)
+// Secondary: #6B4CE3 (Purple)
+// Accent: #F4D35E (Yellow)
+// Text: #2B2D42 (Dark Blue)
+// Highlight: #00A878 (Green)
+// Use Case: Perfect for creative or entertainment-focused apps.
+
+// ** 3. Dark Mode Palette
+// Background: #121212 (Charcoal Black)
+// Primary: #BB86FC (Purple)
+// Secondary: #03DAC6 (Teal)
+// Accent: #CF6679 (Pinkish Red)
+// Text: #E5E5E5 (Light Gray)
+// Use Case: Excellent for modern apps that support a dark mode experience.
+
+// ** 5. Earthy and Natural
+// Primary: #6C5B7B (Plum)
+// Secondary: #355C7D (Steel Blue)
+// Accent: #F67280 (Coral)
+// Text: #2A363B (Dark Gray)
+// Highlight: #C06C84 (Muted Pink)
+// Use Case: Great for apps focusing on wellness, nature, or lifestyle.
+
+// ** 6. Retro and Bold
+// Primary: #FF595E (Red)
+// Secondary: #1982C4 (Bright Blue)
+// Accent: #FFCA3A (Yellow)
+// Text: #6A4C93 (Purple)
+// Background: #8AC926 (Lime Green)
+// Use Case: Works well for nostalgic or attention-grabbing designs.
+
+// ** 7. Neutral Tones
+// Primary: #DAD7CD (Cream)
+// Secondary: #A3B18A (Sage)
+// Accent: #588157 (Olive)
+// Text: #344E41 (Deep Green)
+// Background: #F5F3F0 (Soft White)
+// Use Case: Suitable for calm and neutral-themed apps.
+
+// ** Different styles
+// /* Default Palette */
+//:root {
+//    --background-color: #F8F9FA;
+//    --primary-color: #007BFF;
+//    --secondary-color: #6C757D;
+//    --accent-color: #FFC107;
+//    --text-color: #212529;
+//    --highlight-color: #FFEB3B; /* Bright Yellow */
+//    --error-color: #CF6679;
+//    --input-background: #FFFFFF;
+//    --input-border: #CED4DA;
+//    --placeholder-color: #ADB5BD;
+//}
+//
+///* Dark Mode Palette */
+//.dark-mode {
+//    --background-color: #121212;
+//    --primary-color: #BB86FC;
+//    --secondary-color: #03DAC6;
+//    --accent-color: #CF6679;
+//    --text-color: #E5E5E5;
+//    --highlight-color: #FF4081; /* Bright Pink */
+//    --error-color: #FF6F61;
+//    --input-background: #1E1E1E;
+//    --input-border: #333333;
+//    --placeholder-color: #777777;
+//}
+//
+///* Vibrant Palette */
+//.vibrant-mode {
+//    --background-color: #FFFFFF;
+//    --primary-color: #FF6F61;
+//    --secondary-color: #6B4CE3;
+//    --accent-color: #F4D35E;
+//    --text-color: #2B2D42;
+//    --highlight-color: #FFD700; /* Golden Yellow */
+//    --error-color: #FF595E;
+//    --input-background: #FFFFFF;
+//    --input-border: #DADADA;
+//    --placeholder-color: #A5A5A5;
+//}
+
+// Default Palette:
+//:root {
+//  --primary-color: #FFFFFF;
+//  --secondary-color: #F8F9FA;
+//  --accent-color: #007BFF;
+//  --text-color: #212529;
+//  --highlight: #FFC107
+//}
+
+/* 1. Minimal and Clean */
+:root {
+  --background-color: #F8F9FA;
+  --primary-color: #007BFF;
+  --secondary-color: #6C757D;
+  --accent-color: #e1cc89;
+  --text-color: #212529;
+  --highlight-color: #B3D4FF; /* Soft Blue */
+}
+
+/* 2. Vibrant and Playful */
+.vibrant-mode {
+  --background-color: #FFFFFF;
+  --primary-color: #FF6F61;
+  --secondary-color: #6B4CE3;
+  --accent-color: #F4D35E;
+  --text-color: #2B2D42;
+  --highlight-color: #FFB3A1; /* Soft Coral */
+}
+
+/* 3. Dark Mode Palette */
+.dark-mode {
+  --background-color: #121212;
+  --primary-color: #BB86FC;
+  --secondary-color: #03DAC6;
+  --accent-color: #CF6679;
+  --text-color: #E5E5E5;
+  --highlight-color: #3C1A73; /* Deep Purple */
+}
+
+/* 4. Pastel Tones */
+.pastel-mode {
+  --background-color: #FFFACD;
+  --primary-color: #A3D8F4;
+  --secondary-color: #FFB6C1;
+  --accent-color: #C1E1C1;
+  --text-color: #555555;
+  --highlight-color: #FFE4B2; /* Soft Peach */
+}
+
+/* 5. Earthy and Natural */
+.earthy-mode {
+  --background-color: #F5F3F0;
+  --primary-color: #6C5B7B;
+  --secondary-color: #355C7D;
+  --accent-color: #F67280;
+  --text-color: #2A363B;
+  --highlight-color: #B5A29C; /* Muted Brown */
+}
+
+/* 6. Retro and Bold */
+.retro-mode {
+  --background-color: #FFFFFF;
+  --primary-color: #FF595E;
+  --secondary-color: #1982C4;
+  --accent-color: #FFCA3A;
+  --text-color: #6A4C93;
+  --highlight-color: #FFD180; /* Bright Orange */
+}
+
+/* 7. Neutral Tones */
+.neutral-mode {
+  --background-color: #DAD7CD;
+  --primary-color: #A3B18A;
+  --secondary-color: #588157;
+  --accent-color: #355C7D;
+  --text-color: #344E41;
+  --highlight-color: #A3C9A8; /* Pale Green */
+}
+
+
+::selection {
+  background-color: var(--highlight-color);
+  color: var(--text-color);
+}
+
 fieldset, legend {
   all: revert;
+}
+
+fieldset {
+  border: 2px solid var(--accent-color);
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+legend {
+  color: var(--secondary-color);
+}
+
+// Form building styling
+.form-container {
+  background-color: var(--background-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: var(--text-color);
+  padding: 20px;
+}
+
+.form-section-header {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+input, textarea, select {
+  background-color: var(--secondary-color);
+  border: 1px solid var(--accent-color);
+  padding: 10px;
+  border-radius: 5px;
+  color: var(--text-color);
+}
+
+input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px var(--primary-color);
+}
+
+button {
+  background-color: var(--primary-color);
+  color: #FFFFFF;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--accent-color);
+}
+
+.error-message {
+  color: var(--error-color);
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+.divider {
+  border-top: 2px solid var(--secondary-color);
+  margin: 20px 0;
+}
+
+::placeholder {
+  color: var(--placeholder-color);
+}
+
+.form-objects {
+  height: 200px;
+}
+
+// Drag and drop styling
+.drag-over {
+  border: 2px solid var(--accent-color);
 }

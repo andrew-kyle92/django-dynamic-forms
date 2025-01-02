@@ -3,6 +3,19 @@ import "../scss/styles.scss"
 
 // import bootstrap's js
 import * as bootstrap from 'bootstrap'
+// ***** End Import *****
+
+// Fetch Requests
+const getForm = async (field) => {
+    let url = 'get-form/?' + new URLSearchParams({
+        "field": field,
+    });
+    return await fetch(url, {
+       method: 'get'
+    }).then(async response => {
+        return response.json()
+    });
+}
 
 window.addEventListener("load", () => {
     // animate all dropdown carets
@@ -55,4 +68,31 @@ window.addEventListener("load", () => {
     formName.addEventListener("input", () => {
         formHeader.innerText = formName.value;
     });
-});
+
+    // ***** input drag and drop logic *****
+    // ** Form div element **
+    const formInputsDiv = document.getElementById("formInputsDiv");
+    // dragover
+    formInputsDiv.addEventListener("dragover", (ev) => {
+        ev.preventDefault();
+        formInputsDiv.classList.add("drag-over");
+    });
+
+    // dragleave
+    formInputsDiv.addEventListener("dragleave", () => {
+        formInputsDiv.classList.remove("drag-over");
+    });
+
+    // ** Input Elements **
+    let inputItems = document.getElementsByClassName("inputItem");
+    for (let i = 0; i < inputItems.length; i++) {
+        let inputItem = inputItems[i];
+
+        inputItem.addEventListener("dragstart", (e) => {
+            let fieldReference = document.getElementById(inputItem.dataset.fieldReference);
+            let field = fieldReference.cloneNode(true);
+            // e.dataTransfer.setDragImage(field, field.offsetWidth / 2, field.offsetHeight / 2);
+            e.dataTransfer.setData("text/plain", "This works!");
+        });
+    }
+})

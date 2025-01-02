@@ -4,11 +4,11 @@ from django.db import models
 # form field types
 class BaseFieldModel(models.Model):
     """Abstract base class for all field input model types"""
-    label = models.CharField(max_length=255, help_text="Label for field input")
+    label = models.CharField(max_length=255, help_text="Label for field input", default="Label")
     placeholder = models.CharField(max_length=255, blank=True, null=True, help_text="Placeholder for field input")
     help_text = models.CharField(max_length=255, blank=True, null=True, help_text="Help text for field input")
     floating_label = models.BooleanField(default=False, help_text="Label for floating field label, see <a href='https://getbootstrap.com/docs/5.3/forms/floating-labels/'>https://getbootstrap.com/docs/5.3/forms/floating-labels/</a> for more info.")
-    required = models.BooleanField(default=False, help_text="Set the field to be required or not")
+    required = models.BooleanField(default=False, help_text="Set the field to be required or not", null=True, blank=True)
     classes = models.CharField(max_length=255, blank=True, null=True, help_text="Comma-separated list of classes to use for this field")
     order = models.IntegerField(default=0, help_text="Input order")
 
