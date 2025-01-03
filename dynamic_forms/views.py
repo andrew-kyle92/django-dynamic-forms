@@ -35,7 +35,7 @@ class FormBuilderView(View):
 def get_form(request):
     field = request.GET.get("field", None)
     if field is not None:
-        form = get_form_fields(field)()
+        form = get_form_fields(field)
         return JsonResponse({"form": form})
     else:
         return JsonResponse({"form": None, "error": "No field found"})

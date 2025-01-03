@@ -247,9 +247,21 @@ button:hover {
 
 .form-objects {
   height: 200px;
+  padding: 1.5rem 0;
 }
 
 // Drag and drop styling
 .drag-over {
   border: 2px solid var(--accent-color);
+}
+
+.placeholder {
+  background-color: var(--bs-primary-bg-subtle);
+  border: 2px solid var(--bs-primary);
+  border-radius: 5px;
+  height: 40px;
+}
+
+.draggable {
+  cursor: grab;
 }

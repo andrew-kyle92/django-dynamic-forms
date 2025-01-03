@@ -1,3 +1,5 @@
+import json
+
 from django.forms import modelformset_factory
 
 from .forms import (TextInputField, TextAreaField, EmailInputField, DateInputField, DateTimeInputField, DropDownField,
@@ -21,4 +23,15 @@ def get_form_fields(field):
         "file_input": FileInputField,
     }
 
-    return forms[field]
+    # getting the html fields for each field
+    fields = {}
+    form = forms[field]()
+    for field in form:
+        print(field.as_widget())
+        fields[field.html_name] = {
+            "label": field.label,
+            "input": field.as_widget(),
+            "helpText": field.help_text,
+        }
+
+    return json.dumps(fields)

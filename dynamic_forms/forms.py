@@ -13,11 +13,45 @@ class TextInputField(ModelForm):
         model = TextInput
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        super(TextInputField, self).__init__(*args, **kwargs)
+
+        for visible in self.visible_fields():
+            if visible.widget_type == "text" or visible.widget_type == "number":
+                visible.field.widget.attrs["class"] = "form-control"
+            elif visible.widget_type == "date":
+                visible.field.widget = forms.DateInput(attrs={"class": "form-control", "type": "date"})
+            elif visible.widget_type == "datetime":
+                visible.field.widget = forms.DateTimeInput(attrs={"class": "form-control", "type": "datetime"})
+            elif visible.widget_type == "select" or visible.widget_type == "nullbooleanselect":
+                visible.field.widget.attrs["class"] = "form-select"
+            elif visible.widget_type == "textarea":
+                visible.field.widget.attrs["class"] = "form-control"
+                visible.field.widget.attrs["rows"] = 5
+            elif visible.widget_type == "checkbox":
+                visible.field.widget.attrs["class"] = "form-check-input"
+
 
 class TextAreaField(ModelForm):
     class Meta:
         model = TextAreaInput
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(TextAreaField, self).__init__(*args, **kwargs)
+
+        for visible in self.visible_fields():
+            if visible.widget_type == "text":
+                visible.field.widget.attrs["class"] = "form-control"
+            elif visible.widget_type == "date":
+                visible.field.widget = forms.DateInput(attrs={"class": "form-control", "type": "date"})
+            elif visible.widget_type == "datetime":
+                visible.field.widget = forms.DateTimeInput(attrs={"class": "form-control", "type": "datetime"})
+            elif visible.widget_type == "select":
+                visible.field.widget.attrs["class"] = "form-select"
+            elif visible.widget_type == "textarea":
+                visible.field.widget.attrs["class"] = "form-control"
+                visible.field.widget.attrs["rows"] = 5
 
 
 class EmailInputField(ModelForm):
@@ -25,11 +59,43 @@ class EmailInputField(ModelForm):
         model = EmailInput
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        super(EmailInputField, self).__init__(*args, **kwargs)
+
+        for visible in self.visible_fields():
+            if visible.widget_type == "text":
+                visible.field.widget.attrs["class"] = "form-control"
+            elif visible.widget_type == "date":
+                visible.field.widget = forms.DateInput(attrs={"class": "form-control", "type": "date"})
+            elif visible.widget_type == "datetime":
+                visible.field.widget = forms.DateTimeInput(attrs={"class": "form-control", "type": "datetime"})
+            elif visible.widget_type == "select":
+                visible.field.widget.attrs["class"] = "form-select"
+            elif visible.widget_type == "textarea":
+                visible.field.widget.attrs["class"] = "form-control"
+                visible.field.widget.attrs["rows"] = 5
+
 
 class DateInputField(ModelForm):
     class Meta:
         model = DateInput
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(DateInputField, self).__init__(*args, **kwargs)
+
+        for visible in self.visible_fields():
+            if visible.widget_type == "text":
+                visible.field.widget.attrs["class"] = "form-control"
+            elif visible.widget_type == "date":
+                visible.field.widget = forms.DateInput(attrs={"class": "form-control", "type": "date"})
+            elif visible.widget_type == "datetime":
+                visible.field.widget = forms.DateTimeInput(attrs={"class": "form-control", "type": "datetime"})
+            elif visible.widget_type == "select":
+                visible.field.widget.attrs["class"] = "form-select"
+            elif visible.widget_type == "textarea":
+                visible.field.widget.attrs["class"] = "form-control"
+                visible.field.widget.attrs["rows"] = 5
 
 
 class DateTimeInputField(ModelForm):
@@ -37,11 +103,43 @@ class DateTimeInputField(ModelForm):
         model = DateTimeInput
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        super(DateTimeInputField, self).__init__(*args, **kwargs)
+
+        for visible in self.visible_fields():
+            if visible.widget_type == "text":
+                visible.field.widget.attrs["class"] = "form-control"
+            elif visible.widget_type == "date":
+                visible.field.widget = forms.DateInput(attrs={"class": "form-control", "type": "date"})
+            elif visible.widget_type == "datetime":
+                visible.field.widget = forms.DateTimeInput(attrs={"class": "form-control", "type": "datetime"})
+            elif visible.widget_type == "select":
+                visible.field.widget.attrs["class"] = "form-select"
+            elif visible.widget_type == "textarea":
+                visible.field.widget.attrs["class"] = "form-control"
+                visible.field.widget.attrs["rows"] = 5
+
 
 class DropDownField(ModelForm):
     class Meta:
         model = DropDownInput
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(DropDownField, self).__init__(*args, **kwargs)
+
+        for visible in self.visible_fields():
+            if visible.widget_type == "text":
+                visible.field.widget.attrs["class"] = "form-control"
+            elif visible.widget_type == "date":
+                visible.field.widget = forms.DateInput(attrs={"class": "form-control", "type": "date"})
+            elif visible.widget_type == "datetime":
+                visible.field.widget = forms.DateTimeInput(attrs={"class": "form-control", "type": "datetime"})
+            elif visible.widget_type == "select":
+                visible.field.widget.attrs["class"] = "form-select"
+            elif visible.widget_type == "textarea":
+                visible.field.widget.attrs["class"] = "form-control"
+                visible.field.widget.attrs["rows"] = 5
 
 
 class MultipleDropDownField(ModelForm):
@@ -49,11 +147,43 @@ class MultipleDropDownField(ModelForm):
         model = MultipleSelectDropDownInput
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        super(MultipleDropDownField, self).__init__(*args, **kwargs)
+
+        for visible in self.visible_fields():
+            if visible.widget_type == "text":
+                visible.field.widget.attrs["class"] = "form-control"
+            elif visible.widget_type == "date":
+                visible.field.widget = forms.DateInput(attrs={"class": "form-control", "type": "date"})
+            elif visible.widget_type == "datetime":
+                visible.field.widget = forms.DateTimeInput(attrs={"class": "form-control", "type": "datetime"})
+            elif visible.widget_type == "select":
+                visible.field.widget.attrs["class"] = "form-select"
+            elif visible.widget_type == "textarea":
+                visible.field.widget.attrs["class"] = "form-control"
+                visible.field.widget.attrs["rows"] = 5
+
 
 class IntegerInputField(ModelForm):
     class Meta:
         model = IntegerInput
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(IntegerInputField, self).__init__(*args, **kwargs)
+
+        for visible in self.visible_fields():
+            if visible.widget_type == "text":
+                visible.field.widget.attrs["class"] = "form-control"
+            elif visible.widget_type == "date":
+                visible.field.widget = forms.DateInput(attrs={"class": "form-control", "type": "date"})
+            elif visible.widget_type == "datetime":
+                visible.field.widget = forms.DateTimeInput(attrs={"class": "form-control", "type": "datetime"})
+            elif visible.widget_type == "select":
+                visible.field.widget.attrs["class"] = "form-select"
+            elif visible.widget_type == "textarea":
+                visible.field.widget.attrs["class"] = "form-control"
+                visible.field.widget.attrs["rows"] = 5
 
 
 class DecimalInputField(ModelForm):
@@ -61,11 +191,43 @@ class DecimalInputField(ModelForm):
         model = DecimalInput
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        super(DecimalInputField, self).__init__(*args, **kwargs)
+
+        for visible in self.visible_fields():
+            if visible.widget_type == "text":
+                visible.field.widget.attrs["class"] = "form-control"
+            elif visible.widget_type == "date":
+                visible.field.widget = forms.DateInput(attrs={"class": "form-control", "type": "date"})
+            elif visible.widget_type == "datetime":
+                visible.field.widget = forms.DateTimeInput(attrs={"class": "form-control", "type": "datetime"})
+            elif visible.widget_type == "select":
+                visible.field.widget.attrs["class"] = "form-select"
+            elif visible.widget_type == "textarea":
+                visible.field.widget.attrs["class"] = "form-control"
+                visible.field.widget.attrs["rows"] = 5
+
 
 class FileInputField(ModelForm):
     class Meta:
         model = FileInput
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(FileInputField, self).__init__(*args, **kwargs)
+
+        for visible in self.visible_fields():
+            if visible.widget_type == "text":
+                visible.field.widget.attrs["class"] = "form-control"
+            elif visible.widget_type == "date":
+                visible.field.widget = forms.DateInput(attrs={"class": "form-control", "type": "date"})
+            elif visible.widget_type == "datetime":
+                visible.field.widget = forms.DateTimeInput(attrs={"class": "form-control", "type": "datetime"})
+            elif visible.widget_type == "select":
+                visible.field.widget.attrs["class"] = "form-select"
+            elif visible.widget_type == "textarea":
+                visible.field.widget.attrs["class"] = "form-control"
+                visible.field.widget.attrs["rows"] = 5
 
 
 class RadioInputField(ModelForm):
@@ -73,11 +235,43 @@ class RadioInputField(ModelForm):
         model = RadioInput
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        super(RadioInputField, self).__init__(*args, **kwargs)
+
+        for visible in self.visible_fields():
+            if visible.widget_type == "text":
+                visible.field.widget.attrs["class"] = "form-control"
+            elif visible.widget_type == "date":
+                visible.field.widget = forms.DateInput(attrs={"class": "form-control", "type": "date"})
+            elif visible.widget_type == "datetime":
+                visible.field.widget = forms.DateTimeInput(attrs={"class": "form-control", "type": "datetime"})
+            elif visible.widget_type == "select":
+                visible.field.widget.attrs["class"] = "form-select"
+            elif visible.widget_type == "textarea":
+                visible.field.widget.attrs["class"] = "form-control"
+                visible.field.widget.attrs["rows"] = 5
+
 
 class CheckBoxInputField(ModelForm):
     class Meta:
         model = CheckboxInput
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(CheckBoxInputField, self).__init__(*args, **kwargs)
+
+        for visible in self.visible_fields():
+            if visible.widget_type == "text":
+                visible.field.widget.attrs["class"] = "form-control"
+            elif visible.widget_type == "date":
+                visible.field.widget = forms.DateInput(attrs={"class": "form-control", "type": "date"})
+            elif visible.widget_type == "datetime":
+                visible.field.widget = forms.DateTimeInput(attrs={"class": "form-control", "type": "datetime"})
+            elif visible.widget_type == "select":
+                visible.field.widget.attrs["class"] = "form-select"
+            elif visible.widget_type == "textarea":
+                visible.field.widget.attrs["class"] = "form-control"
+                visible.field.widget.attrs["rows"] = 5
 
 
 def get_model_choices():
