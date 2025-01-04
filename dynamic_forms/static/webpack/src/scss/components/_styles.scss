@@ -246,8 +246,12 @@ button:hover {
 }
 
 .form-objects {
-  height: 200px;
+  min-height: 200px;
   padding: 1.5rem 0;
+}
+
+.form-row {
+  //pointer-events: none;
 }
 
 // Drag and drop styling
@@ -255,11 +259,15 @@ button:hover {
   border: 2px solid var(--accent-color);
 }
 
-.placeholder {
+.input-placeholder {
   background-color: var(--bs-primary-bg-subtle);
   border: 2px solid var(--bs-primary);
   border-radius: 5px;
-  height: 40px;
+  height: 80px;
+  margin: auto;
+  padding: 1.5rem 0;
+  pointer-events: none;
+  width: 80%;
 }
 
 .draggable {

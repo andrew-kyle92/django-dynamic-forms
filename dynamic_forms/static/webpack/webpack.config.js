@@ -4,7 +4,7 @@ const autoprefixer = require("autoprefixer");
 module.exports = {
     mode: "development",
     entry: {
-        form_builder: ["./src/css/styles.css", "./src/js/main.js",],
+        form_builder: ["./src/css/styles.css", "./src/js/main.js", './src/js/dragAndDrop.js',],
     },
     output: {
         filename: "[name].bundle.js",

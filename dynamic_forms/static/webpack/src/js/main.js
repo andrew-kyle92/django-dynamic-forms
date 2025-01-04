@@ -3,10 +3,13 @@ import "../scss/styles.scss"
 
 // import bootstrap's js
 import * as bootstrap from 'bootstrap'
+
+// importing drag and drop functions
+import { setPlaceHolderPosition, addNewInput } from "./dragAndDrop.js"
 // ***** End Import *****
 
 // ***** Fetch Requests *****
-const getForm = async (field) => {
+export const getForm = async (field) => {
     let url = '/get-form/?' + new URLSearchParams({
         "field": field,
     });
@@ -18,7 +21,30 @@ const getForm = async (field) => {
 }
 
 // ***** script functions *****
+// Get the element after which the placeholder should be inserted
+function getDragAfterElement(container, y) {
+    const draggableElements = [
+        ...container.querySelectorAll(".input-wrapper:not(.input-placeholder)"),
+    ];
 
+    return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+            return { offset, element: child };
+        } else {
+            return closest;
+        }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+// ***** script variables *****
+let placeholder = null;
+let formInputMO = null;
+let currentDraggedInput = null;
+let formInputs = [];
+
+// ***** main logic *****
 window.addEventListener("load", () => {
     // animate all dropdown carets
     const dropdownBtns = document.getElementsByClassName("dropdown-caret");
@@ -75,21 +101,38 @@ window.addEventListener("load", () => {
     // ** Form div element **
     const formInputsDiv = document.getElementById("formInputsDiv");
 
-    // dragover
-    formInputsDiv.addEventListener("dragenter", (ev) => {
+    // ** dragover
+    formInputsDiv.addEventListener("dragover", (ev) => {
         ev.preventDefault();
-        // create the placeholder div
-        let placeHolder = document.createElement("div");
-        placeHolder.classList.add("placeholder");
-        formInputsDiv.appendChild(placeHolder);
+        // ev.stopPropagation();
+
+        // adding drag-over class to formInputsDiv
+        formInputsDiv.classList.add("drag-over");
+
+        // adding placeholder either before of after inputs
+        if (!formInputsDiv.childElementCount > 0) {
+            formInputsDiv.appendChild(placeholder);
+        }
+        else {
+            if (formInputMO && placeholder) {
+                setPlaceHolderPosition(formInputMO, placeholder, ev);
+            }
+            else if (formInputMO === null && placeholder) {
+                formInputsDiv.appendChild(placeholder);
+            }
+        }
+
     });
 
-    // dragleave
+    // ** dragleave
     formInputsDiv.addEventListener("dragleave", () => {
         formInputsDiv.classList.remove("drag-over");
+        if (placeholder && formInputsDiv.contains(placeholder)) {
+            formInputsDiv.removeChild(placeholder);
+        }
     });
 
-    // on drop
+    // ** on drop
     formInputsDiv.addEventListener("drop", async (e) => {
         e.preventDefault();
         // removing  the border, if there is one
@@ -98,105 +141,49 @@ window.addEventListener("load", () => {
         }
 
         // getting the id from the dragged object
-        let data = e.dataTransfer.getData("text");
+        let data = JSON.parse(e.dataTransfer.getData("text"));
 
-        // adding the form row div
-        let formRow = document.getElementsByClassName("form-row-template")[0];
-        formRow.className = "form-row";
-        formRow.removeAttribute("hidden");
-        e.target.appendChild(formRow);
+        // determining if a new or existing input is being dropped
+        if (data.existing) {
+            let element = document.getElementById(data.id);
 
-        // cloning the element and adding all the specific settings
-        let newField = document.getElementById(data).cloneNode(true);
-        newField.id = "id_" + crypto.randomUUID();
-        newField.removeAttribute("hidden");
-        let inputModal = newField.querySelector(".input-modal");
-        inputModal.id = newField.id + "_modal";
-        inputModal.setAttribute("aria-labelledby", newField.id + "_modalLabel");
-        inputModal.querySelector(".modal-title").id = newField.id + "_modalLabel";
-
-        // adding the target id to the settings button
-        let settingsBtn = newField.querySelector(".input-settings button");
-        settingsBtn.dataset.bsTarget = "#" + newField.id + "_modal";
-
-        // adding the form to the settings modal
-        let formType = newField.dataset.formType;
-        let modalBody = inputModal.querySelector(".modal-body");
-        let res = await getForm(formType);
-        let formData = JSON.parse(res.form);
-        let formKeys = Object.keys(formData);
-        let formInputs = [];
-        // creating the form fields
-        for (let i = 0; i < formKeys.length; i++) {
-            let formField = formData[formKeys[i]];
-            // getting the id from the input
-            let inputId = formField.input.match(/(?<=id\W+)\w+(?=\W)/g)[0];
-            formInputs.push(`#${newField.id} #${inputId}`);
-            // creating the form group div
-            let formGroup = document.createElement("div");
-            formGroup.setAttribute("class", "form-group mb-3");
-            modalBody.appendChild(formGroup);
-            // adding all the elements as innerHtml
-            formGroup.innerHTML = `
-                <label for="${formKeys[i]}" class="form-labal">${formField.label}</label>
-                ${formField.input}
-            `;
-            if (formField.helpText.length > 0) {
-                formGroup.innerHTML += `<div class="form-text">${formField.helpText}</div>`;
+            // adding the element to the target div
+            if (placeholder) {
+                // formInputsDiv.appendChild(element);
+                formInputsDiv.insertBefore(element, placeholder);
+                formInputsDiv.removeChild(placeholder);
             }
         }
-        // hiding the input and order fields
-        modalBody.querySelector("#id_order").parentElement.setAttribute("hidden", "");
-        modalBody.querySelector("#id_input").parentElement.setAttribute("hidden", "");
+        else {
+            let newField = await addNewInput(data, formInputsDiv, placeholder, formInputMO, currentDraggedInput);
 
-        // adding the element to the target div
-        formRow.appendChild(newField);
+            // adding the dragover listener
+            newField.addEventListener("dragover", (ev) => {
+                ev.preventDefault();
+                ev.stopPropagation();
 
-        // adding a listener to the save changes button
-        let saveBtn = document.getElementById("saveBtn");
-        let inputEl = newField.querySelector(`fieldset .form-group`);
-        saveBtn.addEventListener("click", () => {
-            let inputLabel = inputEl.querySelector(".label");
-            let inputInput = inputEl.querySelector(".input");
-            let inputHelpText = inputEl.querySelector(".help-text");
-            // applying all the settings
-            formInputs.forEach((input) => {
-                let field = document.querySelector(input);
-                switch (field.id) {
-                    case "id_label":
-                        if (field.value.length > 0) {
-                            inputLabel.innerText = field.value;
-                        }
-                        break;
-                    case "id_placeholder":
-                        if (field.value.length > 0) {
-                            inputInput.placeholder = field.value;
-                        }
-                        break;
-                    case "id_help_text":
-                        if (field.value.length > 0) {
-                            inputHelpText.innerText = field.value;
-                        }
-                        break;
-                    case "id_floating_label":
-                        if (field.checked) {
-                            inputEl.classList.add("form-floating");
-                            inputEl.querySelector(".input").insertAdjacentElement("afterend", inputLabel);
-                        }
-                        else {
-                            if (inputEl.className.includes("form-floating")) {
-                                inputEl.classList.remove("form-floating");
-                                inputEl.querySelector(".input").insertAdjacentElement("beforebegin", inputLabel);
-                            }
-                        }
-                        break;
+                if (currentDraggedInput === null || newField.id !== currentDraggedInput.id) {
+                    formInputMO = newField;
                 }
             });
-            inputModal.querySelector(".btn-close").click();
-        });
+
+            // adding the dragstart logic
+            newField.addEventListener("dragstart", (e) => {
+                // copying the templated field html
+                let data = {id: newField.id, existing: true};
+                e.dataTransfer.setData("text", JSON.stringify(data));
+
+                // creating the placeholder element
+                placeholder = document.createElement("div");
+                placeholder.classList.add("input-placeholder");
+
+                currentDraggedInput = newField;
+            });
+        }
     });
 
     // ** Input Elements **
+    // li elements from left pane
     let inputItems = document.getElementsByClassName("inputItem");
     for (let i = 0; i < inputItems.length; i++) {
         let inputItem = inputItems[i];
@@ -204,7 +191,12 @@ window.addEventListener("load", () => {
         inputItem.addEventListener("dragstart", (e) => {
             // copying the templated field html
             let fieldReference = document.getElementById(inputItem.dataset.fieldReference);
-            e.dataTransfer.setData("text", `${fieldReference.id}`);
+            let data = {id: fieldReference.id, existing: false}
+            e.dataTransfer.setData("text", JSON.stringify(data));
+
+            // creating the placeholder element
+            placeholder = document.createElement("div");
+            placeholder.classList.add("input-placeholder");
         });
     }
-})
+});
