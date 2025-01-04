@@ -86,6 +86,8 @@ export const addNewInput = async (data, formDiv, placeholder, formMO, currentDra
 
     // adding a listener to the save changes button
     let saveBtn = document.getElementById("saveBtn");
+    // changing the id as not to conflict with other inputs
+    saveBtn.id = newField.id + "_saveBtn";
     let inputEl = newField.querySelector(`fieldset .form-group`);
     saveBtn.addEventListener("click", () => {
         let inputLabel = inputEl.querySelector(".label");
