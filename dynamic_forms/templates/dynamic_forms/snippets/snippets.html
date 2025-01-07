@@ -1,0 +1,326 @@
+<!-- Form Row -->
+<div class="form-row-template py-2 mb-5 draggable form-item" hidden draggable="true"></div>
+
+<!-- Text Input -->
+<div id="text_input" class="form-item draggable mb-5" data-form-type="text_input" hidden draggable="true">
+    <fieldset>
+        <legend><i class="fa-solid fa-font"></i> Text Input <span class="input-settings" title="Input Settings"><button type="button" class="btn" data-bs-toggle="modal" data-modal-open="false"><i class="fa-solid fa-gear"></i></button></span><span class="remove-input" title="Remove Input"><button class="btn" type="button"><i class="fa-solid fa-trash"></i></button></span></legend>
+        <div class="form-group">
+            <label class="form-label label">Input Label</label>
+            <input class="form-control input" type="text" readonly>
+            <div class="form-text help-text"></div>
+        </div>
+    </fieldset>
+    <div class="modal fade  input-modal" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Text Input</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="saveBtn" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Text Area -->
+<div id="text_area" class="form-item draggable mb-5" data-form-type="text_area" hidden draggable="true">
+    <fieldset>
+        <legend><i class="fa-solid fa-font"></i> Text Area <span class="input-settings"><button type="button" class="btn" data-bs-toggle="modal" data-modal-open="false"><i class="fa-solid fa-gear"></i></button></span><span class="remove-input"><button class="btn" type="button"><i class="fa-solid fa-trash"></i></button></span></legend>
+        <div class="form-group">
+            <label class="form-label label">Input Label</label>
+            <textarea class="form-control input" name="" rows="3" readonly></textarea>
+            <div class="form-text help-text"></div>
+        </div>
+    </fieldset>
+    <div class="modal fade  input-modal" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Text Input</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="saveBtn" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Email Input -->
+<div id="email_input" class="form-item draggable mb-5" data-form-type="email_input" hidden draggable="true">
+    <fieldset>
+        <legend><i class="fa-solid fa-envelope"></i> Email Input <span class="input-settings"><button type="button" class="btn" data-bs-toggle="modal" data-modal-open="false"><i class="fa-solid fa-gear"></i></button></span><span class="remove-input"><button class="btn" type="button"><i class="fa-solid fa-trash"></i></button></span></legend>
+        <div class="form-group">
+            <label class="form-label label">Input Label</label>
+            <input class="form-control input" type="email" readonly>
+            <div class="form-text help-text"></div>
+        </div>
+    </fieldset>
+    <div class="modal fade  input-modal" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Email Input</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="saveBtn" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Date Input -->
+<div id="date_input" class="form-item draggable mb-5" data-form-type="date_input" hidden draggable="true">
+    <fieldset>
+        <legend><i class="fa-solid fa-calendar-days"></i> Date Input <span class="input-settings"><button type="button" class="btn" data-bs-toggle="modal" data-modal-open="false"><i class="fa-solid fa-gear"></i></button></span><span class="remove-input"><button class="btn" type="button"><i class="fa-solid fa-trash"></i></button></span></legend>
+        <div class="form-group">
+            <label class="form-label label">Input Label</label>
+            <input class="form-control input" type="date" readonly>
+            <div class="form-text help-text"></div>
+        </div>
+    </fieldset>
+    <div class="modal fade  input-modal" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Date Input</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="saveBtn" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- DateTime Input -->
+<div id="datetime_input" class="form-item draggable mb-5" data-form-type="datetime_input" hidden draggable="true">
+    <fieldset>
+        <legend><i class="fa-solid fa-calendar-days"></i> DateTime Input <span class="input-settings"><button type="button" class="btn" data-bs-toggle="modal" data-modal-open="false"><i class="fa-solid fa-gear"></i></button></span><span class="remove-input"><button class="btn" type="button"><i class="fa-solid fa-trash"></i></button></span></legend>
+        <div class="form-group">
+            <label class="form-label label">Input Label</label>
+            <input class="form-control input" type="datetime-local" readonly>
+            <div class="form-text help-text"></div>
+        </div>
+    </fieldset>
+    <div class="modal fade  input-modal" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">DateTime Input</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="saveBtn" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dropdown Input -->
+<div id="dropdown_input" class="form-item draggable mb-5" data-form-type="dropdown_input" hidden draggable="true">
+    <fieldset>
+        <legend><i class="fa-regular fa-square-caret-down"></i> Dropdown Input <span class="input-settings"><button type="button" class="btn" data-bs-toggle="modal" data-modal-open="false"><i class="fa-solid fa-gear"></i></button></span><span class="remove-input"><button class="btn" type="button"><i class="fa-solid fa-trash"></i></button></span></legend>
+        <div class="form-group">
+            <label class="form-label label">Input Label</label>
+            <select class="form-select input" readonly=""></select>
+            <div class="form-text help-text"></div>
+        </div>
+    </fieldset>
+    <div class="modal fade  input-modal" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Dropdown Input</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="saveBtn" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Multi-Select Dropdown Input -->
+<div id="multiple_dropdown_input" class="form-item draggable mb-5" data-form-type="multiple_dropdown_input" hidden draggable="true">
+    <fieldset>
+        <legend><i class="fa-regular fa-square-caret-down"></i> Multi-Select Dropdown Input <span class="input-settings"><button type="button" class="btn" data-bs-toggle="modal" data-modal-open="false"><i class="fa-solid fa-gear"></i></button></span><span class="remove-input"><button class="btn" type="button"><i class="fa-solid fa-trash"></i></button></span></legend>
+        <div class="form-group">
+            <label class="form-label label">Input Label</label>
+            <select class="form-select input" readonly="" multiple></select>
+            <div class="form-text help-text"></div>
+        </div>
+    </fieldset>
+    <div class="modal fade  input-modal" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Multi-Select Dropdown Input</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="saveBtn" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Integer Input -->
+<div id="integer_input" class="form-item draggable mb-5" data-form-type="integer_input" hidden draggable="true">
+    <fieldset>
+        <legend><i class="fa-solid fa-hashtag"></i> Integer Input <span class="input-settings"><button type="button" class="btn" data-bs-toggle="modal" data-modal-open="false"><i class="fa-solid fa-gear"></i></button></span><span class="remove-input"><button class="btn" type="button"><i class="fa-solid fa-trash"></i></button></span></legend>
+        <div class="form-group">
+            <label class="form-label label">Input Label</label>
+            <input class="form-control input" type="number" min="" max="" readonly>
+            <div class="form-text help-text"></div>
+        </div>
+    </fieldset>
+    <div class="modal fade  input-modal" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Integer Input</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="saveBtn" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Decimal Input -->
+<div id="decimal_input" class="form-item draggable mb-5" data-form-type="decimal_input" hidden draggable="true">
+    <fieldset>
+        <legend><i class="fa-solid fa-hashtag"></i> Decimal Input <span class="input-settings"><button type="button" class="btn" data-bs-toggle="modal" data-modal-open="false"><i class="fa-solid fa-gear"></i></button></span><span class="remove-input"><button class="btn" type="button"><i class="fa-solid fa-trash"></i></button></span></legend>
+        <div class="form-group">
+            <label class="form-label label">Input Label</label>
+            <input class="form-control input" type="number" min="" max="" step=".01" readonly>
+            <div class="form-text help-text"></div>
+        </div>
+    </fieldset>
+    <div class="modal fade  input-modal" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Decimal Input</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="saveBtn" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Radio Input -->
+<div id="radio_input" class="form-item draggable mb-5" data-form-type="radio_input" hidden draggable="true">
+    <fieldset>
+        <legend><i class="fa-regular fa-circle-dot"></i> Radio Input <span class="input-settings"><button type="button" class="btn" data-bs-toggle="modal" data-modal-open="false"><i class="fa-solid fa-gear"></i></button></span><span class="remove-input"><button class="btn" type="button"><i class="fa-solid fa-trash"></i></button></span></legend>
+        <div class="form-group">
+            <input class="form-check-input input" type="radio" readonly>
+            <label class="form-check-label label">Input Label</label>
+            <div class="form-text help-text"></div>
+        </div>
+    </fieldset>
+    <div class="modal fade  input-modal" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Radio Input</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="saveBtn" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Checkbox Input -->
+<div id="checkbox_input" class="form-item draggable mb-5" data-form-type="checkbox_input" hidden draggable="true">
+    <fieldset>
+        <legend><i class="fa-regular fa-square-check"></i> Checkbox Input <span class="input-settings"><button type="button" class="btn" data-bs-toggle="modal" data-modal-open="false"><i class="fa-solid fa-gear"></i></button></span><span class="remove-input"><button class="btn" type="button"><i class="fa-solid fa-trash"></i></button></span></legend>
+        <div class="form-group">
+            <input class="form-check-input input" type="checkbox" readonly>
+            <label class="form-check-label label">Input Label</label>
+            <div class="form-text help-text"></div>
+        </div>
+    </fieldset>
+    <div class="modal fade  input-modal" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Checkbox Input</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="saveBtn" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- File Input -->
+<div id="file_input" class="form-item draggable mb-5" data-form-type="file_input" hidden draggable="true">
+    <fieldset>
+        <legend><i class="fa-solid fa-file"></i> File Input <span class="input-settings"><button type="button" class="btn" data-bs-toggle="modal" data-modal-open="false"><i class="fa-solid fa-gear"></i></button></span><span class="remove-input"><button class="btn" type="button"><i class="fa-solid fa-trash"></i></button></span></legend>
+        <div class="form-group">
+            <label class="form-label label">Input Label</label>
+            <input class="form-control input" type="file" readonly>
+            <div class="form-text help-text"></div>
+        </div>
+    </fieldset>
+    <div class="modal fade  input-modal" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">File Input</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="saveBtn" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

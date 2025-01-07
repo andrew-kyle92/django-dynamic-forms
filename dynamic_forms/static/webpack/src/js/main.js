@@ -155,7 +155,7 @@ window.addEventListener("load", () => {
             }
         }
         else {
-            let newField = await addNewInput(data, formInputsDiv, placeholder, formInputMO, currentDraggedInput);
+            let newField = await addNewInput(data, formInputsDiv, placeholder);
 
             // adding the dragover listener
             newField.addEventListener("dragover", (ev) => {

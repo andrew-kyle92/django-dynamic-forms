@@ -175,6 +175,11 @@
   color: var(--text-color);
 }
 
+// ***** General Styles *****
+#side-nav {
+  overflow: auto;
+}
+
 fieldset, legend {
   all: revert;
 }
@@ -196,12 +201,21 @@ legend {
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   color: var(--text-color);
+  overflow: auto;
   padding: 20px;
 }
 
 .form-section-header {
   font-size: 1.5rem;
   margin-bottom: 10px;
+}
+
+.inputItem {
+  transition: all 500ms ease!important;
+}
+
+.inputItem:hover {
+  background-color: var(--highlight-color)!important;
 }
 
 input, textarea, select {

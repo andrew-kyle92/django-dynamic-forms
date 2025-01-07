@@ -27,7 +27,6 @@ def get_form_fields(field):
     fields = {}
     form = forms[field]()
     for field in form:
-        print(field.as_widget())
         fields[field.html_name] = {
             "label": field.label,
             "input": field.as_widget(),

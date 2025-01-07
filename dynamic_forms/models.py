@@ -9,7 +9,7 @@ class BaseFieldModel(models.Model):
     help_text = models.CharField(max_length=255, blank=True, null=True, help_text="Help text for field input")
     floating_label = models.BooleanField(default=False, help_text="Label for floating field label, see <a href='https://getbootstrap.com/docs/5.3/forms/floating-labels/' target='_blank'>https://getbootstrap.com/docs/5.3/forms/floating-labels/</a> for more info.")
     required = models.BooleanField(default=False, help_text="Set the field to be required or not")
-    classes = models.CharField(max_length=255, blank=True, null=True, help_text="Comma-separated list of classes to use for this field")
+    classes = models.CharField(max_length=255, blank=True, null=True, help_text="List of classes, separated by a space, to add to the classname")
     order = models.IntegerField(default=0, help_text="Input order")
 
     def __str__(self):
@@ -48,27 +48,31 @@ class DateTimeInput(BaseFieldModel):
 class DropDownInput(BaseFieldModel):
     """Model for choice input field"""
     input = models.CharField(max_length=255, blank=True, null=True)
-    choices = models.TextField(blank=True, null=True)
+    blank_option = models.BooleanField(default=False, help_text="Add a blank option to the drop down.")
+    blank_label = models.CharField(max_length=100, blank=True, null=True, help_text="Add a label for the drop down. Only applies when blank option is checked.")
+    choices = models.TextField(blank=True, null=True, help_text="List of choices, in this format: <strong>(<code>'value', 'label'</code>)</strong>. Add each choice to a new line.")
 
 
 class MultipleSelectDropDownInput(BaseFieldModel):
     """Multiple Selection for choice input field"""
     input = models.CharField(max_length=255, blank=True, null=True)
+    blank_option = models.BooleanField(default=False, help_text="Add a blank option to the drop down.")
+    blank_label = models.CharField(max_length=100, blank=True, null=True, help_text="Add a label for the drop down. Only applies when blank option is checked.")
     choices = models.TextField(blank=True, null=True)
 
 
 class IntegerInput(BaseFieldModel):
     """Model for integer input field"""
     input = models.IntegerField(blank=True, null=True)
-    min_value = models.IntegerField(blank=True, null=True)
-    max_value = models.IntegerField(blank=True, null=True)
+    min_value = models.IntegerField(blank=True, null=True, help_text="Minimum value for the input")
+    max_value = models.IntegerField(blank=True, null=True, help_text="Maximum value for the input")
 
 
 class DecimalInput(BaseFieldModel):
     """Model for decimal input field"""
     input = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
-    min_value = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
-    max_value = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    min_value = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, help_text="Minimum value for the input")
+    max_value = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, help_text="Maximum value for the input")
 
 
 class FileInput(BaseFieldModel):
@@ -80,17 +84,19 @@ class FileInput(BaseFieldModel):
 class CheckboxInput(BaseFieldModel):
     """Model for checkbox input field"""
     input = models.BooleanField(blank=True, null=True)
+    choices = models.TextField(blank=True, null=True, help_text="List of choices. Add each choice to a new line.")
 
 
 class RadioInput(BaseFieldModel):
     """Model for radio input field"""
     input = models.CharField(max_length=255, blank=True, null=True)
+    choices = models.TextField(blank=True, null=True, help_text="List of choices. Add each choice to a new line.")
 
 
 class FormModel(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True, help_text="The name of the form")
     description = models.TextField(blank=True, null=True, help_text="Form description")
-    for_table = models.BooleanField(blank=True, null=True, help_text="Add form to db table")
+    for_table = models.BooleanField(blank=True, null=True, help_text="Create a form for a database table")
     table = models.CharField(max_length=255, blank=True, null=True, help_text="Name of the table")
 
     def __str__(self):

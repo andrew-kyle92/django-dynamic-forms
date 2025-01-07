@@ -1,7 +1,7 @@
 {% extends 'theme/base.html' %}
 
 {% block content %}
-<div class="container row m-auto my-3">
+<div id="mainContent" class="container row m-auto mt-3">
     <div id="side-nav" class="col-3">
         <div class="nav-section">
             <button class="dropdown-caret border-bottom mb-3 btn w-100 text-start fs-4" type="button" data-bs-toggle="collapse" data-bs-target="#formSection" aria-expanded="true" aria-controls="formSection"><i class="fa-solid fa-caret-up" data-rotation="0"></i> Form Data</button>
@@ -64,5 +64,17 @@
     </div>
 </div>
 
-{% include 'snippets/snippets.html' %}
+{% include 'dynamic_forms/snippets/snippets.html' %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Adjusting the sideNav height
+    let sideNav = document.getElementById("side-nav");
+    sideNav.style.maxHeight = `${window.innerHeight - (sideNav.offsetTop)}px`;
+
+    // adjusting the height of formDiv as well
+    let formDiv = document.getElementById("formDiv");
+    formDiv.style.maxHeight = `${window.innerHeight - (formDiv.offsetTop)}px`;
+</script>
 {% endblock %}
