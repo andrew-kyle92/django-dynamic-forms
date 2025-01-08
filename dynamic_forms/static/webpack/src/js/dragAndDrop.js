@@ -200,9 +200,11 @@ export const addNewInput = async (data, formDiv, placeholder) => {
                 case "id_blank_option":
                     if (field.checked) {
                         let label = document.querySelector(formInputs.filter((l) => l.includes("#id_blank_label"))[0]);
+                        inputInput.dataset.blankOption = "true";
                         // creating option element
                         let blankOption = document.createElement("option");
                         blankOption.setAttribute("class", "blank-option");
+                        blankOption.classList.add("blank-option");
                         blankOption.value = "";
                         blankOption.innerText = label.value;
                         // adding it to the input
@@ -218,6 +220,57 @@ export const addNewInput = async (data, formDiv, placeholder) => {
                         if (blankOption) {
                             inputInput.removeChild(blankOption);
                         }
+                        inputInput.dataset.blankOption = "false";
+                    }
+                    break;
+                case "id_choices":
+                    let dropDowns = ["multiple_dropdown_input", "dropdown_input"];
+                    let formType = newField.dataset.formType;
+                    if (dropDowns.includes(formType)) {
+                        let currentChoices = field.dataset.choices;
+                        let inputValues = field.value.split("\n");
+                        let choices = {};
+                        inputValues.forEach((c) => { choices[c.split(', ')[0]] = [c.split(', ')[0], c.split(', ')[1]]; });
+                        if (currentChoices) {
+                            currentChoices = JSON.parse(currentChoices);
+                            let choicesToBeRemoved =[];
+                            let choicesToBeAdded = [];
+                            // finding any choices to be removed
+                            Object.keys(currentChoices).forEach((c) => {
+                                if (!Object.keys(choices).includes(c)) {
+                                    choicesToBeRemoved.push(c);
+                                }
+                            });
+                            // finding choices to be added
+                            Object.keys(choices).forEach((c) => {
+                                if (!Object.keys(currentChoices).includes(c)) {
+                                    choicesToBeAdded.push(c);
+                                }
+                            });
+                            // removing the choices that were removed
+                            for (let key in choices) {
+                                // creating the option element
+                                let value = choices[key][0];
+                                let label = choices[key][1];
+                                let option = document.createElement("option");
+                                option.value = value;
+                                option.innerText = label;
+                                inputInput.appendChild(option);
+                            }
+                        }
+                        else {
+                            // adding the options
+                            for (let key in choices) {
+                                // creating the option element
+                                let value = choices[key][0];
+                                let label = choices[key][1];
+                                let option = document.createElement("option");
+                                option.value = value;
+                                option.innerText = label;
+                                inputInput.appendChild(option);
+                            }
+                        }
+                        field.dataset.choices = JSON.stringify(choices);
                     }
                     break;
             }

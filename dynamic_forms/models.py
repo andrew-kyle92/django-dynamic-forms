@@ -50,7 +50,7 @@ class DropDownInput(BaseFieldModel):
     input = models.CharField(max_length=255, blank=True, null=True)
     blank_option = models.BooleanField(default=False, help_text="Add a blank option to the drop down.")
     blank_label = models.CharField(max_length=100, blank=True, null=True, help_text="Add a label for the drop down. Only applies when blank option is checked.")
-    choices = models.TextField(blank=True, null=True, help_text="List of choices, in this format: <strong>(<code>'value', 'label'</code>)</strong>. Add each choice to a new line.")
+    choices = models.TextField(blank=True, null=True, help_text="List of choices, in this format: <strong><code>value, label</code></strong>. Add each choice to a new line.")
 
 
 class MultipleSelectDropDownInput(BaseFieldModel):
@@ -58,7 +58,7 @@ class MultipleSelectDropDownInput(BaseFieldModel):
     input = models.CharField(max_length=255, blank=True, null=True)
     blank_option = models.BooleanField(default=False, help_text="Add a blank option to the drop down.")
     blank_label = models.CharField(max_length=100, blank=True, null=True, help_text="Add a label for the drop down. Only applies when blank option is checked.")
-    choices = models.TextField(blank=True, null=True)
+    choices = models.TextField(blank=True, null=True, help_text="List of choices, in this format: <strong><code>value, label</code></strong>. Add each choice to a new line.")
 
 
 class IntegerInput(BaseFieldModel):
