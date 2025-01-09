@@ -96,7 +96,7 @@ export const addNewInput = async (data, formDiv, placeholder) => {
         formGroup.innerHTML = `
         <label for="${formKeys[i]}" class="form-labal">${formField.label}</label>
         ${formField.input}
-    `;
+        `;
         if (formField.helpText.length > 0) {
             formGroup.innerHTML += `<div class="form-text">${formField.helpText}</div>`;
         }
@@ -138,7 +138,8 @@ export const addNewInput = async (data, formDiv, placeholder) => {
                         inputInput.placeholder = field.value;
                     }
                     else {
-                        if (inputInput.placeholder.length > 0) {
+                        let hasPlaceholder = !!inputInput.get("placeholder");
+                        if (hasPlaceholder) {
                             inputInput.placeholder = "";
                         }
                     }
@@ -239,6 +240,7 @@ export const addNewInput = async (data, formDiv, placeholder) => {
                 case "id_choices":
                     let dropDowns = ["multiple_dropdown_input", "dropdown_input"];
                     let formType = newField.dataset.formType;
+                    let blankAdded = null;
                     if (dropDowns.includes(formType)) {
                         let currentChoices = field.dataset.choices;
                         let inputValues = field.value.split("\n");
