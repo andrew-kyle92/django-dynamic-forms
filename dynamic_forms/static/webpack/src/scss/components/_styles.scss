@@ -177,7 +177,11 @@
 
 // ***** General Styles *****
 #side-nav {
+  max-height: 90vh;
   overflow: auto;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 fieldset, legend {

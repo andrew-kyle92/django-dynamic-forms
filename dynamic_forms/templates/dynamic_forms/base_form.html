@@ -53,7 +53,7 @@
     </div>
 
     <!-- Rough Form Outline Section -->
-    <div id="formDiv" class="form-container col-9">
+    <div id="formDiv" class="form-container col-9 neutral-mode">
         <!-- Form Name - can't be deleted and mandatory -->
         <fieldset id="formHeader" class="form-section-header mb-3">
             <legend>Form Name</legend>
@@ -69,12 +69,10 @@
 
 {% block extra_js %}
 <script>
-    // Adjusting the sideNav height
+    // making the nav top
     let sideNav = document.getElementById("side-nav");
-    sideNav.style.maxHeight = `${window.innerHeight - (sideNav.offsetTop)}px`;
+    let siteNav = document.getElementById("siteNav");
+    sideNav.style.top = `${siteNav.offsetHeight}px`;
 
-    // adjusting the height of formDiv as well
-    let formDiv = document.getElementById("formDiv");
-    formDiv.style.maxHeight = `${window.innerHeight - (formDiv.offsetTop)}px`;
 </script>
 {% endblock %}

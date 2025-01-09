@@ -137,6 +137,11 @@ export const addNewInput = async (data, formDiv, placeholder) => {
                     if (field.value.length > 0) {
                         inputInput.placeholder = field.value;
                     }
+                    else {
+                        if (inputInput.placeholder.length > 0) {
+                            inputInput.placeholder = "";
+                        }
+                    }
                     break;
                 case "id_help_text":
                     if (field.value.length > 0) {
@@ -147,10 +152,20 @@ export const addNewInput = async (data, formDiv, placeholder) => {
                     if (field.checked) {
                         inputEl.classList.add("form-floating");
                         inputEl.querySelector(".input").insertAdjacentElement("afterend", inputLabel);
+                        // making the floating label on a textarea inputs bigger
+                        let textAreaInputs = ["multiple_dropdown_input", "text_area"];
+                        if (textAreaInputs.includes(newField.dataset.formType)) {
+                            inputInput.style.height = '100px';
+                        }
                     } else {
                         if (inputEl.className.includes("form-floating")) {
                             inputEl.classList.remove("form-floating");
                             inputEl.querySelector(".input").insertAdjacentElement("beforebegin", inputLabel);
+                            // decreasing the size on textarea inputs back to normal
+                            let textAreaInputs = ["dropdown_input", "multiple_dropdown_input", "text_area"];
+                            if (textAreaInputs.includes(newField.dataset.formType)) {
+                                inputInput.removeAttribute("style");
+                            }
                         }
                     }
                     break;
@@ -183,9 +198,7 @@ export const addNewInput = async (data, formDiv, placeholder) => {
                                 }
                             });
                             // removing the classes
-                            classesToBeRemoved.forEach((c) => {
-                                classesToBeRemoved.forEach((c) => { inputInput.classList.remove(c); });
-                            });
+                            classesToBeRemoved.forEach((c) => { inputInput.classList.remove(c); });
                             // adding the classes
                             classesToBeAdded.forEach((c) => { inputInput.classList.add(c); })
                         }
@@ -247,16 +260,20 @@ export const addNewInput = async (data, formDiv, placeholder) => {
                                     choicesToBeAdded.push(c);
                                 }
                             });
-                            // removing the choices that were removed
-                            for (let key in choices) {
-                                // creating the option element
-                                let value = choices[key][0];
-                                let label = choices[key][1];
-                                let option = document.createElement("option");
-                                option.value = value;
-                                option.innerText = label;
-                                inputInput.appendChild(option);
-                            }
+                            // removing old choices
+                            choicesToBeRemoved.forEach((c) => {
+                                let child = inputInput.querySelector(`option[value=${c}]`);
+                                inputInput.removeChild(child);
+                            });
+                            // adding new choices
+                            choicesToBeAdded.forEach((c) => {
+                                let newOption = document.createElement("option");
+                                let value = choices[c][0];
+                                let label = choices[c][1];
+                                newOption.setAttribute("value", value);
+                                newOption.innerText = label;
+                                inputInput.appendChild(newOption);
+                            });
                         }
                         else {
                             // adding the options
