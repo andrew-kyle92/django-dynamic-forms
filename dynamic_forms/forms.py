@@ -17,6 +17,9 @@ class TextInputField(ModelForm):
         super(TextInputField, self).__init__(*args, **kwargs)
 
         for visible in self.visible_fields():
+            # adding valueChanged dataset attribute
+            visible.field.widget.attrs["data-value-changed"] = "false"
+
             if visible.widget_type == "text" or visible.widget_type == "number":
                 visible.field.widget.attrs["class"] = "form-control"
             elif visible.widget_type == "date":
@@ -41,6 +44,9 @@ class TextAreaField(ModelForm):
         super(TextAreaField, self).__init__(*args, **kwargs)
 
         for visible in self.visible_fields():
+            # adding valueChanged dataset attribute
+            visible.field.widget.attrs["data-value-changed"] = "false"
+
             if visible.widget_type == "text" or visible.widget_type == "number":
                 visible.field.widget.attrs["class"] = "form-control"
             elif visible.widget_type == "date":
@@ -65,6 +71,9 @@ class EmailInputField(ModelForm):
         super(EmailInputField, self).__init__(*args, **kwargs)
 
         for visible in self.visible_fields():
+            # adding valueChanged dataset attribute
+            visible.field.widget.attrs["data-value-changed"] = "false"
+
             if visible.widget_type == "text" or visible.widget_type == "number":
                 visible.field.widget.attrs["class"] = "form-control"
             elif visible.widget_type == "date":
@@ -89,6 +98,9 @@ class DateInputField(ModelForm):
         super(DateInputField, self).__init__(*args, **kwargs)
 
         for visible in self.visible_fields():
+            # adding valueChanged dataset attribute
+            visible.field.widget.attrs["data-value-changed"] = "false"
+
             if visible.widget_type == "text" or visible.widget_type == "number":
                 visible.field.widget.attrs["class"] = "form-control"
             elif visible.widget_type == "date":
@@ -113,6 +125,9 @@ class DateTimeInputField(ModelForm):
         super(DateTimeInputField, self).__init__(*args, **kwargs)
 
         for visible in self.visible_fields():
+            # adding valueChanged dataset attribute
+            visible.field.widget.attrs["data-value-changed"] = "false"
+
             if visible.widget_type == "text" or visible.widget_type == "number":
                 visible.field.widget.attrs["class"] = "form-control"
             elif visible.widget_type == "date":
@@ -137,6 +152,9 @@ class DropDownField(ModelForm):
         super(DropDownField, self).__init__(*args, **kwargs)
 
         for visible in self.visible_fields():
+            # adding valueChanged dataset attribute
+            visible.field.widget.attrs["data-value-changed"] = "false"
+
             if visible.widget_type == "text" or visible.widget_type == "number":
                 visible.field.widget.attrs["class"] = "form-control"
             elif visible.widget_type == "date":
@@ -161,6 +179,9 @@ class MultipleDropDownField(ModelForm):
         super(MultipleDropDownField, self).__init__(*args, **kwargs)
 
         for visible in self.visible_fields():
+            # adding valueChanged dataset attribute
+            visible.field.widget.attrs["data-value-changed"] = "false"
+
             if visible.widget_type == "text" or visible.widget_type == "number":
                 visible.field.widget.attrs["class"] = "form-control"
             elif visible.widget_type == "date":
@@ -185,6 +206,9 @@ class IntegerInputField(ModelForm):
         super(IntegerInputField, self).__init__(*args, **kwargs)
 
         for visible in self.visible_fields():
+            # adding valueChanged dataset attribute
+            visible.field.widget.attrs["data-value-changed"] = "false"
+
             if visible.widget_type == "text" or visible.widget_type == "number":
                 visible.field.widget.attrs["class"] = "form-control"
             elif visible.widget_type == "date":
@@ -209,6 +233,9 @@ class DecimalInputField(ModelForm):
         super(DecimalInputField, self).__init__(*args, **kwargs)
 
         for visible in self.visible_fields():
+            # adding valueChanged dataset attribute
+            visible.field.widget.attrs["data-value-changed"] = "false"
+
             if visible.widget_type == "text" or visible.widget_type == "number":
                 visible.field.widget.attrs["class"] = "form-control"
             elif visible.widget_type == "date":
@@ -233,6 +260,9 @@ class FileInputField(ModelForm):
         super(FileInputField, self).__init__(*args, **kwargs)
 
         for visible in self.visible_fields():
+            # adding valueChanged dataset attribute
+            visible.field.widget.attrs["data-value-changed"] = "false"
+
             if visible.widget_type == "text" or visible.widget_type == "number":
                 visible.field.widget.attrs["class"] = "form-control"
             elif visible.widget_type == "date":
@@ -257,6 +287,9 @@ class RadioInputField(ModelForm):
         super(RadioInputField, self).__init__(*args, **kwargs)
 
         for visible in self.visible_fields():
+            # adding valueChanged dataset attribute
+            visible.field.widget.attrs["data-value-changed"] = "false"
+
             if visible.widget_type == "text" or visible.widget_type == "number":
                 visible.field.widget.attrs["class"] = "form-control"
             elif visible.widget_type == "date":
@@ -281,6 +314,9 @@ class CheckBoxInputField(ModelForm):
         super(CheckBoxInputField, self).__init__(*args, **kwargs)
 
         for visible in self.visible_fields():
+            # adding valueChanged dataset attribute
+            visible.field.widget.attrs["data-value-changed"] = "false"
+
             if visible.widget_type == "text" or visible.widget_type == "number":
                 visible.field.widget.attrs["class"] = "form-control"
             elif visible.widget_type == "date":
