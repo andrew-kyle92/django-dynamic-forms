@@ -50,10 +50,14 @@ export function setDepth(targetDiv) {
         if (parent.id === "formInputsDiv") {
             level = 2;
         }
-        else if (parent.id.includes("section-row")) {
-            let grandParent = parent.parentElement.parentElement;
-            if (grandParent.id === "section-row") {
+        else {
+            let grandParent = parent.parentElement;
+            if (grandParent.id === "formInputsDiv") {
                 level = 3;
+            }
+            let greatGrandParent = grandParent.id.includes("section-row") ? grandParent.parentElement.parentElement : grandParent.parentElement;
+            if (grandParent.id === "formInputsDiv") {
+                level = 4;
             }
         }
     }
@@ -226,15 +230,8 @@ export function setExistingDrop(el, placeholder, targetDiv) {
 }
 
 export function setInputDragOver(e, formInputMO, currentDraggedInput, newField) {
-    let isFormSection = newField.dataset.formSection === "true";
-    let targetMO = newField;
-    if (isFormSection) {
-        // if isFormSection, set the section-row div as the target mouse over
-        // targetMO = document.querySelector("#section-row");
-        return targetMO;
-    }
     if (currentDraggedInput === null || newField.id !== currentDraggedInput.id) {
-        return targetMO;
+        return newField;
     }
     return null
 }

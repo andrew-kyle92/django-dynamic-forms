@@ -107,19 +107,20 @@ window.addEventListener("load", () => {
     // ** dragover
     formInputsDiv.addEventListener("dragover", (ev) => {
         ev.preventDefault();
+        ev.stopPropagation();
         // **  setting propagation
         // determine the depth level for propagation
-        let level = dragAndDrop.setDepth(formInputsDiv);
-        switch (level) {
-            case 1:
-                break;
-            case 2:
-                ev.stopPropagation();
-                break;
-            case 3:
-                ev.stopImmediatePropagation();
-                break;
-        }
+        // let level = dragAndDrop.setDepth(formInputsDiv);
+        // switch (level) {
+        //     case 1:
+        //         break;
+        //     case 2:
+        //         ev.stopPropagation();
+        //         break;
+        //     case 3:
+        //         ev.stopImmediatePropagation();
+        //         break;
+        // }
 
         // adding dragover logic
         const currentTarget = ev.currentTarget || formInputsDiv;
@@ -149,19 +150,20 @@ window.addEventListener("load", () => {
     // ** on drop
     formInputsDiv.addEventListener("drop", async (e) => {
         e.preventDefault();
+        e.stopPropagation();
         // **  setting propagation
         // determine the depth level for propagation
-        let level = dragAndDrop.setDepth(formInputsDiv);
-        switch (level) {
-            case 1:
-                break;
-            case 2:
-                e.stopPropagation();
-                break;
-            case 3:
-                e.stopImmediatePropagation();
-                break;
-        }
+        // let level = dragAndDrop.setDepth(formInputsDiv);
+        // switch (level) {
+        //     case 1:
+        //         break;
+        //     case 2:
+        //         e.stopPropagation();
+        //         break;
+        //     case 3:
+        //         e.stopImmediatePropagation();
+        //         break;
+        // }
 
         // removing the border, if there is one
         functions.removeClass(formInputsDiv, "drag-over");
@@ -182,38 +184,43 @@ window.addEventListener("load", () => {
 
             // adding the dragover listener
             newField.addEventListener("dragover", (ev) => {
+                ev.preventDefault();
                 // **  setting propagation
+                ev.stopPropagation();
                 // determine the depth level for propagation
-                let level = dragAndDrop.setDepth(newField);
-                switch (level) {
-                    case 1:
-                        break;
-                    case 2:
-                        ev.stopPropagation();
-                        break;
-                    case 3:
-                        ev.stopImmediatePropagation();
-                        break;
-                }
+                // let level = dragAndDrop.setDepth(newField);
+                // switch (level) {
+                //     case 1:
+                //         break;
+                //     case 2:
+                //         ev.stopPropagation();
+                //         break;
+                //     case 3:
+                //         ev.stopImmediatePropagation();
+                //         break;
+                // }
                 // reassigning formInputMO
                 formInputMO = dragAndDrop.setInputDragOver(ev, formInputMO, currentDraggedInput, newField);
             });
 
             // adding the dragstart logic
             newField.addEventListener("dragstart", (ev) => {
+                ev.preventDefault();
+                // ev.stopPropagation();
                 // **  setting propagation
                 // determine the depth level for propagation
-                let level = dragAndDrop.setDepth(newField);
-                switch (level) {
-                    case 1:
-                        break;
-                    case 2:
-                        ev.stopPropagation();
-                        break;
-                    case 3:
-                        ev.stopImmediatePropagation();
-                        break;
-                }
+                // let level = dragAndDrop.setDepth(newField);
+                // switch (level) {
+                //     case 1:
+                //         break;
+                //     case 2:
+                //         ev.stopPropagation();
+                //         break;
+                //     case 3:
+                //         // ev.stopPropagation();
+                //         ev.stopImmediatePropagation();
+                //         break;
+                // }
 
                 let data = dragAndDrop.setInputDragStart(e, newField, placeholder);
                 ev.dataTransfer.setData("text", JSON.stringify(data));
@@ -222,62 +229,68 @@ window.addEventListener("load", () => {
             newField.addEventListener("dragleave", (ev) => {
                 // **  setting propagation
                 // determine the depth level for propagation
-                let level = dragAndDrop.setDepth(newField);
-                switch (level) {
-                    case 1:
-                        break;
-                    case 2:
-                        ev.stopPropagation();
-                        break;
-                    case 3:
-                        ev.stopImmediatePropagation();
-                        break;
-                }
+                // let level = dragAndDrop.setDepth(newField);
+                // switch (level) {
+                //     case 1:
+                //         break;
+                //     case 2:
+                //         ev.stopPropagation();
+                //         break;
+                //     case 3:
+                //         ev.stopImmediatePropagation();
+                //         break;
+                // }
                 // setting drag leave logic
                 dragAndDrop.setDragLeave(newField, placeholder);
             });
 
             // adding dragstart logic if specific form section
-            if (droppableSections.includes(formType)) {
-                let sectionRow = newField.querySelector("#section-row");
+            let sectionRow = newField.querySelector("#section-row");
+            if (droppableSections.includes(formType) && sectionRow) {
                 // settings section row dragover
                 sectionRow.addEventListener("dragover", (ev) => {
+                    ev.preventDefault();
                     // **  setting propagation
+                    ev.stopPropagation();
                     // determine the depth level for propagation
-                    let level = dragAndDrop.setDepth(sectionRow);
-                    switch (level) {
-                        case 1:
-                            break;
-                        case 2:
-                            ev.stopPropagation();
-                            break;
-                        case 3:
-                            ev.stopImmediatePropagation();
-                            break;
-                    }
+                    // let level = dragAndDrop.setDepth(sectionRow);
+                    // switch (level) {
+                    //     case 1:
+                    //         break;
+                    //     case 2:
+                    //         ev.stopPropagation();
+                    //         break;
+                    //     case 3:
+                    //         ev.stopImmediatePropagation();
+                    //         // ev.stopPropagation();
+                    //         break;
+                    // }
 
                     dragAndDrop.setDragOver(sectionRow, placeholder, formInputMO, ev);
                 });
 
                 // setting section row dragleave
-                sectionRow.addEventListener("dragleave", () => {
+                sectionRow.addEventListener("dragleave", (e) => {
+                    // e.stopPropagation();
                     dragAndDrop.setDragLeave(sectionRow, placeholder);
                 });
 
                 sectionRow.addEventListener("drop", async (e) => {
+                    e.preventDefault();
                     // **  setting propagation
+                    e.stopPropagation();
                     // determine the depth level for propagation
-                    let level = dragAndDrop.setDepth(sectionRow);
-                    switch (level) {
-                        case 1:
-                            break;
-                        case 2:
-                            e.stopPropagation();
-                            break;
-                        case 3:
-                            e.stopImmediatePropagation();
-                            break;
-                    }
+                    // let level = dragAndDrop.setDepth(sectionRow);
+                    // switch (level) {
+                    //     case 1:
+                    //         break;
+                    //     case 2:
+                    //         e.stopPropagation();
+                    //         break;
+                    //     case 3:
+                    //         e.stopImmediatePropagation();
+                    //         break;
+                    // }
 
                     // removing  the border, if there is one
                     if (e.target.classList.contains("drag-over")) {
@@ -299,25 +312,28 @@ window.addEventListener("load", () => {
 
                         // adding the dragover listener
                         nf.addEventListener("dragover", (ev) => {
+                            ev.preventDefault();
                             // **  setting propagation
-                            // determine the depth level for propagation
-                            let level = dragAndDrop.setDepth(nf);
-                            switch (level) {
-                                case 1:
-                                    break;
-                                case 2:
-                                    ev.stopPropagation();
-                                    break;
-                                case 3:
-                                    ev.stopImmediatePropagation();
-                                    break;
-                            }
+                            ev.stopPropagation();
+                            // // determine the depth level for propagation
+                            // let level = dragAndDrop.setDepth(nf);
+                            // switch (level) {
+                            //     case 1:
+                            //         break;
+                            //     case 2:
+                            //         ev.stopPropagation();
+                            //         break;
+                            //     case 3:
+                            //         ev.stopImmediatePropagation();
+                            //         break;
+                            // }
                             formInputMO = dragAndDrop.setInputDragOver(ev, formInputMO, currentDraggedInput, nf);
                         });
 
                         // adding the dragstart logic
                         nf.addEventListener("dragstart", (e) => {
-                            e.stopPropagation();
+                            e.preventDefault();
+                            // e.stopPropagation();
                             let data = dragAndDrop.setInputDragStart(e, nf, placeholder);
                             e.dataTransfer.setData("text", JSON.stringify(data));
                         });
