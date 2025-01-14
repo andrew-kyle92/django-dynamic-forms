@@ -5,9 +5,10 @@ from django.conf import settings
 
 from .models import (TextInput, TextAreaInput, EmailInput, DateInput, DateTimeInput, DropDownInput,
                      MultipleSelectDropDownInput, IntegerInput, DecimalInput, CheckboxInput, RadioInput,
-                     FileInput, FormModel)
+                     FileInput, FormModel, FormRow, DividerLine, SectionHeader, TextBlock, CollapsibleSection, Column)
 
 
+# ***** Form Field Forms *****
 class TextInputField(ModelForm):
     class Meta:
         model = TextInput
@@ -332,6 +333,169 @@ class CheckBoxInputField(ModelForm):
                 visible.field.widget.attrs["class"] = "form-check-input"
 
 
+# Form Sections Forms
+class FormRowForm(ModelForm):
+    class Meta:
+        model = FormRow
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(FormRowForm, self).__init__(*args, **kwargs)
+
+        for visible in self.visible_fields():
+            # adding valueChanged dataset attribute
+            visible.field.widget.attrs["data-value-changed"] = "false"
+
+            if visible.widget_type == "text" or visible.widget_type == "number":
+                visible.field.widget.attrs["class"] = "form-control"
+            elif visible.widget_type == "date":
+                visible.field.widget = forms.DateInput(attrs={"class": "form-control", "type": "date"})
+            elif visible.widget_type == "datetime":
+                visible.field.widget = forms.DateTimeInput(attrs={"class": "form-control", "type": "datetime"})
+            elif visible.widget_type == "select" or visible.widget_type == "nullbooleanselect":
+                visible.field.widget.attrs["class"] = "form-select"
+            elif visible.widget_type == "textarea":
+                visible.field.widget.attrs["class"] = "form-control"
+                visible.field.widget.attrs["rows"] = 5
+            elif visible.widget_type == "checkbox":
+                visible.field.widget.attrs["class"] = "form-check-input"
+
+
+class DividerLineForm(ModelForm):
+    class Meta:
+        model = DividerLine
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(DividerLineForm, self).__init__(*args, **kwargs)
+
+        for visible in self.visible_fields():
+            # adding valueChanged dataset attribute
+            visible.field.widget.attrs["data-value-changed"] = "false"
+
+            if visible.widget_type == "text" or visible.widget_type == "number":
+                visible.field.widget.attrs["class"] = "form-control"
+            elif visible.widget_type == "date":
+                visible.field.widget = forms.DateInput(attrs={"class": "form-control", "type": "date"})
+            elif visible.widget_type == "datetime":
+                visible.field.widget = forms.DateTimeInput(attrs={"class": "form-control", "type": "datetime"})
+            elif visible.widget_type == "select" or visible.widget_type == "nullbooleanselect":
+                visible.field.widget.attrs["class"] = "form-select"
+            elif visible.widget_type == "textarea":
+                visible.field.widget.attrs["class"] = "form-control"
+                visible.field.widget.attrs["rows"] = 5
+            elif visible.widget_type == "checkbox":
+                visible.field.widget.attrs["class"] = "form-check-input"
+
+
+class SectionHeaderForm(ModelForm):
+    class Meta:
+        model = SectionHeader
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(SectionHeaderForm, self).__init__(*args, **kwargs)
+
+        for visible in self.visible_fields():
+            # adding valueChanged dataset attribute
+            visible.field.widget.attrs["data-value-changed"] = "false"
+
+            if visible.widget_type == "text" or visible.widget_type == "number":
+                visible.field.widget.attrs["class"] = "form-control"
+            elif visible.widget_type == "date":
+                visible.field.widget = forms.DateInput(attrs={"class": "form-control", "type": "date"})
+            elif visible.widget_type == "datetime":
+                visible.field.widget = forms.DateTimeInput(attrs={"class": "form-control", "type": "datetime"})
+            elif visible.widget_type == "select" or visible.widget_type == "nullbooleanselect":
+                visible.field.widget.attrs["class"] = "form-select"
+            elif visible.widget_type == "textarea":
+                visible.field.widget.attrs["class"] = "form-control"
+                visible.field.widget.attrs["rows"] = 5
+            elif visible.widget_type == "checkbox":
+                visible.field.widget.attrs["class"] = "form-check-input"
+
+
+class TextBlockForm(ModelForm):
+    class Meta:
+        model = TextBlock
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(TextBlockForm, self).__init__(*args, **kwargs)
+
+        for visible in self.visible_fields():
+            # adding valueChanged dataset attribute
+            visible.field.widget.attrs["data-value-changed"] = "false"
+
+            if visible.widget_type == "text" or visible.widget_type == "number":
+                visible.field.widget.attrs["class"] = "form-control"
+            elif visible.widget_type == "date":
+                visible.field.widget = forms.DateInput(attrs={"class": "form-control", "type": "date"})
+            elif visible.widget_type == "datetime":
+                visible.field.widget = forms.DateTimeInput(attrs={"class": "form-control", "type": "datetime"})
+            elif visible.widget_type == "select" or visible.widget_type == "nullbooleanselect":
+                visible.field.widget.attrs["class"] = "form-select"
+            elif visible.widget_type == "textarea":
+                visible.field.widget.attrs["class"] = "form-control"
+                visible.field.widget.attrs["rows"] = 5
+            elif visible.widget_type == "checkbox":
+                visible.field.widget.attrs["class"] = "form-check-input"
+
+
+class CollapsibleSectionForm(ModelForm):
+    class Meta:
+        model = CollapsibleSection
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(CollapsibleSectionForm, self).__init__(*args, **kwargs)
+
+        for visible in self.visible_fields():
+            # adding valueChanged dataset attribute
+            visible.field.widget.attrs["data-value-changed"] = "false"
+
+            if visible.widget_type == "text" or visible.widget_type == "number":
+                visible.field.widget.attrs["class"] = "form-control"
+            elif visible.widget_type == "date":
+                visible.field.widget = forms.DateInput(attrs={"class": "form-control", "type": "date"})
+            elif visible.widget_type == "datetime":
+                visible.field.widget = forms.DateTimeInput(attrs={"class": "form-control", "type": "datetime"})
+            elif visible.widget_type == "select" or visible.widget_type == "nullbooleanselect":
+                visible.field.widget.attrs["class"] = "form-select"
+            elif visible.widget_type == "textarea":
+                visible.field.widget.attrs["class"] = "form-control"
+                visible.field.widget.attrs["rows"] = 5
+            elif visible.widget_type == "checkbox":
+                visible.field.widget.attrs["class"] = "form-check-input"
+
+
+class ColumnForm(ModelForm):
+    class Meta:
+        model = Column
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(ColumnForm, self).__init__(*args, **kwargs)
+
+        for visible in self.visible_fields():
+            # adding valueChanged dataset attribute
+            visible.field.widget.attrs["data-value-changed"] = "false"
+
+            if visible.widget_type == "text" or visible.widget_type == "number":
+                visible.field.widget.attrs["class"] = "form-control"
+            elif visible.widget_type == "date":
+                visible.field.widget = forms.DateInput(attrs={"class": "form-control", "type": "date"})
+            elif visible.widget_type == "datetime":
+                visible.field.widget = forms.DateTimeInput(attrs={"class": "form-control", "type": "datetime"})
+            elif visible.widget_type == "select" or visible.widget_type == "nullbooleanselect":
+                visible.field.widget.attrs["class"] = "form-select"
+            elif visible.widget_type == "textarea":
+                visible.field.widget.attrs["class"] = "form-control"
+                visible.field.widget.attrs["rows"] = 5
+            elif visible.widget_type == "checkbox":
+                visible.field.widget.attrs["class"] = "form-check-input"
+
+
 def get_model_choices():
     all_apps = settings.FORM_APPS
     choices = {"": "---------"}
@@ -357,6 +521,7 @@ class FormModelForm(ModelForm):
         self.fields['table'].choices = get_model_choices()
 
 
+# Form Input FormSets
 TextInputFormSet = modelformset_factory(TextInput, form=TextInputField, extra=1, can_delete=True)
 TextAreaFormSet = modelformset_factory(TextAreaInput, form=TextAreaField, extra=1, can_delete=True)
 EmailInputFormSet = modelformset_factory(EmailInput, form=EmailInputField, extra=1, can_delete=True)
@@ -369,3 +534,11 @@ DecimalInputFormSet = modelformset_factory(DecimalInput, form=DecimalInputField,
 FileInputFormSet = modelformset_factory(FileInput, form=FileInputField, extra=1, can_delete=True)
 RadioInputFormSet = modelformset_factory(RadioInput, form=RadioInputField, extra=1, can_delete=True)
 CheckBoxFormSet = modelformset_factory(CheckboxInput, form=CheckBoxInputField, extra=1, can_delete=True)
+
+# Form Section FormSets
+FormRowFormSet = modelformset_factory(FormRow, form=FormRowForm, extra=1, can_delete=True)
+DividerLineFormSet = modelformset_factory(DividerLine, form=DividerLineForm, extra=1, can_delete=True)
+SectionHeaderFormSet = modelformset_factory(SectionHeader, form=SectionHeaderForm, extra=1, can_delete=True)
+TextBlockFormSet = modelformset_factory(TextBlock, form=TextBlockForm, extra=1, can_delete=True)
+CollapsibleSectionFormSet = modelformset_factory(CollapsibleSection, form=CollapsibleSectionForm, extra=1, can_delete=True)
+ColumnFieldSet = modelformset_factory(Column, form=ColumnForm, extra=1, can_delete=True)

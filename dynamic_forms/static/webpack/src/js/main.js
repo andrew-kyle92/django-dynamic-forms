@@ -1,11 +1,12 @@
 // import the custom css
-import "../scss/styles.scss"
+import "../scss/styles.scss";
 
 // import bootstrap's js
-import * as bootstrap from 'bootstrap'
+import * as bootstrap from 'bootstrap';
 
-// importing drag and drop functions
-import { setPlaceHolderPosition, addNewInput } from "./dragAndDrop.js"
+// importing dragAndDrop.js and functions.js
+import * as dragAndDrop from "./dragAndDrop.js";
+import * as functions from "./functions";
 // ***** End Import *****
 
 // ***** Fetch Requests *****
@@ -100,45 +101,70 @@ window.addEventListener("load", () => {
     // ***** input drag and drop logic *****
     // ** Form div element **
     const formInputsDiv = document.getElementById("formInputsDiv");
+    // droppable sections
+    let droppableSections = ["form_row", "section_header", "collapsible_section", "column"];
 
     // ** dragover
     formInputsDiv.addEventListener("dragover", (ev) => {
         ev.preventDefault();
-        // ev.stopPropagation();
-
-        // adding drag-over class to formInputsDiv
-        formInputsDiv.classList.add("drag-over");
-
-        // adding placeholder either before of after inputs
-        if (!formInputsDiv.childElementCount > 0) {
-            formInputsDiv.appendChild(placeholder);
-        }
-        else {
-            if (formInputMO && placeholder) {
-                setPlaceHolderPosition(formInputMO, placeholder, ev);
-            }
-            else if (formInputMO === null && placeholder) {
-                formInputsDiv.appendChild(placeholder);
-            }
+        // **  setting propagation
+        // determine the depth level for propagation
+        let level = dragAndDrop.setDepth(formInputsDiv);
+        switch (level) {
+            case 1:
+                break;
+            case 2:
+                ev.stopPropagation();
+                break;
+            case 3:
+                ev.stopImmediatePropagation();
+                break;
         }
 
+        // adding dragover logic
+        const currentTarget = ev.currentTarget || formInputsDiv;
+        dragAndDrop.setDragOver(currentTarget, placeholder, formInputMO, ev);
     });
 
     // ** dragleave
-    formInputsDiv.addEventListener("dragleave", () => {
-        formInputsDiv.classList.remove("drag-over");
-        if (placeholder && formInputsDiv.contains(placeholder)) {
-            formInputsDiv.removeChild(placeholder);
+    formInputsDiv.addEventListener("dragleave", (e) => {
+        // **  setting propagation
+        // determine the depth level for propagation
+        let level = dragAndDrop.setDepth(formInputsDiv);
+        switch (level) {
+            case 1:
+                break;
+            case 2:
+                e.stopPropagation();
+                break;
+            case 3:
+                e.stopImmediatePropagation();
+                break;
         }
+
+        // setting drag leave logic
+        dragAndDrop.setDragLeave(formInputsDiv, placeholder);
     });
 
     // ** on drop
     formInputsDiv.addEventListener("drop", async (e) => {
         e.preventDefault();
-        // removing  the border, if there is one
-        if (e.target.classList.contains("drag-over")) {
-            formInputsDiv.classList.remove("drag-over");
+        // **  setting propagation
+        // determine the depth level for propagation
+        let level = dragAndDrop.setDepth(formInputsDiv);
+        switch (level) {
+            case 1:
+                break;
+            case 2:
+                e.stopPropagation();
+                break;
+            case 3:
+                e.stopImmediatePropagation();
+                break;
         }
+
+        // removing the border, if there is one
+        functions.removeClass(formInputsDiv, "drag-over");
 
         // getting the id from the dragged object
         let data = JSON.parse(e.dataTransfer.getData("text"));
@@ -146,39 +172,158 @@ window.addEventListener("load", () => {
         // determining if a new or existing input is being dropped
         if (data.existing) {
             let element = document.getElementById(data.id);
-
             // adding the element to the target div
-            if (placeholder) {
-                // formInputsDiv.appendChild(element);
-                formInputsDiv.insertBefore(element, placeholder);
-                formInputsDiv.removeChild(placeholder);
-            }
+            dragAndDrop.setExistingDrop(element, placeholder, formInputsDiv);
         }
         else {
-            let newField = await addNewInput(data, formInputsDiv, placeholder);
+            // getting event target data
+            let newField = await dragAndDrop.addNewInput(data, formInputsDiv, placeholder);
+            let formType = newField.dataset.formType;
 
             // adding the dragover listener
             newField.addEventListener("dragover", (ev) => {
-                ev.preventDefault();
-                ev.stopPropagation();
-
-                if (currentDraggedInput === null || newField.id !== currentDraggedInput.id) {
-                    formInputMO = newField;
+                // **  setting propagation
+                // determine the depth level for propagation
+                let level = dragAndDrop.setDepth(newField);
+                switch (level) {
+                    case 1:
+                        break;
+                    case 2:
+                        ev.stopPropagation();
+                        break;
+                    case 3:
+                        ev.stopImmediatePropagation();
+                        break;
                 }
+                // reassigning formInputMO
+                formInputMO = dragAndDrop.setInputDragOver(ev, formInputMO, currentDraggedInput, newField);
             });
 
             // adding the dragstart logic
-            newField.addEventListener("dragstart", (e) => {
-                // copying the templated field html
-                let data = {id: newField.id, existing: true};
-                e.dataTransfer.setData("text", JSON.stringify(data));
+            newField.addEventListener("dragstart", (ev) => {
+                // **  setting propagation
+                // determine the depth level for propagation
+                let level = dragAndDrop.setDepth(newField);
+                switch (level) {
+                    case 1:
+                        break;
+                    case 2:
+                        ev.stopPropagation();
+                        break;
+                    case 3:
+                        ev.stopImmediatePropagation();
+                        break;
+                }
 
-                // creating the placeholder element
-                placeholder = document.createElement("div");
-                placeholder.classList.add("input-placeholder");
-
-                currentDraggedInput = newField;
+                let data = dragAndDrop.setInputDragStart(e, newField, placeholder);
+                ev.dataTransfer.setData("text", JSON.stringify(data));
             });
+
+            newField.addEventListener("dragleave", (ev) => {
+                // **  setting propagation
+                // determine the depth level for propagation
+                let level = dragAndDrop.setDepth(newField);
+                switch (level) {
+                    case 1:
+                        break;
+                    case 2:
+                        ev.stopPropagation();
+                        break;
+                    case 3:
+                        ev.stopImmediatePropagation();
+                        break;
+                }
+                // setting drag leave logic
+                dragAndDrop.setDragLeave(newField, placeholder);
+            });
+
+            // adding dragstart logic if specific form section
+            if (droppableSections.includes(formType)) {
+                let sectionRow = newField.querySelector("#section-row");
+                // settings section row dragover
+                sectionRow.addEventListener("dragover", (ev) => {
+                    // **  setting propagation
+                    // determine the depth level for propagation
+                    let level = dragAndDrop.setDepth(sectionRow);
+                    switch (level) {
+                        case 1:
+                            break;
+                        case 2:
+                            ev.stopPropagation();
+                            break;
+                        case 3:
+                            ev.stopImmediatePropagation();
+                            break;
+                    }
+
+                    dragAndDrop.setDragOver(sectionRow, placeholder, formInputMO, ev);
+                });
+
+                // setting section row dragleave
+                sectionRow.addEventListener("dragleave", () => {
+                    dragAndDrop.setDragLeave(sectionRow, placeholder);
+                });
+
+                sectionRow.addEventListener("drop", async (e) => {
+                    // **  setting propagation
+                    // determine the depth level for propagation
+                    let level = dragAndDrop.setDepth(sectionRow);
+                    switch (level) {
+                        case 1:
+                            break;
+                        case 2:
+                            e.stopPropagation();
+                            break;
+                        case 3:
+                            e.stopImmediatePropagation();
+                            break;
+                    }
+
+                    // removing  the border, if there is one
+                    if (e.target.classList.contains("drag-over")) {
+                        sectionRow.classList.remove("drag-over");
+                    }
+
+                    // getting the id from the dragged object
+                    let d = JSON.parse(e.dataTransfer.getData("text"));
+
+                    // determining if a new or existing input is being dropped
+                    if (d.existing) {
+                        let element = document.getElementById(d.id);
+                        // adding the element to the target div
+                        dragAndDrop.setExistingDrop(element, placeholder, sectionRow);
+                    }
+                    else {
+                        // new field within form row
+                        let nf = await dragAndDrop.addNewInput(d, sectionRow, placeholder);
+
+                        // adding the dragover listener
+                        nf.addEventListener("dragover", (ev) => {
+                            // **  setting propagation
+                            // determine the depth level for propagation
+                            let level = dragAndDrop.setDepth(nf);
+                            switch (level) {
+                                case 1:
+                                    break;
+                                case 2:
+                                    ev.stopPropagation();
+                                    break;
+                                case 3:
+                                    ev.stopImmediatePropagation();
+                                    break;
+                            }
+                            formInputMO = dragAndDrop.setInputDragOver(ev, formInputMO, currentDraggedInput, nf);
+                        });
+
+                        // adding the dragstart logic
+                        nf.addEventListener("dragstart", (e) => {
+                            e.stopPropagation();
+                            let data = dragAndDrop.setInputDragStart(e, nf, placeholder);
+                            e.dataTransfer.setData("text", JSON.stringify(data));
+                        });
+                    }
+                });
+            }
         }
     });
 
@@ -189,14 +334,16 @@ window.addEventListener("load", () => {
         let inputItem = inputItems[i];
 
         inputItem.addEventListener("dragstart", (e) => {
-            // copying the templated field html
-            let fieldReference = document.getElementById(inputItem.dataset.fieldReference);
-            let data = {id: fieldReference.id, existing: false}
-            e.dataTransfer.setData("text", JSON.stringify(data));
+            // copying the templated field html if the targetType is an li
+            if (e.target.tagName === "LI") {
+                let fieldReference = document.getElementById(inputItem.dataset.fieldReference);
+                let data = {id: fieldReference.id, existing: false}
+                e.dataTransfer.setData("text", JSON.stringify(data));
 
-            // creating the placeholder element
-            placeholder = document.createElement("div");
-            placeholder.classList.add("input-placeholder");
+                // creating the placeholder element
+                placeholder = document.createElement("div");
+                placeholder.classList.add("input-placeholder");
+            }
         });
     }
 });

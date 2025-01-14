@@ -78,19 +78,19 @@ class DecimalInput(BaseFieldModel):
 class FileInput(BaseFieldModel):
     """Model for file input field"""
     input = models.FileField(blank=True, null=True)
-    upload_to = models.CharField(blank=True, null=True, max_length=255)
+    upload_to = models.CharField(blank=True, null=True, max_length=255, help_text="This should be any directory within your media folder; this value will be prefixed with <strong><code>MEDIA_ROOT/</code></strong>.")
 
 
 class CheckboxInput(BaseFieldModel):
     """Model for checkbox input field"""
     input = models.BooleanField(blank=True, null=True)
-    choices = models.TextField(blank=True, null=True, help_text="List of choices. Add each choice to a new line.")
+    choices = models.TextField(blank=True, null=True, help_text="List of choices, in this format: <strong><code>value, label</code></strong>. Add each choice to a new line.")
 
 
 class RadioInput(BaseFieldModel):
     """Model for radio input field"""
     input = models.CharField(max_length=255, blank=True, null=True)
-    choices = models.TextField(blank=True, null=True, help_text="List of choices. Add each choice to a new line.")
+    choices = models.TextField(blank=True, null=True, help_text="List of choices, in this format: <strong><code>value, label</code></strong>. Add each choice to a new line.")
 
 
 class FormModel(models.Model):

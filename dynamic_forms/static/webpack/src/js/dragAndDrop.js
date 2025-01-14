@@ -2,6 +2,7 @@
 
 // ** imports **
 import { getForm } from './main'
+import * as functions from "./functions";
 
 export function setPlaceHolderPosition(formMO, placeholder, event) {
     let targetMOPositions = formMO.getBoundingClientRect()
@@ -21,89 +22,89 @@ export function setPlaceHolderPosition(formMO, placeholder, event) {
         }
     }
 
-    if (closest.position === "top" || closest.position === "bottom") {
-        switch (closest.position) {
-            case "top":
-                formMO.insertAdjacentElement("beforebegin", placeholder);
-                break;
-            case "bottom":
-                formMO.insertAdjacentElement("afterend", placeholder);
-                break;
+    // if (closest.position === "top" || closest.position === "bottom") {
+    switch (closest.position) {
+        case "top" || "lef":
+            formMO.insertAdjacentElement("beforebegin", placeholder);
+            break;
+        case "bottom" || "right":
+            formMO.insertAdjacentElement("afterend", placeholder);
+            break;
+    }
+    // }
+}
+
+export function setDepth(targetDiv) {
+    let level = 1
+    if (targetDiv.id === "formInputsDiv") {
+        level = 1;
+    }
+    else if (targetDiv.id.includes("id_") && !targetDiv.id.includes("section-row")) {
+        let parent = targetDiv.parentElement;
+        if (parent.id === "formInputsDiv") {
+            level = 2;
         }
     }
+    else if (targetDiv.id.includes("section-row")) {
+        let parent = targetDiv.parentElement.parentElement;
+        if (parent.id === "formInputsDiv") {
+            level = 2;
+        }
+        else if (parent.id.includes("section-row")) {
+            let grandParent = parent.parentElement.parentElement;
+            if (grandParent.id === "section-row") {
+                level = 3;
+            }
+        }
+    }
+    return level
+}
+
+export function setDrop(targetDiv, event) {
+    // removing the class 'drag-over'
+    functions.removeClass(targetDiv, "drag-over");
+
+    // add dragover listener
 }
 
 export const addNewInput = async (data, formDiv, placeholder) => {
     // cloning the element and adding all the specific settings
-    let newField = document.getElementById(data.id).cloneNode(true);
-    newField.id = "id_" + crypto.randomUUID();
-    newField.removeAttribute("hidden");
-    let inputModal = newField.querySelector(".input-modal");
-    inputModal.id = newField.id + "_modal";
-    inputModal.setAttribute("aria-labelledby", newField.id + "_modalLabel");
-    inputModal.querySelector(".modal-title").id = newField.id + "_modalLabel";
+    let newField = functions.setNewField(data);
+
+    // adding id string to modal
+    let inputModal = functions.setInputModal(newField);
+
+    // determining if the dragged object is a form section
+    let isFormSection = newField.dataset.formSection === "true";
+
+    // checking if input type is radio or checkbox
+    let formType = newField.dataset.formType;
+    if (formType === "radio_input" || formType === "checkbox_input") {
+        let choicesDiv = newField.querySelector("#choices");
+        if (choicesDiv) {
+            choicesDiv.id = newField.id + "_" + choicesDiv.id;
+        }
+    }
 
     // adding the target id to the settings button
-    let settingsBtn = newField.querySelector(".input-settings button");
-    let settingsCloseBtnFooter = inputModal.querySelector(".modal-footer .btn-secondary");
-    let settingsCloseBtnHeader = inputModal.querySelector(".modal-header .btn-close");
-    let closeBtns = [settingsCloseBtnHeader, settingsCloseBtnFooter];
-    settingsBtn.dataset.bsTarget = "#" + newField.id + "_modal";
-    // making the field non-draggable
-    settingsBtn.addEventListener("click", () => {
-        if (settingsBtn.dataset.modalOpen === "false") {
-            newField.draggable = false;
-            newField.classList.remove("draggable");
-            settingsBtn.dataset.modalOpen = "true";
-        }
-    });
-    // making the field draggable
-    closeBtns.forEach((btn) => {
-        btn.addEventListener("click", () => {
-            if (settingsBtn.dataset.modalOpen === "true") {
-                newField.draggable = true;
-                newField.classList.add("draggable");
-                settingsBtn.dataset.modalOpen = "false";
-            }
-        });
-    });
+    functions.setSettingsLogic(newField, inputModal);
 
     // adding functionality to remove-input
-    let removeBtn = newField.querySelector(".remove-input button");
-    removeBtn.dataset.parentId = `#${newField.id}`;
-    removeBtn.addEventListener("click", () => {
-       formDiv.removeChild(newField);
-    });
+    functions.setRemoveLogic(newField, formDiv);
 
     // adding the form to the settings modal
-    let formType = newField.dataset.formType;
     let modalBody = inputModal.querySelector(".modal-body");
     let res = await getForm(formType);
     let formData = JSON.parse(res.form);
     let formKeys = Object.keys(formData);
-    let formInputs = [];
-    // creating the form fields
-    for (let i = 0; i < formKeys.length; i++) {
-        let formField = formData[formKeys[i]];
-        // getting the id from the input
-        let inputId = formField.input.match(/(?<=id\W+)\w+(?=\W)/g)[0];
-        formInputs.push(`#${newField.id} #${inputId}`);
-        // creating the form group div
-        let formGroup = document.createElement("div");
-        formGroup.setAttribute("class", "form-group mb-3");
-        modalBody.appendChild(formGroup);
-        // adding all the elements as innerHtml
-        formGroup.innerHTML = `
-        <label for="${formKeys[i]}" class="form-labal">${formField.label}</label>
-        ${formField.input}
-        `;
-        if (formField.helpText.length > 0) {
-            formGroup.innerHTML += `<div class="form-text">${formField.helpText}</div>`;
-        }
-    }
+    // creating and getting the form fields
+    let formInputs = functions.createFormFields(formKeys, formData, modalBody, newField);
+
     // hiding the input and order fields
     modalBody.querySelector("#id_order").parentElement.setAttribute("hidden", "true");
-    modalBody.querySelector("#id_input").parentElement.setAttribute("hidden", "true");
+    if (newField.dataset.formSection === "false") {
+        modalBody.querySelector("#id_input").parentElement.setAttribute("hidden", "true");
+    }
 
     // adding the element to the target div
     if (placeholder) {
@@ -119,271 +120,132 @@ export const addNewInput = async (data, formDiv, placeholder) => {
        // if the inputs are hidden, don't add the listeners to them
        if (!isHidden) {
            // setting data-current-value
-           input.dataset.currentValue = "";
            // on input, after 1 second, if the value is different from the current value, flag the change
-           input.addEventListener("input", () => {
-               let currentValue = input.dataset.currentValue;
-                setTimeout(() => {
-                    // if the value and currentValue don't match,
-                    if (currentValue !== input.value) {
-                        input.dataset.valueChanged = "true";
-                    }
-                    else {
-                        if (!currentValue || currentValue === input.value) {
-                            input.dataset.valueChanged = "false";
-                        }
-                    }
-                }, 1000);
-           });
+           functions.setValueChanged(input);
        }
     });
 
     // adding a listener to the save changes button
-    let saveBtn = document.getElementById("saveBtn");
+    let saveBtn = newField.querySelector("#saveBtn");
     // changing the id as not to conflict with other inputs
     saveBtn.id = newField.id + "_saveBtn";
-    let inputEl = newField.querySelector(`fieldset .form-group`);
+    let formGroupClass = isFormSection ? "#section-row" : ".form-group";
+    let inputEl = newField.querySelector(`fieldset ${formGroupClass}`);
     saveBtn.addEventListener("click", () => {
         // form label
-        let inputLabel = inputEl.querySelector(".label");
-        // form input
-        let inputInput = inputEl.querySelector(".input");
+        let inputLabel = !isFormSection ? inputEl.querySelector(".label") : null;
+        // form input if not radio or checkbox type
+        let inputInput = !isFormSection ? inputEl.querySelector(".input") : null;
+        // form section row
+        // if radio or checkbox type
+        let inputChoices = !isFormSection ? inputEl.querySelector(`#${newField.id}_choices`) : null;
         // form help_text
-        let inputHelpText = inputEl.querySelector(".help-text");
+        let inputHelpText = !isFormSection ? inputEl.querySelector(".help-text") : null;
         // applying all the settings
-        formInputs.forEach((input) => {
-            let field = document.querySelector(input);
-            let valueChanged = field.dataset.valueChanged === "true";
-            switch (field.id) {
-                case "id_label":
-                    if (valueChanged) {
-                        if (field.value.length > 0) {
-                            inputLabel.innerText = field.value;
-                        }
-                        else {
-                            inputLabel.innerText = field.value;
-                        }
-                        field.dataset.valueChanged = "false";
-                        field.dataset.currentValue = field.value;
-                    }
-                    break;
-                case "id_placeholder":
-                    if (valueChanged) {
-                        if (field.value.length > 0) {
-                            inputInput.placeholder = field.value;
-                        } else {
-                            let hasPlaceholder = !!inputInput.getAttribute("placeholder");
-                            if (hasPlaceholder) {
-                                inputInput.placeholder = "";
-                            }
-                        }
-                        field.dataset.valueChanged = "false";
-                        field.dataset.currentValue = `${hasPlaceholder}`;
-                    }
-                    break;
-                case "id_help_text":
-                    if (valueChanged) {
-                        if (field.value.length > 0) {
-                            inputHelpText.innerText = field.value;
-                        }
-                        field.dataset.valueChanged = "false";
-                        field.dataset.currentValue = field.value;
-                    }
-                    break;
-                case "id_floating_label":
-                    if (valueChanged) {
-                        if (field.checked) {
-                            inputEl.classList.add("form-floating");
-                            inputEl.querySelector(".input").insertAdjacentElement("afterend", inputLabel);
-                            // making the floating label on a textarea inputs bigger
-                            let textAreaInputs = ["multiple_dropdown_input", "text_area"];
-                            if (textAreaInputs.includes(newField.dataset.formType)) {
-                                inputInput.style.height = '100px';
-                            }
-                        } else {
-                            if (inputEl.className.includes("form-floating")) {
-                                inputEl.classList.remove("form-floating");
-                                inputEl.querySelector(".input").insertAdjacentElement("beforebegin", inputLabel);
-                                // decreasing the size on textarea inputs back to normal
-                                let textAreaInputs = ["dropdown_input", "multiple_dropdown_input", "text_area"];
-                                if (textAreaInputs.includes(newField.dataset.formType)) {
-                                    inputInput.removeAttribute("style");
-                                }
-                            }
-                        }
-                        field.dataset.valueChanged = "false";
-                        field.dataset.currentValue = `${!field.checked}`;
-                    }
-                    break;
-                case "id_required":
-                    if (valueChanged) {
-                        if (field.checked) {
-                            inputInput.setAttribute("required", "");
-                        }
-                        else {
-                            inputInput.removeAttribute("required");
-                        }
-                        field.dataset.valueChanged = "false";
-                        field.dataset.currentValue = `${field.checked}`;
-                    }
-                    break;
-                case "id_classes":
-                    if (valueChanged) {
-                        let classes = field.value;
-                        if (classes.length > 0) {
-                            let previousClasses = field.dataset.addedClasses ? field.dataset.addedClasses.split(',') : false;
-                            let cs = classes.split(' ');
-                            if (previousClasses) {
-                                let classesToBeRemoved = [];
-                                let classesToBeAdded = [];
-                                // finding all the classes to be removed
-                                previousClasses.filter((c) => {
-                                    if (!cs.includes(c)) {
-                                        classesToBeRemoved.push(c);
-                                    }
-                                });
-                                // finding all the classes that need to be added
-                                cs.filter((c) => {
-                                    if (!previousClasses.includes(c)) {
-                                        classesToBeAdded.push(c);
-                                    }
-                                });
-                                // removing the classes
-                                classesToBeRemoved.forEach((c) => {
-                                    inputInput.classList.remove(c);
-                                });
-                                // adding the classes
-                                classesToBeAdded.forEach((c) => {
-                                    inputInput.classList.add(c);
-                                })
-                            } else {
-                                for (let i = 0; i < cs.length; i++) {
-                                    inputInput.classList.add(cs[i]);
-                                }
-                            }
-                            field.dataset.addedClasses = `${cs}`;
-                        }
-                        field.dataset.valueChanged = "false";
-                        field.dataset.currentValue = field.dataset.addedClasses;
-                    }
-                    break;
-                case "id_blank_option":
-                    if (valueChanged) {
-                        if (field.checked) {
-                            let label = document.querySelector(formInputs.filter((l) => l.includes("#id_blank_label"))[0]);
-                            inputInput.dataset.blankOption = "true";
-                            // creating option element
-                            let blankOption = document.createElement("option");
-                            blankOption.setAttribute("class", "blank-option");
-                            blankOption.classList.add("blank-option");
-                            blankOption.value = "";
-                            blankOption.innerText = label.value;
-                            // adding it to the input
-                            if (inputInput.childElementCount > 0) {
-                                inputInput.firstElementChild.insertAdjacentElement("beforebegin", blankOption);
-                            } else {
-                                inputInput.appendChild(blankOption);
-                            }
-                            // setting the selected choice to the blank option
-                            inputInput.selected = blankOption.value;
-                            // setting the label inputs value
-                            label.dataset.currentValue = label.value;
-                            // setting valueChanged for the blank label to false
-                            label.dataset.valueChanged = "false";
-                        } else {
-                            let blankOption = inputInput.querySelector(".blank-option");
-                            if (blankOption) {
-                                inputInput.removeChild(blankOption);
-                            }
-                            inputInput.dataset.blankOption = "false";
-                        }
-                        // setting value changed for blank option to false
-                        field.dataset.valueChanged = "false";
-                        // setting the current value for the field
-                        field.dataset.currentValue = inputInput.dataset.blankOption;
-                    }
-                    break;
-                case "id_blank_label":
-                    // changing the data if blank option is checked
-                    if (valueChanged) {
-                        let blankOption = document.querySelector(formInputs.filter((l) => l.includes("#id_blank_option"))[0]);
-                        if (blankOption.checked) {
-                            let option = inputInput.querySelector(".blank-option");
-                            option.innerText = field.value;
-                            // settings value changed back to false
-                            field.dataset.valueChanged = "false";
-                            // setting currentValue
-                            field.dataset.currentValue = field.value;
-                        }
-                    }
-                    break;
-                case "id_choices":
-                    if (valueChanged) {
-                        let dropDowns = ["multiple_dropdown_input", "dropdown_input"];
-                        let formType = newField.dataset.formType;
-                        let choices = {};
-                        if (dropDowns.includes(formType)) {
-                            let currentChoices = field.dataset.choices;
-                            let inputValues = field.value.split("\n");
-                            inputValues.forEach((c) => {
-                                choices[c.split(', ')[0]] = [c.split(', ')[0], c.split(', ')[1]];
-                            });
-                            if (currentChoices) {
-                                currentChoices = JSON.parse(currentChoices);
-                                let choicesToBeRemoved = [];
-                                let choicesToBeAdded = [];
-                                // finding any choices to be removed
-                                Object.keys(currentChoices).forEach((c) => {
-                                    if (!Object.keys(choices).includes(c)) {
-                                        choicesToBeRemoved.push(c);
-                                    }
-                                });
-                                // finding choices to be added
-                                Object.keys(choices).forEach((c) => {
-                                    if (!Object.keys(currentChoices).includes(c)) {
-                                        choicesToBeAdded.push(c);
-                                    }
-                                });
-                                // removing old choices
-                                choicesToBeRemoved.forEach((c) => {
-                                    let child = inputInput.querySelector(`option[value=${c}]`);
-                                    inputInput.removeChild(child);
-                                });
-                                // adding new choices
-                                choicesToBeAdded.forEach((c) => {
-                                    let newOption = document.createElement("option");
-                                    let value = choices[c][0];
-                                    let label = choices[c][1];
-                                    newOption.setAttribute("value", value);
-                                    newOption.innerText = label;
-                                    inputInput.appendChild(newOption);
-                                });
-                            } else {
-                                // adding the options
-                                for (let key in choices) {
-                                    // creating the option element
-                                    let value = choices[key][0];
-                                    let label = choices[key][1];
-                                    let option = document.createElement("option");
-                                    option.value = value;
-                                    option.innerText = label;
-                                    inputInput.appendChild(option);
-                                }
-                            }
-                            field.dataset.choices = JSON.stringify(choices);
-                        }
-                        field.dataset.valueChanged = "false";
-                        field.dataset.currentValue = JSON.stringify(choices);
-                    }
-                    break;
-                case "id_min_value":
-                    if (valueChanged) {
-                        // changing the input
-                        inputInput.setAttribute("min", field.value);
-                    }
-            }
-        });
+        functions.applySettings(formInputs, inputLabel, inputInput, inputHelpText, inputChoices, inputEl, newField, isFormSection);
         inputModal.querySelector(".btn-close").click();
     });
+
     return newField;
+}
+
+export function setDragOver(targetDiv, placeholder, formInputMO, e) {
+    // determining if formSection
+    let isFormSection = targetDiv.dataset.formSection === "true";
+    // setting default target if currentTarget is null
+    let container = targetDiv || e.target;
+    if (isFormSection) {
+        let sectionRow = targetDiv.querySelector("#section-row");
+        if (sectionRow) {
+            container = sectionRow;
+        }
+        else {
+            container = targetDiv || e.target;
+        }
+    }
+
+    // adding drag-over class to formInputsDiv
+    container.classList.add("drag-over");
+
+    // adding placeholder either before of after inputs
+    if (!container.childElementCount > 0) {
+        // if no children within droppable container, just append the placeholder
+        container.appendChild(placeholder);
+    }
+    else {
+        // if there are children
+        if (formInputMO && placeholder) {
+            // if form input mouse over is not null determine where to place the placeholder
+            // in relevance to the mouse over target
+            let isFormInputMOFormSection = formInputMO.dataset.formSection === "true";
+            if (isFormInputMOFormSection) {
+                // making sure it's not a section-row
+                let isSectionRow = formInputMO.id.includes("section-row");
+                if (!isSectionRow) {
+                    setPlaceHolderPosition(formInputMO, placeholder, e);
+                }
+                else {
+                    if (!formInputMO.childElementCount > 0) {
+                        formInputMO.appendChild(placeholder);
+                    }
+                }
+            }
+        }
+        else if (formInputMO === null && placeholder) {
+            // if mouse over target is null, place the placeholder after all the children
+            container.appendChild(placeholder);
+        }
+    }
+}
+
+export function setDragLeave(targetDiv, placeholder) {
+    let isFormSection = targetDiv.dataset.formSection === "true";
+    // remove class from targe div
+    functions.removeClass(targetDiv, "drag-over");
+    if (placeholder && targetDiv.contains(placeholder)) {
+        targetDiv.removeChild(placeholder);
+    }
+    else if (isFormSection) {
+        // re-assign targetDiv
+        targetDiv = targetDiv.querySelector("#section-row");
+        // attempt to remove class from new target
+        functions.removeClass(targetDiv, "drag-over");
+        // attempt to remove placeholder
+        if (placeholder && targetDiv.contains.placeholder) {
+            targetDiv.removeChild(placeholder);
+        }
+    }
+}
+
+export function setExistingDrop(el, placeholder, targetDiv) {
+    // adding the element to the target div
+    if (placeholder) {
+        targetDiv.insertBefore(el, placeholder);
+        targetDiv.removeChild(placeholder);
+    }
+}
+
+export function setInputDragOver(e, formInputMO, currentDraggedInput, newField) {
+    let isFormSection = newField.dataset.formSection === "true";
+    let targetMO = newField;
+    if (isFormSection) {
+        // if isFormSection, set the section-row div as the target mouse over
+        // targetMO = document.querySelector("#section-row");
+        return targetMO;
+    }
+    if (currentDraggedInput === null || newField.id !== currentDraggedInput.id) {
+        return targetMO;
+    }
+    return null
+}
+
+export function setInputDragStart(e, newField, placeholder) {
+    // copying the templated field html
+    let data = {id: newField.id, existing: true};
+
+    // creating the placeholder element
+    placeholder = document.createElement("div");
+    placeholder.classList.add("input-placeholder");
+
+    return data
 }

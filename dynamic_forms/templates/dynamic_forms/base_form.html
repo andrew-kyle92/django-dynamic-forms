@@ -50,6 +50,14 @@
                 <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1 inputItem draggable" draggable="true" data-field-reference="file_input"><span><i class="fa-solid fa-file"></i></span> File Input</li>
             </ul>
         </div>
+
+        <div class="nav-section">
+            <button class="dropdown-caret border-bottom mb-3 btn w-100 text-start fs-4" type="button" data-bs-toggle="collapse" data-bs-target="#sectionsSection" aria-expanded="false" aria-controls="sectionsSection"><i class="fa-solid fa-caret-up" data-rotation="0"></i> Form Sections</button>
+            <ul id="sectionsSection" class="nav flex-column collapse">
+                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1 inputItem draggable" draggable="true" data-field-reference="form_row"><span><i class="fa-solid fa-rectangle-list"></i></span> Form Row</li>
+                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1 inputItem draggable" draggable="true" data-field-reference="column"><span><i class="fa-solid fa-table-columns"></i></span> Column</li>
+            </ul>
+        </div>
     </div>
 
     <!-- Rough Form Outline Section -->
@@ -64,7 +72,10 @@
     </div>
 </div>
 
-{% include 'dynamic_forms/snippets/snippets.html' %}
+<!-- Form Field Templates -->
+{% include 'dynamic_forms/snippets/form_fields.html' %}
+<!-- Form Sections Templates -->
+{% include 'dynamic_forms/snippets/form_sections.html' %}
 {% endblock %}
 
 {% block extra_js %}
