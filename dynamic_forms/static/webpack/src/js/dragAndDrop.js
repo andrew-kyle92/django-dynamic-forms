@@ -158,14 +158,15 @@ export const addNewInput = async (data, formDiv, placeholder) => {
     return newField;
 }
 
-export function setDragOver(targetDiv, placeholder, formInputMO, e) {
+export function setDragOver(targetDiv, placeholder, formInputMO, e, droppableSections) {
+    // getting targeted mouse over element
+    formInputMO = functions.getMouseOver(targetDiv, formInputMO, droppableSections);
     // determining if formSection
     let isFormSection = targetDiv.id.includes("section-row");
     // setting default target if currentTarget is null
     let container;
     if (isFormSection) {
         container = targetDiv;
-
     }
     else {
         container = targetDiv || e.target;
@@ -184,27 +185,7 @@ export function setDragOver(targetDiv, placeholder, formInputMO, e) {
         if (formInputMO && placeholder) {
             // if form input mouse over is not null determine where to place the placeholder
             // in relevance to the mouse over target
-            let isFormInputMOFormSection = formInputMO.dataset.formSection === "true";
-            if (isFormInputMOFormSection) {
-                // making sure it's not a section-row
-                let isSectionRow = formInputMO.id.includes("section-row");
-                if (!isSectionRow) {
-                    setPlaceHolderPosition(formInputMO, placeholder, e);
-                }
-                else {
-                    if (!formInputMO.childElementCount > 0) {
-                        formInputMO.appendChild(placeholder);
-                    }
-                }
-            }
-            else {
-                if (container.childElementCount > 0) {
-                    setPlaceHolderPosition(formInputMO, placeholder, e);
-                }
-                else {
-                    container.appendChild(placeholder);
-                }
-            }
+            setPlaceHolderPosition(formInputMO, placeholder, e);
         }
         else if (formInputMO === null && placeholder) {
             // if mouse over target is null, place the placeholder after all the children

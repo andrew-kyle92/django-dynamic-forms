@@ -102,14 +102,14 @@ window.addEventListener("load", () => {
     // ** Form div element **
     const formInputsDiv = document.getElementById("formInputsDiv");
     // droppable sections
-    let droppableSections = ["form_row", "section_header", "collapsible_section", "column"];
+    let droppableSections = ["formInputsDiv"];
 
     // ** dragover
     formInputsDiv.addEventListener("dragover", (ev) => {
         ev.preventDefault();
         // adding dragover logic
         const currentTarget = ev.currentTarget || formInputsDiv;
-        dragAndDrop.setDragOver(currentTarget, placeholder, formInputMO, ev);
+        dragAndDrop.setDragOver(currentTarget, placeholder, formInputMO, ev, droppableSections);
     });
 
     // ** dragleave
@@ -160,15 +160,16 @@ window.addEventListener("load", () => {
             // adding dragstart logic if specific form section
             let sectionRow = document.getElementById(`${newField.id}_section-row`);
             if (droppableSections.includes(formType) && sectionRow) {
+                // adding section id to the droppableSections array
+                droppableSections.append(sectionRow.id);
                 // settings section row dragover
                 sectionRow.addEventListener("dragover", (ev) => {
+                    ev.preventDefault();
+                    // **  setting propagation
+                    ev.stopPropagation();
                     // to prevent dropping into self
                     if (currentDraggedInput !== newField) {
-                        ev.preventDefault();
-                        // **  setting propagation
-                        ev.stopPropagation();
-
-                        dragAndDrop.setDragOver(sectionRow, placeholder, formInputMO, ev);
+                        dragAndDrop.setDragOver(sectionRow, placeholder, formInputMO, ev, droppableSections);
                     }
                 });
 

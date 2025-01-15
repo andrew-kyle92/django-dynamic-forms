@@ -293,7 +293,9 @@ button:hover {
 
 // Drag and drop styling
 .drag-over {
+  background-color: #dce0e4;
   border: 2px solid var(--accent-color);
+  padding: 1rem;
 }
 
 .input-placeholder {

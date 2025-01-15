@@ -406,3 +406,34 @@ export function applySettings(formInputs, inputLabel, inputInput, inputHelpText,
         }
     });
 }
+
+export function getMouseOver(targetDiv, targetMO, droppableSections) {
+    if (targetMO) {
+        let moDS = getDroppableSection(targetMO, droppableSections);
+        if (targetDiv === moDS) {
+            return targetMO
+        }
+        else {
+            return null;
+        }
+    }
+    else {
+        return null;
+    }
+}
+
+// gets the section that the targetMO belongs to
+function getDroppableSection(el, droppableSections) {
+    if (el) {
+        let elParent = el.parentElement;
+        let section;
+        while (!droppableSections.includes(elParent.id)) {
+            elParent = elParent.parentElement;
+        }
+        section = elParent;
+        return section
+    }
+    else {
+        return null;
+    }
+}
