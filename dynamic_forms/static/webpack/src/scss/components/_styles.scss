@@ -268,27 +268,28 @@ button:hover {
   padding: 1.5rem 0;
 }
 
-.form-row {
-  //pointer-events: none;
+#formInputsDiv {
+  padding: 1rem;
 }
 
-#section-row {
+.form-row {
   margin: auto;
   width: 100%;
   position: relative;
   min-height: 50px; /* Ensure a minimum height */
+  padding: 1rem;
 }
 
-#section-row::before {
-  content: "";
-  position: absolute;
-  top: -10px;
-  left: 0;
-  right: 0;
-  height: calc(100% + 20px); /* Expand the area by 10px on top and bottom */
-  background: transparent;
-  pointer-events: none; /* Prevent interference with clicks */
-}
+//.form-row::before {
+//  content: "";
+//  position: absolute;
+//  top: -10px;
+//  left: 0;
+//  right: 0;
+//  height: calc(100% + 20px); /* Expand the area by 10px on top and bottom */
+//  background: transparent;
+//  pointer-events: none; /* Prevent interference with clicks */
+//}
 
 // Drag and drop styling
 .drag-over {

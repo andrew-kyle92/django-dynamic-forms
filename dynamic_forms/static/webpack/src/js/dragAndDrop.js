@@ -80,6 +80,11 @@ export const addNewInput = async (data, formDiv, placeholder) => {
 
     // determining if the dragged object is a form section
     let isFormSection = newField.dataset.formSection === "true";
+    // setting the form for id
+    let formRow = newField.querySelector("#section-row");
+    if (formRow) {
+        formRow.setAttribute("id", newField.id + "_section-row");
+    }
 
     // checking if input type is radio or checkbox
     let formType = newField.dataset.formType;
@@ -133,7 +138,7 @@ export const addNewInput = async (data, formDiv, placeholder) => {
     let saveBtn = newField.querySelector("#saveBtn");
     // changing the id as not to conflict with other inputs
     saveBtn.id = newField.id + "_saveBtn";
-    let formGroupClass = isFormSection ? "#section-row" : ".form-group";
+    let formGroupClass = isFormSection ? ".form-section" : ".form-group";
     let inputEl = newField.querySelector(`fieldset ${formGroupClass}`);
     saveBtn.addEventListener("click", () => {
         // form label
@@ -155,17 +160,15 @@ export const addNewInput = async (data, formDiv, placeholder) => {
 
 export function setDragOver(targetDiv, placeholder, formInputMO, e) {
     // determining if formSection
-    let isFormSection = targetDiv.dataset.formSection === "true";
+    let isFormSection = targetDiv.id.includes("section-row");
     // setting default target if currentTarget is null
-    let container = targetDiv || e.target;
+    let container;
     if (isFormSection) {
-        let sectionRow = targetDiv.querySelector("#section-row");
-        if (sectionRow) {
-            container = sectionRow;
-        }
-        else {
-            container = targetDiv || e.target;
-        }
+        container = targetDiv;
+
+    }
+    else {
+        container = targetDiv || e.target;
     }
 
     // adding drag-over class to formInputsDiv
@@ -194,6 +197,14 @@ export function setDragOver(targetDiv, placeholder, formInputMO, e) {
                     }
                 }
             }
+            else {
+                if (container.childElementCount > 0) {
+                    setPlaceHolderPosition(formInputMO, placeholder, e);
+                }
+                else {
+                    container.appendChild(placeholder);
+                }
+            }
         }
         else if (formInputMO === null && placeholder) {
             // if mouse over target is null, place the placeholder after all the children
@@ -203,21 +214,10 @@ export function setDragOver(targetDiv, placeholder, formInputMO, e) {
 }
 
 export function setDragLeave(targetDiv, placeholder) {
-    let isFormSection = targetDiv.dataset.formSection === "true";
     // remove class from targe div
     functions.removeClass(targetDiv, "drag-over");
     if (placeholder && targetDiv.contains(placeholder)) {
         targetDiv.removeChild(placeholder);
-    }
-    else if (isFormSection) {
-        // re-assign targetDiv
-        targetDiv = targetDiv.querySelector("#section-row");
-        // attempt to remove class from new target
-        functions.removeClass(targetDiv, "drag-over");
-        // attempt to remove placeholder
-        if (placeholder && targetDiv.contains.placeholder) {
-            targetDiv.removeChild(placeholder);
-        }
     }
 }
 
