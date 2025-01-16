@@ -167,11 +167,53 @@ export function setValueChanged(input) {
    });
 }
 
-export function applySettings(formInputs, inputLabel, inputInput, inputHelpText, inputChoices, inputEl, newField, isFormSection) {
+export function applySettings(formInputs, inputParent, inputLabel, inputInput, inputHelpText, inputChoices, inputEl, newField, isFormSection) {
     formInputs.forEach((input) => {
         let field = document.querySelector(input);
         let valueChanged = field.dataset.valueChanged === "true";
         switch (field.id) {
+            case `${newField.id}_id_parent_classes`:
+                if (valueChanged && inputEl) {
+                    let classes = field.value;
+                    if (classes.length > 0 || classes.length < 1 && field.dataset.addedClasses.length > 0) {
+                        let previousClasses = field.dataset.addedClasses ? field.dataset.addedClasses.split(',') : false;
+                        let cs = classes.split(' ');
+                        if (previousClasses) {
+                            let classesToBeRemoved = [];
+                            let classesToBeAdded = [];
+                            // finding all the classes to be removed
+                            previousClasses.filter((c) => {
+                                if (!cs.includes(c)) {
+                                    classesToBeRemoved.push(c);
+                                }
+                            });
+                            // finding all the classes that need to be added
+                            cs.filter((c) => {
+                                if (!previousClasses.includes(c)) {
+                                    classesToBeAdded.push(c);
+                                }
+                            });
+                            // removing the classes
+                            classesToBeRemoved.forEach((c) => {
+                                inputEl.classList.remove(c);
+                            });
+                            // adding the classes
+                            if (classes.length > 0) {
+                                classesToBeAdded.forEach((c) => {
+                                    inputEl.classList.add(c);
+                                });
+                            }
+                        } else {
+                            for (let i = 0; i < cs.length; i++) {
+                                inputEl.classList.add(cs[i]);
+                            }
+                        }
+                        field.dataset.addedClasses = `${cs}`;
+                    }
+                    field.dataset.valueChanged = "false";
+                    field.dataset.currentValue = field.dataset.addedClasses;
+                }
+                break;
             case `${newField.id}_id_label`:
                 if (valueChanged) {
                     if (field.value.length > 0) {
@@ -245,7 +287,7 @@ export function applySettings(formInputs, inputLabel, inputInput, inputHelpText,
                     field.dataset.currentValue = `${field.checked}`;
                 }
                 break;
-            case `${newField.id}_id_classes`:
+            case `${newField.id}_id_input_classes` || `${newField.id}_id_classes`:
                 if (valueChanged && inputInput || valueChanged && isFormSection) {
                     let classes = field.value;
                     if (classes.length > 0 || classes.length < 1 && field.dataset.addedClasses.length > 0) {

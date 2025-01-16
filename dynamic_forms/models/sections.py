@@ -2,7 +2,7 @@ from django.db import models
 
 
 class BaseSection(models.Model):
-    classes = models.CharField(max_length=255, blank=True, null=True, help_text="List of classes, separated by a space, to add to the classname")
+    input_classes = models.CharField(max_length=255, blank=True, null=True, help_text="List of classes, separated by a space, to add to the container.")
     order = models.IntegerField(default=0, help_text="Input order")
 
     class Meta:

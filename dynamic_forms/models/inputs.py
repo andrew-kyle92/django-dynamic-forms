@@ -9,7 +9,8 @@ class BaseFieldModel(models.Model):
     help_text = models.CharField(max_length=255, blank=True, null=True, help_text="Help text for field input")
     floating_label = models.BooleanField(default=False, help_text="Label for floating field label, see <a href='https://getbootstrap.com/docs/5.3/forms/floating-labels/' target='_blank'>https://getbootstrap.com/docs/5.3/forms/floating-labels/</a> for more info.")
     required = models.BooleanField(default=False, help_text="Set the field to be required or not")
-    classes = models.CharField(max_length=255, blank=True, null=True, help_text="List of classes, separated by a space, to add to the classname")
+    input_classes = models.CharField(max_length=255, blank=True, null=True, help_text="List of classes, separated by a space, for the input.")
+    parent_classes = models.CharField(max_length=255, blank=True, null=True, help_text="List of classes, separated by a space, for the parent container.")
     order = models.IntegerField(default=0, help_text="Input order")
 
     def __str__(self):

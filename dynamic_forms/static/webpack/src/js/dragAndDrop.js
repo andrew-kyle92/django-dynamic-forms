@@ -143,6 +143,8 @@ export const addNewInput = async (data, formDiv, placeholder, droppableSections)
     let formGroupClass = isFormSection ? ".form-row" : ".form-group";
     let inputEl = newField.querySelector(`fieldset ${formGroupClass}`);
     saveBtn.addEventListener("click", () => {
+        // form parent
+        let inputParent = !isFormSection ? inputEl : null;
         // form label
         let inputLabel = !isFormSection ? inputEl.querySelector(".label") : null;
         // form input if not radio or checkbox type
@@ -153,7 +155,7 @@ export const addNewInput = async (data, formDiv, placeholder, droppableSections)
         // form help_text
         let inputHelpText = !isFormSection ? inputEl.querySelector(".help-text") : null;
         // applying all the settings
-        functions.applySettings(formInputs, inputLabel, inputInput, inputHelpText, inputChoices, inputEl, newField, isFormSection);
+        functions.applySettings(formInputs, inputParent, inputLabel, inputInput, inputHelpText, inputChoices, inputEl, newField, isFormSection);
         inputModal.querySelector(".btn-close").click();
     });
 
