@@ -139,7 +139,6 @@ window.addEventListener("load", () => {
         else {
             // getting event target data
             let newField = await dragAndDrop.addNewInput(data, formInputsDiv, placeholder);
-            let formType = newField.dataset.formType;
 
             // adding the dragover listener
             newField.addEventListener("dragover", (ev) => {
@@ -159,9 +158,9 @@ window.addEventListener("load", () => {
 
             // adding dragstart logic if specific form section
             let sectionRow = document.getElementById(`${newField.id}_section-row`);
-            if (droppableSections.includes(formType) && sectionRow) {
+            if (sectionRow) {
                 // adding section id to the droppableSections array
-                droppableSections.append(sectionRow.id);
+                droppableSections.push(sectionRow.id);
                 // settings section row dragover
                 sectionRow.addEventListener("dragover", (ev) => {
                     ev.preventDefault();

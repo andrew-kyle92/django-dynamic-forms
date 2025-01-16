@@ -71,7 +71,7 @@ export function setDrop(targetDiv, event) {
     // add dragover listener
 }
 
-export const addNewInput = async (data, formDiv, placeholder) => {
+export const addNewInput = async (data, formDiv, placeholder, droppableSections) => {
     // cloning the element and adding all the specific settings
     let newField = functions.setNewField(data);
 
@@ -108,11 +108,13 @@ export const addNewInput = async (data, formDiv, placeholder) => {
     let formKeys = Object.keys(formData);
     // creating and getting the form fields
     let formInputs = functions.createFormFields(formKeys, formData, modalBody, newField);
+    // setting formField ids
+    formInputs = functions.setFormInputIds(newField, formInputs);
 
     // hiding the input and order fields
-    modalBody.querySelector("#id_order").parentElement.setAttribute("hidden", "true");
+    modalBody.querySelector(`#${newField.id}_id_order`).parentElement.setAttribute("hidden", "true");
     if (newField.dataset.formSection === "false") {
-        modalBody.querySelector("#id_input").parentElement.setAttribute("hidden", "true");
+        modalBody.querySelector(`#${newField.id}_id_input`).parentElement.setAttribute("hidden", "true");
     }
 
     // adding the element to the target div
@@ -138,7 +140,7 @@ export const addNewInput = async (data, formDiv, placeholder) => {
     let saveBtn = newField.querySelector("#saveBtn");
     // changing the id as not to conflict with other inputs
     saveBtn.id = newField.id + "_saveBtn";
-    let formGroupClass = isFormSection ? ".form-section" : ".form-group";
+    let formGroupClass = isFormSection ? ".form-row" : ".form-group";
     let inputEl = newField.querySelector(`fieldset ${formGroupClass}`);
     saveBtn.addEventListener("click", () => {
         // form label

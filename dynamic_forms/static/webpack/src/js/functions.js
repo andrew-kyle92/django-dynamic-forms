@@ -123,12 +123,26 @@ export function createFormFields(formKeys, formData, modalBody, newField) {
         modalBody.appendChild(formGroup);
         // adding all the elements as innerHtml
         formGroup.innerHTML = `
-        <label for="${formKeys[i]}" class="form-labal">${formField.label}</label>
+        <label for="${formKeys[i]}" class="form-label">${formField.label}</label>
         ${formField.input}
         `;
         if (formField.helpText.length > 0) {
             formGroup.innerHTML += `<div class="form-text">${formField.helpText}</div>`;
         }
+    }
+    return formInputs;
+}
+
+export function setFormInputIds(newField, formInputs) {
+    if (formInputs.length > 0) {
+        let newFormInputs = [];
+        let prefixId = newField.id;
+        for (let i = 0; i < formInputs.length; i++) {
+            let field = newField.querySelector(formInputs[i]);
+            field.id = prefixId + "_" + field.id;
+            newFormInputs.push("#" + field.id);
+        }
+        return newFormInputs;
     }
     return formInputs;
 }
@@ -158,7 +172,7 @@ export function applySettings(formInputs, inputLabel, inputInput, inputHelpText,
         let field = document.querySelector(input);
         let valueChanged = field.dataset.valueChanged === "true";
         switch (field.id) {
-            case "id_label":
+            case `${newField.id}_id_label`:
                 if (valueChanged) {
                     if (field.value.length > 0) {
                         inputLabel.innerText = field.value;
@@ -170,7 +184,7 @@ export function applySettings(formInputs, inputLabel, inputInput, inputHelpText,
                     field.dataset.currentValue = field.value;
                 }
                 break;
-            case "id_placeholder":
+            case `${newField.id}_id_placeholder`:
                 if (valueChanged && inputInput) {
                     let hasPlaceholder;
                     if (field.value.length > 0) {
@@ -185,7 +199,7 @@ export function applySettings(formInputs, inputLabel, inputInput, inputHelpText,
                     field.dataset.currentValue = `${hasPlaceholder}`;
                 }
                 break;
-            case "id_help_text":
+            case `${newField.id}_id_help_text`:
                 if (valueChanged) {
                     if (field.value.length > 0) {
                         inputHelpText.innerText = field.value;
@@ -194,7 +208,7 @@ export function applySettings(formInputs, inputLabel, inputInput, inputHelpText,
                     field.dataset.currentValue = field.value;
                 }
                 break;
-            case "id_floating_label":
+            case `${newField.id}_id_floating_label`:
                 if (valueChanged && inputInput) {
                     if (field.checked) {
                         inputEl.classList.add("form-floating");
@@ -219,7 +233,7 @@ export function applySettings(formInputs, inputLabel, inputInput, inputHelpText,
                     field.dataset.currentValue = `${!field.checked}`;
                 }
                 break;
-            case "id_required":
+            case `${newField.id}_id_required`:
                 if (valueChanged || inputInput) {
                     if (field.checked) {
                         inputInput.setAttribute("required", "");
@@ -231,7 +245,7 @@ export function applySettings(formInputs, inputLabel, inputInput, inputHelpText,
                     field.dataset.currentValue = `${field.checked}`;
                 }
                 break;
-            case "id_classes":
+            case `${newField.id}_id_classes`:
                 if (valueChanged && inputInput || valueChanged && isFormSection) {
                     let classes = field.value;
                     if (classes.length > 0 || classes.length < 1 && field.dataset.addedClasses.length > 0) {
@@ -287,7 +301,7 @@ export function applySettings(formInputs, inputLabel, inputInput, inputHelpText,
                     field.dataset.currentValue = field.dataset.addedClasses;
                 }
                 break;
-            case "id_blank_option":
+            case `${newField.id}_id_blank_option`:
                 if (valueChanged) {
                     if (field.checked) {
                         let label = document.querySelector(formInputs.filter((l) => l.includes("#id_blank_label"))[0]);
@@ -323,7 +337,7 @@ export function applySettings(formInputs, inputLabel, inputInput, inputHelpText,
                     field.dataset.currentValue = inputInput.dataset.blankOption;
                 }
                 break;
-            case "id_blank_label":
+            case `${newField.id}_id_blank_label`:
                 // changing the data if blank option is checked
                 if (valueChanged) {
                     let blankOption = document.querySelector(formInputs.filter((l) => l.includes("#id_blank_option"))[0]);
@@ -337,7 +351,7 @@ export function applySettings(formInputs, inputLabel, inputInput, inputHelpText,
                     }
                 }
                 break;
-            case "id_choices":
+            case `${newField.id}_id_choices`:
                 if (valueChanged) {
                     let dropDowns = ["multiple_dropdown_input", "dropdown_input"];
                     let radioCheckInputs = ["radio_input", "checkbox_input"];
@@ -389,14 +403,14 @@ export function applySettings(formInputs, inputLabel, inputInput, inputHelpText,
                     field.dataset.currentValue = JSON.stringify(choices);
                 }
                 break;
-            case "id_min_value":
+            case `${newField.id}_id_min_value`:
                 if (valueChanged) {
                     // changing the input
                     inputInput.setAttribute("min", field.value);
                     field.dataset.valueChanged = "false";
                 }
                 break;
-            case "id_max_value":
+            case `${newField.id}_id_max_value`:
                 if (valueChanged) {
                     // changing the input
                     inputInput.setAttribute("max", field.value);
