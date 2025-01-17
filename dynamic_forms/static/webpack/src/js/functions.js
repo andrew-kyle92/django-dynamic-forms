@@ -102,11 +102,21 @@ export function setSettingsLogic(newField, inputModal) {
     });
 }
 
-export function setRemoveLogic(newField, formDiv) {
+export function setRemoveLogic(newField, droppableSections) {
     let removeBtn = newField.querySelector(".remove-input button");
     removeBtn.dataset.parentId = `#${newField.id}`;
     removeBtn.addEventListener("click", () => {
-       formDiv.removeChild(newField);
+        let section = getDroppableSection(newField, droppableSections);
+        // removing the section-row's ID from droppableSections
+        if (newField.dataset.formSection === "true") {
+            let sectionRow = document.getElementById(`${newField.id}_section-row`);
+            if (sectionRow) {
+                let sectionIndex = droppableSections.indexOf(sectionRow.id);
+                droppableSections.splice(sectionIndex);
+            }
+        }
+        // removing the field from the section
+        section.removeChild(newField);
     });
 }
 
@@ -167,7 +177,21 @@ export function setValueChanged(input) {
    });
 }
 
-export function applySettings(formInputs, inputParent, inputLabel, inputInput, inputHelpText, inputChoices, inputEl, newField, isFormSection) {
+export function applySettings(formInputs, inputEl, newField, isFormSection) {
+    // form label
+    let inputLabel = !isFormSection ? inputEl.querySelector(".label") : null;
+    // form input if not radio or checkbox type
+    let inputInput = !isFormSection ? inputEl.querySelector(".input") : null;
+    // form section row
+    // if radio or checkbox type
+    let inputChoices = !isFormSection ? inputEl.querySelector(`#${newField.id}_choices`) : null;
+    // form help_text
+    let inputHelpText = !isFormSection ? inputEl.querySelector(".help-text") : null;
+    // form title
+    let inputTitle = isFormSection ? inputEl.querySelector(".title") : null;
+    // form description
+    let inputDescription = !isFormSection ? inputEl.querySelector(".description") : null;
+    // applying all the settings
     formInputs.forEach((input) => {
         let field = document.querySelector(input);
         let valueChanged = field.dataset.valueChanged === "true";
@@ -200,12 +224,12 @@ export function applySettings(formInputs, inputParent, inputLabel, inputInput, i
                             // adding the classes
                             if (classes.length > 0) {
                                 classesToBeAdded.forEach((c) => {
-                                    inputEl.classList.add(c);
+                                    newField.classList.add(c);
                                 });
                             }
                         } else {
                             for (let i = 0; i < cs.length; i++) {
-                                inputEl.classList.add(cs[i]);
+                                newField.classList.add(cs[i]);
                             }
                         }
                         field.dataset.addedClasses = `${cs}`;
@@ -459,6 +483,18 @@ export function applySettings(formInputs, inputParent, inputLabel, inputInput, i
                     field.dataset.valueChanged = "false";
                 }
                 break;
+            case `${newField.id}_id_title`:
+                if (valueChanged) {
+                    // if (field.value.length > 0) {
+                    //     inputTitle.innerText = field.value;
+                    // }
+                    // else {
+                    //     inputTitle.innerText = field.value;
+                    // }
+                    inputTitle.innerText = field.value;
+                    field.dataset.valueChanged = "false";
+                    field.dataset.currentValue = field.value;
+                }
         }
     });
 }

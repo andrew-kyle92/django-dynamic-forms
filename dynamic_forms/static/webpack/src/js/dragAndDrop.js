@@ -71,7 +71,7 @@ export function setDrop(targetDiv, event) {
     // add dragover listener
 }
 
-export const addNewInput = async (data, formDiv, placeholder, droppableSections) => {
+export const addNewInput = async (data, formDiv, placeholder) => {
     // cloning the element and adding all the specific settings
     let newField = functions.setNewField(data);
 
@@ -97,9 +97,6 @@ export const addNewInput = async (data, formDiv, placeholder, droppableSections)
 
     // adding the target id to the settings button
     functions.setSettingsLogic(newField, inputModal);
-
-    // adding functionality to remove-input
-    functions.setRemoveLogic(newField, formDiv);
 
     // adding the form to the settings modal
     let modalBody = inputModal.querySelector(".modal-body");
@@ -143,19 +140,8 @@ export const addNewInput = async (data, formDiv, placeholder, droppableSections)
     let formGroupClass = isFormSection ? ".form-row" : ".form-group";
     let inputEl = newField.querySelector(`fieldset ${formGroupClass}`);
     saveBtn.addEventListener("click", () => {
-        // form parent
-        let inputParent = !isFormSection ? inputEl : null;
-        // form label
-        let inputLabel = !isFormSection ? inputEl.querySelector(".label") : null;
-        // form input if not radio or checkbox type
-        let inputInput = !isFormSection ? inputEl.querySelector(".input") : null;
-        // form section row
-        // if radio or checkbox type
-        let inputChoices = !isFormSection ? inputEl.querySelector(`#${newField.id}_choices`) : null;
-        // form help_text
-        let inputHelpText = !isFormSection ? inputEl.querySelector(".help-text") : null;
         // applying all the settings
-        functions.applySettings(formInputs, inputParent, inputLabel, inputInput, inputHelpText, inputChoices, inputEl, newField, isFormSection);
+        functions.applySettings(formInputs, inputEl, newField, isFormSection);
         inputModal.querySelector(".btn-close").click();
     });
 

@@ -22,22 +22,6 @@ export const getForm = async (field) => {
 }
 
 // ***** script functions *****
-// Get the element after which the placeholder should be inserted
-function getDragAfterElement(container, y) {
-    const draggableElements = [
-        ...container.querySelectorAll(".input-wrapper:not(.input-placeholder)"),
-    ];
-
-    return draggableElements.reduce((closest, child) => {
-        const box = child.getBoundingClientRect();
-        const offset = y - box.top - box.height / 2;
-        if (offset < 0 && offset > closest.offset) {
-            return { offset, element: child };
-        } else {
-            return closest;
-        }
-    }, { offset: Number.NEGATIVE_INFINITY }).element;
-}
 
 // ***** script variables *****
 let placeholder = null;
@@ -140,6 +124,9 @@ window.addEventListener("load", () => {
             // getting event target data
             let newField = await dragAndDrop.addNewInput(data, formInputsDiv, placeholder);
 
+            // adding functionality to remove-input
+            functions.setRemoveLogic(newField, droppableSections);
+
             // adding the dragover listener
             newField.addEventListener("dragover", (ev) => {
                 // **  setting propagation
@@ -150,6 +137,7 @@ window.addEventListener("load", () => {
 
             // adding the dragstart logic
             newField.addEventListener("dragstart", (ev) => {
+                ev.stopPropagation();
                 let data = dragAndDrop.setInputDragStart(e, newField, placeholder);
                 ev.dataTransfer.setData("text", JSON.stringify(data));
                 // setting currentDraggedInput
@@ -199,6 +187,9 @@ window.addEventListener("load", () => {
                     else {
                         // new field within form row
                         let nf = await dragAndDrop.addNewInput(d, sectionRow, placeholder);
+
+                        // adding functionality to remove-input
+                        functions.setRemoveLogic(nf, droppableSections);
 
                         // adding the dragover listener
                         nf.addEventListener("dragover", (ev) => {
