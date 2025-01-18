@@ -30,7 +30,3 @@ class TextBlock(BaseSection):
 class CollapsibleSection(BaseSection):
     title = models.CharField(max_length=255, null=False, blank=False, help_text="Title of the section")
     description = models.CharField(max_length=255, null=False, blank=False, help_text="Description of the section")
-
-
-class Column(BaseSection):
-    pass

@@ -7,4 +7,5 @@ urlpatterns = [
     path('new-form/', views.FormBuilderView.as_view(), name='new-form'),
     # fetch requests
     path('get-form/', views.get_form, name='get-form'),
+    path('save-form/', views.save_form, name='save-form'),
 ]

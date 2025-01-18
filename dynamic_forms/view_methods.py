@@ -4,7 +4,7 @@ import json
 from .forms import (TextInputField, TextAreaField, EmailInputField, DateInputField, DateTimeInputField, DropDownField,
                     MultipleDropDownField, IntegerInputField, DecimalInputField, FileInputField, RadioInputField,
                     CheckBoxInputField, FormRowForm, DividerLineForm, SectionHeaderForm, TextBlockForm,
-                    CollapsibleSectionForm, ColumnForm)
+                    CollapsibleSectionForm)
 
 
 def get_form_fields(field):
@@ -28,7 +28,6 @@ def get_form_fields(field):
         "section_header": SectionHeaderForm,
         "text_block": TextBlockForm,
         "collapsible_section": CollapsibleSectionForm,
-        "column": ColumnForm,
     }
 
     # getting the html fields for each field
@@ -42,3 +41,7 @@ def get_form_fields(field):
         }
 
     return json.dumps(fields)
+
+
+def create_json_field(field, value):
+    pass

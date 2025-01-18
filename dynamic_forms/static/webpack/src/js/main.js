@@ -9,6 +9,24 @@ import * as dragAndDrop from "./dragAndDrop.js";
 import * as functions from "./functions";
 // ***** End Import *****
 
+// ########## Getting the csrf token for the fetch calls ##########
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+export const csrftoken = getCookie('csrftoken');
+
 // ***** Fetch Requests *****
 export const getForm = async (field) => {
     let url = '/get-form/?' + new URLSearchParams({
@@ -18,6 +36,20 @@ export const getForm = async (field) => {
        method: 'get'
     }).then(async response => {
         return response.json()
+    });
+}
+
+const saveFormToServer = async (formEl, formData) => {
+    let url = formEl.action;
+    return await fetch(url, {
+        method: "post",
+        credentials: "same-origin",
+        headers: {
+            "X-CSRFToken": csrftoken
+        },
+        body: JSON.stringify(formData)
+    }).then(async (response) => {
+        return response.json();
     });
 }
 
@@ -235,4 +267,32 @@ window.addEventListener("load", () => {
             }
         });
     }
+
+    // ***** Save Form Button *****
+    const saveBtn = document.getElementById("saveForm");
+    saveBtn.addEventListener("click", async () => {
+        let formItems = formInputsDiv.children;
+        let formData = {
+            formId: "id_" + crypto.randomUUID(),
+            formData: {},
+        }
+
+        // gathering the form data
+        let mainForm = document.getElementById("mainForm");
+        let mainFormData = new FormData(mainForm);
+        for (let [key, value] of mainFormData.entries()) {
+            if (key !== "csrfmiddlewaretoken") {
+                formData.formData[key] = value;
+            }
+        }
+
+        let formObjects = {};
+        for (let i = 0; i < formItems.length; i++) {
+            let formItem = formItems[i];
+            formObjects[i] = functions.gatherInputData(formItem);
+        }
+        formData.formObjects = formObjects;
+        let res = await saveFormToServer(mainForm, formData);
+        console.log(res);
+    });
 });

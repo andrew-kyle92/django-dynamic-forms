@@ -1,32 +1,39 @@
 {% extends 'theme/base.html' %}
 
 {% block content %}
-<div id="mainContent" class="container row m-auto mt-3">
-    <div id="side-nav" class="col-3">
+<div id="mainContent" class="d-flex m-auto mt-3 px-0 w-75 justify-content-between">
+    <div id="sideNav" class="container col-3 me-3">
+        <div class="nav-section d-flex">
+            <button id="saveForm" type="button" class="btn btn-primary me-3" title="Save form">Save</button>
+            <button id="previewForm" type="button" class="btn btn-outline-primary" title="Preview form"><i class="fa-solid fa-eye"></i></button>
+        </div>
+
         <div class="nav-section">
             <button class="dropdown-caret border-bottom mb-3 btn w-100 text-start fs-4" type="button" data-bs-toggle="collapse" data-bs-target="#formSection" aria-expanded="true" aria-controls="formSection"><i class="fa-solid fa-caret-up" data-rotation="0"></i> Form Data</button>
             <div id="formSection" class="collapse show">
-                <form method="post" action="{% url 'new-form' %}" novalidate>
+                <form id="mainForm" method="post" action="{% url 'save-form' %}" novalidate>
                     {% csrf_token %}
                 {% if form.non_field_errors %}
                     {{ form.non_field_errors }}
                 {% endif %}
 
                 {% for field in form %}
-                    <div class="form-group mb-3">
-                        <label for="{{ field.name }}" class="form-label">{{ field.label }}</label>
-                        {{ field }}
-                        {% if field.choices %}
-                            {{ choices }}
+                    {% if not field.name == "form_id" %}
+                        <div class="form-group mb-3">
+                            <label for="{{ field.name }}" class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.choices %}
+                                {{ choices }}
+                            {% endif %}
+                        {% if field.help_text %}
+                            <div class="form-text">{{ field.help_text }}</div>
                         {% endif %}
-                    {% if field.help_text %}
-                        <div class="form-text">{{ field.help_text }}</div>
-                    {% endif %}
-                    </div>
+                        </div>
 
-                    {# Field errors #}
-                    {% if field.errors %}
-                        {{ field.errors }}
+                        {# Field errors #}
+                        {% if field.errors %}
+                            {{ field.errors }}
+                        {% endif %}
                     {% endif %}
                 {% endfor %}
                 </form>
@@ -55,7 +62,6 @@
             <button class="dropdown-caret border-bottom mb-3 btn w-100 text-start fs-4" type="button" data-bs-toggle="collapse" data-bs-target="#sectionsSection" aria-expanded="false" aria-controls="sectionsSection"><i class="fa-solid fa-caret-up" data-rotation="0"></i> Form Sections</button>
             <ul id="sectionsSection" class="nav flex-column collapse">
                 <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1 inputItem draggable" draggable="true" data-field-reference="form_row"><span><i class="fa-solid fa-rectangle-list"></i></span> Form Row</li>
-                <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1 inputItem draggable" draggable="true" data-field-reference="column"><span><i class="fa-solid fa-table-columns"></i></span> Column</li>
                 <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1 inputItem draggable" draggable="true" data-field-reference="divider_line"><span><i class="fa-solid fa-arrows-left-right"></i></span> Divider Line</li>
                 <li class="nav-item fs-5 border border-secondary rounded-1 px-2 bg-dark-subtle mb-1 inputItem draggable" draggable="true" data-field-reference="section_header"><span><i class="fa-solid fa-heading"></i></span> Section Header</li>
             </ul>
@@ -83,7 +89,7 @@
 {% block extra_js %}
 <script>
     // making the nav top
-    let sideNav = document.getElementById("side-nav");
+    let sideNav = document.getElementById("sideNav");
     let siteNav = document.getElementById("siteNav");
     sideNav.style.top = `${siteNav.offsetHeight}px`;
 

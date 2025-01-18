@@ -5,7 +5,7 @@ from django.conf import settings
 
 from .models import (TextInput, TextAreaInput, EmailInput, DateInput, DateTimeInput, DropDownInput,
                      MultipleSelectDropDownInput, IntegerInput, DecimalInput, CheckboxInput, RadioInput,
-                     FileInput, FormModel, FormRow, DividerLine, SectionHeader, TextBlock, CollapsibleSection, Column)
+                     FileInput, FormModel, FormRow, DividerLine, SectionHeader, TextBlock, CollapsibleSection)
 
 
 # ***** Form Field Forms *****
@@ -469,33 +469,6 @@ class CollapsibleSectionForm(ModelForm):
                 visible.field.widget.attrs["class"] = "form-check-input"
 
 
-class ColumnForm(ModelForm):
-    class Meta:
-        model = Column
-        fields = '__all__'
-
-    def __init__(self, *args, **kwargs):
-        super(ColumnForm, self).__init__(*args, **kwargs)
-
-        for visible in self.visible_fields():
-            # adding valueChanged dataset attribute
-            visible.field.widget.attrs["data-value-changed"] = "false"
-
-            if visible.widget_type == "text" or visible.widget_type == "number":
-                visible.field.widget.attrs["class"] = "form-control"
-            elif visible.widget_type == "date":
-                visible.field.widget = forms.DateInput(attrs={"class": "form-control", "type": "date"})
-            elif visible.widget_type == "datetime":
-                visible.field.widget = forms.DateTimeInput(attrs={"class": "form-control", "type": "datetime"})
-            elif visible.widget_type == "select" or visible.widget_type == "nullbooleanselect":
-                visible.field.widget.attrs["class"] = "form-select"
-            elif visible.widget_type == "textarea":
-                visible.field.widget.attrs["class"] = "form-control"
-                visible.field.widget.attrs["rows"] = 5
-            elif visible.widget_type == "checkbox":
-                visible.field.widget.attrs["class"] = "form-check-input"
-
-
 def get_model_choices():
     all_apps = settings.FORM_APPS
     choices = {"": "---------"}
@@ -541,4 +514,3 @@ DividerLineFormSet = modelformset_factory(DividerLine, form=DividerLineForm, ext
 SectionHeaderFormSet = modelformset_factory(SectionHeader, form=SectionHeaderForm, extra=1, can_delete=True)
 TextBlockFormSet = modelformset_factory(TextBlock, form=TextBlockForm, extra=1, can_delete=True)
 CollapsibleSectionFormSet = modelformset_factory(CollapsibleSection, form=CollapsibleSectionForm, extra=1, can_delete=True)
-ColumnFieldSet = modelformset_factory(Column, form=ColumnForm, extra=1, can_delete=True)

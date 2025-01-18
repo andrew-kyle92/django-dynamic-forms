@@ -1,3 +1,5 @@
+import json
+
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
@@ -23,7 +25,7 @@ class FormBuilderView(View):
     title = "New Form"
     template = "dynamic_forms/base_form.html"
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         form = FormModelForm()
         context = {
             'title': self.title,
@@ -31,8 +33,11 @@ class FormBuilderView(View):
         }
         return render(request, self.template, context)
 
+    def post(self, request, *args, **kwargs):
+        pass
 
-# Fetch Requests
+
+# ********** Fetch Requests **********
 def get_form(request):
     field = request.GET.get("field", None)
     if field is not None:
@@ -40,3 +45,10 @@ def get_form(request):
         return JsonResponse({"form": form})
     else:
         return JsonResponse({"form": None, "error": "No field found"})
+
+
+def save_form(request):
+    if request.method == "POST":
+        form_data = json.loads(request.body)
+        print(form_data)
+        return JsonResponse({"success": True})

@@ -122,6 +122,9 @@ export function setRemoveLogic(newField, droppableSections) {
 
 export function createFormFields(formKeys, formData, modalBody, newField) {
     let formInputs = [];
+    let formDiv = document.createElement("form");
+    formDiv.id = newField.id + "_form";
+    modalBody.appendChild(formDiv);
     for (let i = 0; i < formKeys.length; i++) {
         let formField = formData[formKeys[i]];
         // getting the id from the input
@@ -130,7 +133,7 @@ export function createFormFields(formKeys, formData, modalBody, newField) {
         // creating the form group div
         let formGroup = document.createElement("div");
         formGroup.setAttribute("class", "form-group mb-3");
-        modalBody.appendChild(formGroup);
+        formDiv.appendChild(formGroup);
         // adding all the elements as innerHtml
         formGroup.innerHTML = `
         <label for="${formKeys[i]}" class="form-label">${formField.label}</label>
@@ -370,7 +373,7 @@ export function applySettings(formInputs, inputEl, newField, isFormSection) {
             case `${newField.id}_id_blank_option`:
                 if (valueChanged) {
                     if (field.checked) {
-                        let label = document.querySelector(formInputs.filter((l) => l.includes("#id_blank_label"))[0]);
+                        let label = document.querySelector(formInputs.filter((l) => l.includes(`${newField.id}_id_blank_label`))[0]);
                         inputInput.dataset.blankOption = "true";
                         // creating option element
                         let blankOption = document.createElement("option");
@@ -406,7 +409,7 @@ export function applySettings(formInputs, inputEl, newField, isFormSection) {
             case `${newField.id}_id_blank_label`:
                 // changing the data if blank option is checked
                 if (valueChanged) {
-                    let blankOption = document.querySelector(formInputs.filter((l) => l.includes("#id_blank_option"))[0]);
+                    let blankOption = document.querySelector(formInputs.filter((l) => l.includes(`${newField.id}_id_blank_option`))[0]);
                     if (blankOption.checked) {
                         let option = inputInput.querySelector(".blank-option");
                         option.innerText = field.value;
@@ -485,12 +488,6 @@ export function applySettings(formInputs, inputEl, newField, isFormSection) {
                 break;
             case `${newField.id}_id_title`:
                 if (valueChanged) {
-                    // if (field.value.length > 0) {
-                    //     inputTitle.innerText = field.value;
-                    // }
-                    // else {
-                    //     inputTitle.innerText = field.value;
-                    // }
                     inputTitle.innerText = field.value;
                     field.dataset.valueChanged = "false";
                     field.dataset.currentValue = field.value;
@@ -528,4 +525,33 @@ function getDroppableSection(el, droppableSections) {
     else {
         return null;
     }
+}
+
+export function gatherInputData(input) {
+    // gathering all data pertaining to the input
+    let inputData = {
+        id: input.id,
+        inputType: input.dataset.formType,
+        children: [],
+        formData: {},
+    }
+    // if formType is one that can contain more inputs
+    let droppableTypes = ["form_row", "collapsible_section"];
+    if (droppableTypes.includes(input.dataset.formType)) {
+        let inputChildren = document.getElementById((`${inputData.id}_section-row`)).children;
+        for (let i = 0; i < inputChildren.length; i++) {
+            let child = inputChildren[i];
+            inputData.children.push(gatherInputData(child));
+        }
+    }
+
+    // getting all the formData
+    let formDiv = document.getElementById(`${input.id}_form`);
+    let formData = new FormData(formDiv);
+    for (let [key, value] of formData.entries()) {
+        if (key !== "csrfmiddlewaretoken") {
+            inputData.formData[key] = value;
+        }
+    }
+    return inputData;
 }

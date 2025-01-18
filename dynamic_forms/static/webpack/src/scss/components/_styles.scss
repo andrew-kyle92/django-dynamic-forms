@@ -176,10 +176,10 @@
 }
 
 // ***** General Styles *****
-#side-nav {
+#sideNav {
   max-height: 90vh;
-  overflow: auto;
   position: sticky;
+  overflow: auto;
   top: 0;
   z-index: 1;
 }
