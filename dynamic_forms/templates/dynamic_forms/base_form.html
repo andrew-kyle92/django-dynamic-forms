@@ -11,7 +11,7 @@
         <div class="nav-section">
             <button class="dropdown-caret border-bottom mb-3 btn w-100 text-start fs-4" type="button" data-bs-toggle="collapse" data-bs-target="#formSection" aria-expanded="true" aria-controls="formSection"><i class="fa-solid fa-caret-up" data-rotation="0"></i> Form Data</button>
             <div id="formSection" class="collapse show">
-                <form id="mainForm" method="post" action="{% url 'save-form' %}" novalidate>
+                <form class="mainForm" method="post" action="{% url 'save-form' %}" data-form-type="main_form" novalidate>
                     {% csrf_token %}
                 {% if form.non_field_errors %}
                     {{ form.non_field_errors }}

@@ -128,8 +128,8 @@ export function createFormFields(formKeys, formData, modalBody, newField) {
     for (let i = 0; i < formKeys.length; i++) {
         let formField = formData[formKeys[i]];
         // getting the id from the input
-        let inputId = formField.input.match(/(?<=id\W+)\w+(?=\W)/g)[0];
-        formInputs.push(`#${newField.id} #${inputId}`);
+        let inputId = formKeys[i];
+        formInputs.push(`#${newField.id} #id_${inputId}`);
         // creating the form group div
         let formGroup = document.createElement("div");
         formGroup.setAttribute("class", "form-group mb-3");
@@ -149,10 +149,9 @@ export function createFormFields(formKeys, formData, modalBody, newField) {
 export function setFormInputIds(newField, formInputs) {
     if (formInputs.length > 0) {
         let newFormInputs = [];
-        let prefixId = newField.id;
         for (let i = 0; i < formInputs.length; i++) {
             let field = newField.querySelector(formInputs[i]);
-            field.id = prefixId + "_" + field.id;
+            field.id = newField.id + "_" + field.id;
             newFormInputs.push("#" + field.id);
         }
         return newFormInputs;

@@ -272,13 +272,16 @@ window.addEventListener("load", () => {
     const saveBtn = document.getElementById("saveForm");
     saveBtn.addEventListener("click", async () => {
         let formItems = formInputsDiv.children;
+        let mainForm = document.querySelector(".mainForm");
+        let formId = !mainForm.id ? "id_" + crypto.randomUUID(): mainForm.id;
         let formData = {
-            formId: "id_" + crypto.randomUUID(),
+            id: formId,
             formData: {},
+            inputType: "main_form",
         }
 
         // gathering the form data
-        let mainForm = document.getElementById("mainForm");
+
         let mainFormData = new FormData(mainForm);
         for (let [key, value] of mainFormData.entries()) {
             if (key !== "csrfmiddlewaretoken") {

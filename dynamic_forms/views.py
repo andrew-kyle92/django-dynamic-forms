@@ -7,7 +7,7 @@ from django.conf import settings
 
 from .forms import FormModelForm
 
-from .view_methods import get_form_fields
+from .utils.form_utils import FormUtils
 
 
 class IndexView(View):
@@ -39,9 +39,10 @@ class FormBuilderView(View):
 
 # ********** Fetch Requests **********
 def get_form(request):
+    form_utils = FormUtils()
     field = request.GET.get("field", None)
     if field is not None:
-        form = get_form_fields(field)
+        form = form_utils.get_form_fields(field)
         return JsonResponse({"form": form})
     else:
         return JsonResponse({"form": None, "error": "No field found"})
@@ -49,6 +50,10 @@ def get_form(request):
 
 def save_form(request):
     if request.method == "POST":
+        form_utils = FormUtils()
         form_data = json.loads(request.body)
-        print(form_data)
-        return JsonResponse({"success": True})
+        try:
+            form_utils.save_form_to_db(form_data)
+            return JsonResponse({"success": True})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})

@@ -109,9 +109,14 @@ export const addNewInput = async (data, formDiv, placeholder) => {
     formInputs = functions.setFormInputIds(newField, formInputs);
 
     // hiding the input and order fields
-    modalBody.querySelector(`#${newField.id}_id_order`).parentElement.setAttribute("hidden", "true");
-    if (newField.dataset.formSection === "false") {
-        modalBody.querySelector(`#${newField.id}_id_input`).parentElement.setAttribute("hidden", "true");
+    let hiddenFields = [`#${newField.id}_id_order`, `#${newField.id}_id_input`, `#${newField.id}_id_form_id`,
+                                `#${newField.id}_id_input_id`, `#${newField.id}_id_form`, `#${newField.id}_parent_section_id`
+                                `#${newField.id}_id_created`, `#${newField.id}_id_modified`];
+    for (let i = 0; i < formInputs.length; i++) {
+        if (hiddenFields.includes(formInputs[i])) {
+            let input = modalBody.querySelector(formInputs[i]);
+            input.parentElement.setAttribute("hidden", "true");
+        }
     }
 
     // adding the element to the target div
