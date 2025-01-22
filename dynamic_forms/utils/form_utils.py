@@ -130,6 +130,14 @@ class FormUtils:
                 else:
                     form_data["formData"]["required"] = False
 
+        if form_data["formData"].get("floating_label", False):
+            floating_label = form_data["formData"]["floating_label"]
+            if floating_label:
+                if floating_label == "on":
+                    form_data["formData"]["floating_label"] = True
+                else:
+                    form_data["formData"]["floating_label"] = False
+
         for key, value in form_data["formData"].items():
             if key == "order" and kwargs.get("order"):
                 model_data[key] = kwargs.get("order")  # maintains the order of the inputs
@@ -161,7 +169,7 @@ class FormUtils:
         else:
             query_by = {"input_id": form_data["input_id"]}
 
-        instance, created = form_model.objects.update_or_create(**query_by, create_defaults=form_data)
+        instance, created = form_model.objects.update_or_create(defaults=form_data, create_defaults=form_data)
         if not created:
             instance.save()
         return instance
