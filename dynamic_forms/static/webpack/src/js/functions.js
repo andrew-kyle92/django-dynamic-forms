@@ -61,9 +61,10 @@ export function removeClass(el, className) {
     }
 }
 
-export function setNewField(data) {
-    let newField = document.getElementById(data.id).cloneNode(true);
-    newField.id = "id_" + crypto.randomUUID();
+export function setNewField(data, exists=false) {
+    let formType = exists ? data.inputType : data.id;
+    let newField = document.getElementById(formType).cloneNode(true);
+    newField.id = exists ? data.id : "id_" + crypto.randomUUID();
     newField.removeAttribute("hidden");
     return newField;
 }
@@ -175,7 +176,7 @@ export function setValueChanged(input) {
                     input.dataset.valueChanged = "false";
                 }
             }
-        }, 500);
+        }, 250);
    });
 }
 

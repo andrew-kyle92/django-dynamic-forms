@@ -107,7 +107,7 @@ class CollapsibleSectionInline(admin.TabularInline):
 
 @admin.register(FormModel)
 class FormAdmin(admin.ModelAdmin):
-    readonly_fields = ["form_id", "modified", "created"]
+    readonly_fields = ["form_id", "layout", "modified", "created"]
     inlines = [TextInputInline, TextAreaInline, EmailInputInline, DateInputInline, DateTimeInputInline,
                DropDownInputInline, MultiDropDownInputInline, IntegerInputInline, DecimalInputInline,
                FileInputInline, CheckboxInputInline, RadioInputInline, FormRowInline, DividerLineInline,

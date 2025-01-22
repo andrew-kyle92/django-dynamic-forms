@@ -11,14 +11,14 @@
         <div class="nav-section">
             <button class="dropdown-caret border-bottom mb-3 btn w-100 text-start fs-4" type="button" data-bs-toggle="collapse" data-bs-target="#formSection" aria-expanded="true" aria-controls="formSection"><i class="fa-solid fa-caret-up" data-rotation="0"></i> Form Data</button>
             <div id="formSection" class="collapse show">
-                <form class="mainForm" method="post" action="{% url 'save-form' %}" data-form-type="main_form" novalidate>
+                <form {% if existing_form %}id="{{ form.form_id.value }}"{% endif %} class="mainForm" method="post" action="{% url 'save-form' %}" data-form-type="main_form" data-form-exists="{% if existing_form %}true{% else %}false{% endif %}" novalidate>
                     {% csrf_token %}
                 {% if form.non_field_errors %}
                     {{ form.non_field_errors }}
                 {% endif %}
 
                 {% for field in form %}
-                    {% if not field.name == "form_id" %}
+                    {% if not field.name == "form_id" and field.widget_type != 'hidden' %}
                         <div class="form-group mb-3">
                             <label for="{{ field.name }}" class="form-label">{{ field.label }}</label>
                             {{ field }}
@@ -73,7 +73,7 @@
         <!-- Form Name - can't be deleted and mandatory -->
         <fieldset id="formHeader" class="form-section-header mb-3">
             <legend>Form Name</legend>
-            <h3 id="formHeaderText" class="py-2 px-3 align-middle"></h3>
+            <h3 id="formHeaderText" class="py-2 px-3 align-middle">{% if existing_form %}{{ form.name.value }}{% else %}{% endif %}</h3>
         </fieldset>
         <!-- The rest of the form elements will be added below -->
         <div id="formInputsDiv" class="form-objects"></div>

@@ -487,6 +487,9 @@ class FormModelForm(ModelForm):
             'description': forms.Textarea(attrs={'class': 'form-control'}),
             'for_table': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'table': forms.Select(attrs={'class': 'form-select'}, choices=get_model_choices),
+            'layout': forms.HiddenInput(),
+            'created': forms.HiddenInput(),
+            'modified': forms.HiddenInput(),
         }
 
     def __init__(self, *args, **kwargs):

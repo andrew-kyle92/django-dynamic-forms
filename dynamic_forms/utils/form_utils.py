@@ -39,8 +39,7 @@ class FormUtils:
         }
         return _models[field].__name__
 
-    @staticmethod
-    def get_form_fields(field):
+    def get_form_fields(self, field, exists=False, input_id=None):
         _forms = {
             # form input forms
             "text_input": TextInputField,
@@ -65,7 +64,18 @@ class FormUtils:
 
         # getting the html fields for each field
         fields = {}
-        form = _forms[field]()
+        # setting the form as None until the form_type and potential instance is determined
+        form = None
+        if exists:
+            field_model = apps.get_model(app_label="dynamic_forms", model_name=self.get_model(field))
+            instance = field_model.objects.get(input_id=input_id)
+            if instance:
+                form = _forms[field](instance=instance)
+            else:
+                form = _forms[field]()
+        else:
+            form = _forms[field]()
+
         for field in form:
             fields[field.html_name] = {
                 "label": field.label,
@@ -80,7 +90,7 @@ class FormUtils:
 
     def save_form_to_db(self, form_data):
         # creating the main form.
-        main_form = self.save_instance(form_data=self.set_model_data(form_data=form_data), model_name="FormModel", main_form=True)
+        main_form = self.save_instance(form_data=self.set_model_data(form_data=form_data, layout=form_data), model_name="FormModel", main_form=True)
 
         # creating inputs and saving to the database
         for key, value in form_data["formObjects"].items():
@@ -106,11 +116,12 @@ class FormUtils:
         # determining if the model data is the main form or input item
         if is_main_form:
             model_data["form_id"] = form_data["id"]
+            model_data["layout"] = json.dumps(form_data)
         else:
             model_data["input_id"] = form_data["id"]
 
         # setting required field to either True or False
-        # the formdata retrieved from JavaScript sets a checkbox's value to 'on' when checked
+        # the formdata retrieved from JavaScript sets a checkboxes value to 'on' when checked
         if form_data["formData"].get("required", False):
             required_field = form_data["formData"]["required"]
             if required_field == "on" or required_field == "":
@@ -134,6 +145,8 @@ class FormUtils:
                     model_data[key] = kwargs.get("parent_section_id")
                 else:
                     model_data[key] = value
+            elif key == "layout" and kwargs.get("layout"):
+                model_data[key] = kwargs.get("layout")
             else:
                 model_data[key] = value
 
@@ -152,3 +165,6 @@ class FormUtils:
         if not created:
             instance.save()
         return instance
+
+    def get_form_from_instance(self, instance):
+        pass

@@ -3,9 +3,10 @@ import json
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
-from django.conf import settings
+from django.views.generic import ListView
 
 from .forms import FormModelForm
+from .models import FormModel
 
 from .utils.form_utils import FormUtils
 
@@ -30,6 +31,7 @@ class FormBuilderView(View):
         context = {
             'title': self.title,
             'form': form,
+            'existing_form': False,
         }
         return render(request, self.template, context)
 
@@ -37,12 +39,44 @@ class FormBuilderView(View):
         pass
 
 
+class FormListView(ListView):
+    template_name = "dynamic_forms/forms_list.html"
+    model = FormModel
+    ordering = ["-created"]
+
+    def get_context_data(self, **kwargs):
+        context = super(FormListView, self).get_context_data(**kwargs)
+        context["title"] = "All Forms"
+
+        return context
+
+
+class EditFormView(View):
+    title = "Edit Form"
+    template = "dynamic_forms/base_form.html"
+
+    def get(self, request, form_id, *args, **kwargs):
+        # getting the form instance
+        instance = FormModel.objects.get(form_id=form_id)
+        # initializing the form instance
+        form = FormModelForm(instance=instance)
+
+        context = {
+            'title': self.title,
+            'form': form,
+            'existing_form': True,
+        }
+        return render(request, self.template, context)
+
+
 # ********** Fetch Requests **********
 def get_form(request):
     form_utils = FormUtils()
     field = request.GET.get("field", None)
+    exists = request.GET.get("exists", False)
+    input_id = request.GET.get("inputId", None)
     if field is not None:
-        form = form_utils.get_form_fields(field)
+        form = form_utils.get_form_fields(field=field, exists=exists, input_id=input_id)
         return JsonResponse({"form": form})
     else:
         return JsonResponse({"form": None, "error": "No field found"})
@@ -57,3 +91,12 @@ def save_form(request):
             return JsonResponse({"success": True})
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)})
+
+
+def get_form_layout(request):
+    form_id = request.GET.get("form_id", None)
+    if form_id:
+        instance = FormModel.objects.get(form_id=form_id)
+        return JsonResponse({"res": "success", "layout": instance.layout}, status=200)
+    else:
+        return JsonResponse({"res": "error", "layout": None}, status=200)

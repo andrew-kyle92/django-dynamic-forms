@@ -8,6 +8,7 @@ class FormModel(models.Model):
     description = models.TextField(blank=True, null=True, help_text="Form description")
     for_table = models.BooleanField(default=False, help_text="Create a form for a database table")
     table = models.CharField(max_length=255, blank=True, null=True, help_text="Name of the table")
+    layout = models.TextField(blank=True, null=True, help_text="Form layout")
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 

@@ -71,9 +71,9 @@ export function setDrop(targetDiv, event) {
     // add dragover listener
 }
 
-export const addNewInput = async (data, formDiv, placeholder) => {
+export const addNewInput = async (data, formDiv, placeholder, exists=false) => {
     // cloning the element and adding all the specific settings
-    let newField = functions.setNewField(data);
+    let newField = functions.setNewField(data, exists);
 
     // adding id string to modal
     let inputModal = functions.setInputModal(newField);
@@ -100,7 +100,7 @@ export const addNewInput = async (data, formDiv, placeholder) => {
 
     // adding the form to the settings modal
     let modalBody = inputModal.querySelector(".modal-body");
-    let res = await getForm(formType);
+    let res = await getForm(formType, "True", data.id);
     let formData = JSON.parse(res.form);
     let formKeys = Object.keys(formData);
     // creating and getting the form fields
@@ -110,7 +110,7 @@ export const addNewInput = async (data, formDiv, placeholder) => {
 
     // hiding the input and order fields
     let hiddenFields = [`#${newField.id}_id_order`, `#${newField.id}_id_input`, `#${newField.id}_id_form_id`,
-                                `#${newField.id}_id_input_id`, `#${newField.id}_id_form`, `#${newField.id}_parent_section_id`
+                                `#${newField.id}_id_input_id`, `#${newField.id}_id_form`, `#${newField.id}_id_parent_section_id`,
                                 `#${newField.id}_id_created`, `#${newField.id}_id_modified`];
     for (let i = 0; i < formInputs.length; i++) {
         if (hiddenFields.includes(formInputs[i])) {
@@ -125,6 +125,9 @@ export const addNewInput = async (data, formDiv, placeholder) => {
         formDiv.insertBefore(newField, placeholder);
         formDiv.removeChild(placeholder);
     }
+    else if (!placeholder && exists) {
+        formDiv.appendChild(newField);
+    }
 
     // adding listeners to indicate that an inputs value has been changed
     formInputs.forEach(query => {
@@ -133,8 +136,15 @@ export const addNewInput = async (data, formDiv, placeholder) => {
        // if the inputs are hidden, don't add the listeners to them
        if (!isHidden) {
            // setting data-current-value
-           // on input, after 1 second, if the value is different from the current value, flag the change
+           // on input, after .25 second, if the value is different from the current value, flag the change
            functions.setValueChanged(input);
+           // if exists set value changed to true
+           if (exists) {
+               if (input.value.length > 0) {
+                    input.dataset.valueChanged = "true";
+                    input.dataset.currentValue = input.value;
+               }
+           }
        }
     });
 
@@ -149,6 +159,10 @@ export const addNewInput = async (data, formDiv, placeholder) => {
         functions.applySettings(formInputs, inputEl, newField, isFormSection);
         inputModal.querySelector(".btn-close").click();
     });
+    // if exists apply the settings button to add the existing model data
+    if (exists) {
+        saveBtn.click();
+    }
 
     return newField;
 }
