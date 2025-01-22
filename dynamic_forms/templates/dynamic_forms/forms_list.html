@@ -22,7 +22,7 @@
                         <td>{{ form.name }}</td>
                         <td>{{ form.created }}</td>
                         <td>{{ form.modified }}</td>
-                        <td>View | <a href="{% url 'edit-form' form_id=form.form_id %}">Edit</a></td>
+                        <td><a href="{% url 'view-form' form_id=form.form_id %}">View</a> | Preview</td>
                     </tr>
                 {% endfor %}
             </tbody>

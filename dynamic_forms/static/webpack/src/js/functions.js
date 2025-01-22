@@ -1,5 +1,6 @@
 // ***** All methods and functions for dynamic_forms *****
 import * as functions from "./functions";
+import { getDroppableSections, addRemoveField } from "./main";
 
 export function getChoicesToBeRemove(currentChoices=[], newChoices=[]) {
     if (currentChoices.length > 0) {
@@ -89,6 +90,15 @@ export function setSettingsLogic(newField, inputModal) {
             newField.draggable = false;
             newField.classList.remove("draggable");
             settingsBtn.dataset.modalOpen = "true";
+
+            // if this input is nested within a form section
+            // make that droppable section's parent not draggable
+            let parentDropZone = getDroppableSection(newField);
+            if (parentDropZone.id !== "formInputsDiv") {
+                let parent = parentDropZone.parentElement.parentElement; // should be section_row input, which lives 2 children deep from input div
+                parent.draggable = false;
+                parent.classList.remove("draggable");
+            }
         }
     });
     // making the field draggable
@@ -98,15 +108,25 @@ export function setSettingsLogic(newField, inputModal) {
                 newField.draggable = true;
                 newField.classList.add("draggable");
                 settingsBtn.dataset.modalOpen = "false";
+
+                // if this input is nested within a form section
+                // make that droppable section's parent not draggable
+                let parentDropZone = getDroppableSection(newField);
+                if (parentDropZone.id !== "formInputsDiv") {
+                    let parent = parentDropZone.parentElement.parentElement; // should be section_row input, which lives 2 children deep from input div
+                    parent.draggable = true;
+                    parent.classList.add("draggable");
+                }
             }
         });
     });
 }
 
-export function setRemoveLogic(newField, droppableSections) {
+export function setRemoveLogic(newField) {
     let removeBtn = newField.querySelector(".remove-input button");
     removeBtn.dataset.parentId = `#${newField.id}`;
     removeBtn.addEventListener("click", () => {
+        let droppableSections = getDroppableSections();
         let section = getDroppableSection(newField, droppableSections);
         // removing the section-row's ID from droppableSections
         if (newField.dataset.formSection === "true") {
@@ -116,6 +136,9 @@ export function setRemoveLogic(newField, droppableSections) {
                 droppableSections.splice(sectionIndex);
             }
         }
+        // adding the field id to removedFields
+        let removeData = {id: newField.id, inputType: newField.dataset.formType};
+        addRemoveField(removeData);
         // removing the field from the section
         section.removeChild(newField);
     });
@@ -512,8 +535,9 @@ export function getMouseOver(targetDiv, targetMO, droppableSections) {
 }
 
 // gets the section that the targetMO belongs to
-function getDroppableSection(el, droppableSections) {
+function getDroppableSection(el) {
     if (el) {
+        let droppableSections = getDroppableSections();
         let elParent = el.parentElement;
         let section;
         while (!droppableSections.includes(elParent.id)) {

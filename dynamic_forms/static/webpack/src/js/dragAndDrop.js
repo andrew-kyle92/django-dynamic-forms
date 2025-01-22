@@ -100,7 +100,8 @@ export const addNewInput = async (data, formDiv, placeholder, exists=false) => {
 
     // adding the form to the settings modal
     let modalBody = inputModal.querySelector(".modal-body");
-    let res = await getForm(formType, "True", data.id);
+    let strExists = exists ? "True": "False" // For python's interpretation of boolean
+    let res = await getForm(formType, exists, newField.id);
     let formData = JSON.parse(res.form);
     let formKeys = Object.keys(formData);
     // creating and getting the form fields

@@ -91,6 +91,8 @@ class FormUtils:
     def save_form_to_db(self, form_data):
         # creating the main form.
         main_form = self.save_instance(form_data=self.set_model_data(form_data=form_data, layout=form_data), model_name="FormModel", main_form=True)
+        # getting the fields to be removed and deleted from the database
+        removed_fields = form_data.pop("removedFields", None)
 
         # creating inputs and saving to the database
         for key, value in form_data["formObjects"].items():
@@ -100,6 +102,14 @@ class FormUtils:
                 for child in value["children"]:
                     self.save_instance(form_data=self.set_model_data(form_data=child, form=main_form, order=order, parent_section_id=obj.input_id), model_name=self.get_model(child["inputType"]), main_form=False)
                     order += 1
+
+        # removing inputs from the database that have been removed from the form.
+        if removed_fields is not None:
+            if len(removed_fields) > 0:
+                for field in removed_fields:
+                    self.remove_field_input(field)
+
+        return main_form
 
     @staticmethod
     def set_model_data(form_data, form=None, **kwargs):
@@ -169,10 +179,23 @@ class FormUtils:
         else:
             query_by = {"input_id": form_data["input_id"]}
 
-        instance, created = form_model.objects.update_or_create(defaults=form_data, create_defaults=form_data)
+        instance, created = form_model.objects.update_or_create(defaults=form_data, create_defaults=form_data, **query_by)
         if not created:
             instance.save()
         return instance
 
     def get_form_from_instance(self, instance):
         pass
+
+    def remove_field_input(self, field):
+        # querying the field instance
+        input_id = field["id"]
+        input_type = field["inputType"]
+        field_model = apps.get_model(app_label="dynamic_forms", model_name=self.get_model(input_type))
+        # deleting the model
+        try:
+            instance = field_model.objects.filter(input_id=input_id)
+            instance.delete()
+        except field_model.DoesNotExist:
+            return False
+

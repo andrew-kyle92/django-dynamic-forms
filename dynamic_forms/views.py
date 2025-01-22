@@ -8,6 +8,8 @@ from django.views.generic import ListView
 from .forms import FormModelForm
 from .models import FormModel
 
+from .view_methods import *
+
 from .utils.form_utils import FormUtils
 
 
@@ -51,8 +53,7 @@ class FormListView(ListView):
         return context
 
 
-class EditFormView(View):
-    title = "Edit Form"
+class ViewFormView(View):
     template = "dynamic_forms/base_form.html"
 
     def get(self, request, form_id, *args, **kwargs):
@@ -62,7 +63,7 @@ class EditFormView(View):
         form = FormModelForm(instance=instance)
 
         context = {
-            'title': self.title,
+            'title': instance.name,
             'form': form,
             'existing_form': True,
         }
@@ -73,7 +74,7 @@ class EditFormView(View):
 def get_form(request):
     form_utils = FormUtils()
     field = request.GET.get("field", None)
-    exists = request.GET.get("exists", False)
+    exists = get_bool_value(request.GET.get("exists", False))
     input_id = request.GET.get("inputId", None)
     if field is not None:
         form = form_utils.get_form_fields(field=field, exists=exists, input_id=input_id)
@@ -87,8 +88,8 @@ def save_form(request):
         form_utils = FormUtils()
         form_data = json.loads(request.body)
         try:
-            form_utils.save_form_to_db(form_data)
-            return JsonResponse({"success": True})
+            main_form = form_utils.save_form_to_db(form_data)
+            return JsonResponse({"res": "success", "form_id": main_form.form_id})
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)})
 

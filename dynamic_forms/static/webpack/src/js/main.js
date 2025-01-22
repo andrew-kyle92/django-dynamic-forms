@@ -72,13 +72,39 @@ const saveFormToServer = async (formEl, formData) => {
     });
 }
 
-// ***** script functions *****
-
 // ***** script variables *****
 let placeholder = null;
 let formInputMO = null;
 let currentDraggedInput = null;
-let formInputs = [];
+let formInputs;
+let removedFields = []; // ids of fields to be removed
+// droppable sections
+let droppableSections = ["formInputsDiv"]; // ids of droppable sections
+
+// ***** script functions *****
+export function getDroppableSections() {
+    return droppableSections;
+}
+
+function getRemovedFields() {
+    return removedFields;
+}
+
+export function addRemoveField(field) {
+    removedFields.push(field);
+}
+
+function addNewMessage(message) {
+    // getting the domMessage div
+    let domMessages = document.getElementById("domMessages");
+    // creating the alert div
+    let newMessageDiv = document.createElement("div");
+    newMessageDiv.className = "alert alert-success alert-dismissible fade show";
+    newMessageDiv.role = "alert";
+    newMessageDiv.innerHTML = message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+    // adding alert to domMessages
+    domMessages.appendChild(newMessageDiv);
+}
 
 // ***** main logic *****
 window.addEventListener("DOMContentLoaded", async () => {
@@ -136,8 +162,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     // ***** input drag and drop logic *****
     // ** Form div element **
     const formInputsDiv = document.getElementById("formInputsDiv");
-    // droppable sections
-    let droppableSections = ["formInputsDiv"];
 
     // ** dragover
     formInputsDiv.addEventListener("dragover", (ev) => {
@@ -177,7 +201,7 @@ window.addEventListener("DOMContentLoaded", async () => {
             let newField = await dragAndDrop.addNewInput(data, formInputsDiv, placeholder);
 
             // adding functionality to remove-input
-            functions.setRemoveLogic(newField, droppableSections);
+            functions.setRemoveLogic(newField);
 
             // adding the dragover listener
             newField.addEventListener("dragover", (ev) => {
@@ -241,7 +265,7 @@ window.addEventListener("DOMContentLoaded", async () => {
                         let nf = await dragAndDrop.addNewInput(d, sectionRow, placeholder);
 
                         // adding functionality to remove-input
-                        functions.setRemoveLogic(nf, droppableSections);
+                        functions.setRemoveLogic(nf);
 
                         // adding the dragover listener
                         nf.addEventListener("dragover", (ev) => {
@@ -298,6 +322,7 @@ window.addEventListener("DOMContentLoaded", async () => {
             id: formId,
             formData: {},
             inputType: "main_form",
+            removedFields: getRemovedFields(),
         }
 
         // gathering the form data
@@ -316,8 +341,16 @@ window.addEventListener("DOMContentLoaded", async () => {
         }
         formData.formObjects = formObjects;
         // adding formData as the form layout
-        // formData.formData = JSON.stringify(formData);
         let res = await saveFormToServer(mainForm, formData);
+        if (res.res === "success") {
+            if (document.URL.includes("new-form")) {
+                window.location = `/view-form/${res.form_id}/`;
+            }
+            else {
+                let message = "Form updated"
+                addNewMessage(message);
+            }
+        }
     });
 
     // ***** Handling an existing form *****
@@ -334,7 +367,7 @@ window.addEventListener("DOMContentLoaded", async () => {
             let newField = await addNewInput(object, formInputsDiv, placeholder, true);
 
             // adding the remove logic
-            functions.setRemoveLogic(newField, droppableSections);
+            functions.setRemoveLogic(newField);
 
             // adding the dragover listener
             newField.addEventListener("dragover", (ev) => {
@@ -349,6 +382,11 @@ window.addEventListener("DOMContentLoaded", async () => {
                 ev.stopPropagation();
                 let data = dragAndDrop.setInputDragStart(ev, newField, placeholder);
                 ev.dataTransfer.setData("text", JSON.stringify(data));
+                // creating placeholder
+                if (!placeholder) {
+                    placeholder = document.createElement("div");
+                    placeholder.classList.add("input-placeholder");
+                }
                 // setting currentDraggedInput
                 currentDraggedInput = newField;
             });
@@ -398,7 +436,7 @@ window.addEventListener("DOMContentLoaded", async () => {
                         let nf = await dragAndDrop.addNewInput(d, sectionRow, placeholder);
 
                         // adding functionality to remove-input
-                        functions.setRemoveLogic(nf, droppableSections);
+                        functions.setRemoveLogic(nf);
 
                         // adding the dragover listener
                         nf.addEventListener("dragover", (ev) => {
@@ -428,12 +466,17 @@ window.addEventListener("DOMContentLoaded", async () => {
                 let nf = await addNewInput(child, sectionRow, placeholder, true);
 
                 // adding the remove logic
-                functions.setRemoveLogic(nf, droppableSections);
+                functions.setRemoveLogic(nf);
 
                 // adding the dragover listener
                 nf.addEventListener("dragover", (ev) => {
                     // **  setting propagation
                     ev.stopPropagation();
+                    // creating placeholder
+                    if (!placeholder) {
+                        placeholder = document.createElement("div");
+                        placeholder.classList.add("input-placeholder");
+                    }
                     // reassigning formInputMO
                     formInputMO = dragAndDrop.setInputDragOver(ev, formInputMO, currentDraggedInput, nf);
                 });
@@ -444,7 +487,7 @@ window.addEventListener("DOMContentLoaded", async () => {
                     let data = dragAndDrop.setInputDragStart(ev, nf, placeholder);
                     ev.dataTransfer.setData("text", JSON.stringify(data));
                     // setting currentDraggedInput
-                    currentDraggedInput = newField;
+                    currentDraggedInput = nf;
                 });
             }
         }

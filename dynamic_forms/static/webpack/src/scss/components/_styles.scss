@@ -299,6 +299,13 @@ button:hover {
   padding: 1rem;
 }
 
+#domMessages {
+  left: 50%;
+  opacity: 0.8;
+  position: absolute;
+  z-index: 2;
+}
+
 // Drag and drop styling
 .drag-over {
   background-color: #dce0e4;
