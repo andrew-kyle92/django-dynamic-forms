@@ -24,7 +24,7 @@ export function setPlaceHolderPosition(formMO, placeholder, event) {
 
     // if (closest.position === "top" || closest.position === "bottom") {
     switch (closest.position) {
-        case "top" || "lef":
+        case "top" || "left":
             formMO.insertAdjacentElement("beforebegin", placeholder);
             break;
         case "bottom" || "right":

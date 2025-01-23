@@ -2,13 +2,14 @@
 
 {% block content %}
 <div id="mainContent" class="d-flex m-auto mt-3 px-0 w-75 justify-content-between">
-    <div id="domMessages" class="my-3 mx-auto w-25"></div>
 
     <div id="sideNav" class="container col-3 me-3">
         <div class="nav-section d-flex">
             <button id="saveForm" type="button" class="btn btn-primary me-3" title="Save form">Save</button>
             <button id="previewForm" type="button" class="btn btn-outline-primary" title="Preview form"><i class="fa-solid fa-eye"></i></button>
         </div>
+
+        <div id="domMessages" class="my-3 mx-auto w-auto"></div>
 
         <div class="nav-section">
             <button class="dropdown-caret border-bottom mb-3 btn w-100 text-start fs-4" type="button" data-bs-toggle="collapse" data-bs-target="#formSection" aria-expanded="true" aria-controls="formSection"><i class="fa-solid fa-caret-up" data-rotation="0"></i> Form Data</button>
@@ -93,7 +94,7 @@
     // making the nav top
     let sideNav = document.getElementById("sideNav");
     let siteNav = document.getElementById("siteNav");
+    let domMessages = document.getElementById("domMessages");
     sideNav.style.top = `${siteNav.offsetHeight}px`;
-
 </script>
 {% endblock %}
