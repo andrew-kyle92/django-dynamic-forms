@@ -535,7 +535,7 @@ export function getMouseOver(targetDiv, targetMO, droppableSections) {
 }
 
 // gets the section that the targetMO belongs to
-function getDroppableSection(el) {
+export function getDroppableSection(el) {
     if (el) {
         let droppableSections = getDroppableSections();
         let elParent = el.parentElement;

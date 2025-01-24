@@ -7,7 +7,7 @@ import * as bootstrap from 'bootstrap';
 // importing dragAndDrop.js and functions.js
 import * as dragAndDrop from "./dragAndDrop.js";
 import * as functions from "./functions";
-import {addNewInput} from "./dragAndDrop.js";
+import {addNewInput, newSetDragOver} from "./dragAndDrop.js";
 // ***** End Import *****
 
 // ########## Getting the csrf token for the fetch calls ##########
@@ -167,12 +167,12 @@ window.addEventListener("DOMContentLoaded", async () => {
     formInputsDiv.addEventListener("dragover", (ev) => {
         ev.preventDefault();
         // adding dragover logic
-        const currentTarget = ev.currentTarget || formInputsDiv;
-        dragAndDrop.setDragOver(currentTarget, placeholder, formInputMO, ev, droppableSections);
+        // const currentTarget = ev.currentTarget || formInputsDiv;
+        dragAndDrop.setDragOver(formInputsDiv, placeholder, formInputMO, ev, droppableSections);
     });
 
     // ** dragleave
-    formInputsDiv.addEventListener("dragleave", (e) => {
+    formInputsDiv.addEventListener("dragleave", () => {
         // setting drag leave logic
         dragAndDrop.setDragLeave(formInputsDiv, placeholder);
     });
@@ -208,7 +208,11 @@ window.addEventListener("DOMContentLoaded", async () => {
                 // **  setting propagation
                 ev.stopPropagation();
                 // reassigning formInputMO
-                formInputMO = dragAndDrop.setInputDragOver(ev, formInputMO, currentDraggedInput, newField);
+                // formInputMO = dragAndDrop.setInputDragOver(ev, formInputMO, currentDraggedInput, newField);
+                formInputMO = newField;
+
+                // dragAndDrop.setDragOver();
+                // dragAndDrop.newSetDragOver();
             });
 
             // adding the dragstart logic
@@ -272,7 +276,8 @@ window.addEventListener("DOMContentLoaded", async () => {
                             // **  setting propagation
                             ev.stopPropagation();
 
-                            formInputMO = dragAndDrop.setInputDragOver(ev, formInputMO, currentDraggedInput, nf);
+                            // formInputMO = dragAndDrop.setInputDragOver(ev, formInputMO, currentDraggedInput, nf);
+                            formInputMO = nf;
                         });
 
                         // adding the dragstart logic
@@ -374,7 +379,12 @@ window.addEventListener("DOMContentLoaded", async () => {
                 // **  setting propagation
                 ev.stopPropagation();
                 // reassigning formInputMO
-                formInputMO = dragAndDrop.setInputDragOver(ev, formInputMO, currentDraggedInput, newField);
+                // formInputMO = dragAndDrop.setInputDragOver(ev, newField, currentDraggedInput);
+                formInputMO = newField;
+                if (currentDraggedInput !== newField) {
+                    // dragAndDrop.setDragOver(formInputsDiv, placeholder, formInputMO, ev);
+                }
+
             });
 
             // adding the dragstart logic
@@ -440,15 +450,18 @@ window.addEventListener("DOMContentLoaded", async () => {
 
                         // adding the dragover listener
                         nf.addEventListener("dragover", (ev) => {
+                            ev.preventDefault();
                             // **  setting propagation
                             ev.stopPropagation();
 
-                            formInputMO = dragAndDrop.setInputDragOver(ev, formInputMO, currentDraggedInput, nf);
+                            // formInputMO = dragAndDrop.setInputDragOver(ev, formInputMO, currentDraggedInput, nf);
+                            formInputMO = nf
                         });
 
                         // adding the dragstart logic
                         nf.addEventListener("dragstart", (e) => {
                             e.stopPropagation();
+
                             let data = dragAndDrop.setInputDragStart(e, nf, placeholder);
                             e.dataTransfer.setData("text", JSON.stringify(data));
                             // setting currentDraggedInput
@@ -478,7 +491,9 @@ window.addEventListener("DOMContentLoaded", async () => {
                         placeholder.classList.add("input-placeholder");
                     }
                     // reassigning formInputMO
-                    formInputMO = dragAndDrop.setInputDragOver(ev, formInputMO, currentDraggedInput, nf);
+                    // formInputMO = dragAndDrop.setInputDragOver(ev, formInputMO, currentDraggedInput, nf);
+                    formInputMO = nf;
+                    // dragAndDrop.setDragOver(nf, placeholder, formInputMO, ev);
                 });
 
                 // adding the dragstart logic

@@ -1,7 +1,7 @@
 // ***** All functions related to drag and drop *****
 
 // ** imports **
-import { getForm } from './main'
+import {getDroppableSections, getForm} from './main'
 import * as functions from "./functions";
 
 export function setPlaceHolderPosition(formMO, placeholder, event) {
@@ -24,10 +24,12 @@ export function setPlaceHolderPosition(formMO, placeholder, event) {
 
     // if (closest.position === "top" || closest.position === "bottom") {
     switch (closest.position) {
-        case "top" || "left":
+        case "left":
+        case "top":
             formMO.insertAdjacentElement("beforebegin", placeholder);
             break;
-        case "bottom" || "right":
+        case "right":
+        case "bottom":
             formMO.insertAdjacentElement("afterend", placeholder);
             break;
     }
@@ -168,19 +170,19 @@ export const addNewInput = async (data, formDiv, placeholder, exists=false) => {
     return newField;
 }
 
-export function setDragOver(targetDiv, placeholder, formInputMO, e, droppableSections) {
+export function setDragOver(targetDiv, placeholder, formInputMO, e) {
     // getting targeted mouse over element
-    formInputMO = functions.getMouseOver(targetDiv, formInputMO, droppableSections);
+    // formInputMO = functions.getMouseOver(targetDiv, formInputMO, droppableSections);
     // determining if formSection
-    let isFormSection = targetDiv.id.includes("section-row");
+    // let isFormSection = targetDiv.id.includes("section-row");
     // setting default target if currentTarget is null
-    let container;
-    if (isFormSection) {
-        container = targetDiv;
-    }
-    else {
-        container = targetDiv || e.target;
-    }
+    let container = functions.getDroppableSection(formInputMO);
+    // if (isFormSection) {
+    //     container = targetDiv;
+    // }
+    // else {
+    //     container = targetDiv || e.target;
+    // }
 
     // adding drag-over class to formInputsDiv
     container.classList.add("drag-over");
@@ -192,6 +194,7 @@ export function setDragOver(targetDiv, placeholder, formInputMO, e, droppableSec
     }
     else {
         // if there are children
+        // setPlaceHolderPosition(formInputMO, placeholder, e);
         if (formInputMO && placeholder) {
             // if form input mouse over is not null determine where to place the placeholder
             // in relevance to the mouse over target
