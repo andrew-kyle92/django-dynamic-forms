@@ -1,4 +1,5 @@
 from django.apps import apps
+from django.conf import settings
 
 from dynamic_forms.forms import (TextInputField, TextAreaField, EmailInputField, DateInputField, DateTimeInputField,
                                  DropDownField,
@@ -39,7 +40,8 @@ class FormUtils:
         }
         return _models[field].__name__
 
-    def get_form_fields(self, field, exists=False, input_id=None):
+    def get_form_fields(self, field, exists=False, input_id=None, app_model=False, model_form=None):
+        app_label = "dynamic_forms"
         _forms = {
             # form input forms
             "text_input": TextInputField,
@@ -62,12 +64,25 @@ class FormUtils:
             "collapsible_section": CollapsibleSectionForm,
         }
 
+        # checking kwargs for non-dynamic-form-app ModelForm
+        if model_form is not None:
+            _forms[model_form._meta.model.__name__] = model_form
+            if exists:
+                app_label = model_form._meta.app_label
+
         # getting the html fields for each field
         fields = {}
-        # setting the form as None until the form_type and potential instance is determined
-        form = None
+        # getting form class instance
         if exists:
-            field_model = apps.get_model(app_label="dynamic_forms", model_name=self.get_model(field))
+            # getting the relevant model name
+            if app_model:
+                model_name = model_form._meta.model
+                field = model_name
+            else:
+                model_name = self.get_model(field)
+            # getting the model
+            field_model = apps.get_model(app_label=app_label, model_name=model_name)
+            # querying instance
             instance = field_model.objects.get(input_id=input_id)
             if instance:
                 form = _forms[field](instance=instance)
@@ -199,3 +214,10 @@ class FormUtils:
         except field_model.DoesNotExist:
             return False
 
+    @staticmethod
+    def get_model_form(model_name):
+        for form in settings.MODEL_FORMS:
+            if form._meta.model.__name__ == model_name:
+                return form
+            else:
+                return None

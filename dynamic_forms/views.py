@@ -72,6 +72,7 @@ class ViewFormView(View):
 
 # ********** Fetch Requests **********
 def get_form(request):
+    # initializing form_utils
     form_utils = FormUtils()
     field = request.GET.get("field", None)
     exists = get_bool_value(request.GET.get("exists", False))
@@ -81,6 +82,25 @@ def get_form(request):
         return JsonResponse({"form": form})
     else:
         return JsonResponse({"form": None, "error": "No field found"})
+
+
+def get_model_form(request):
+    # initialize FormUtils
+    form_utils = FormUtils()
+    # getting model name from url params
+    model_name = request.GET.get("modelName", None)
+    if model_name is not None:
+        try:
+            model_form = form_utils.get_model_form(model_name=model_name)
+            form_fields = form_utils.get_form_fields(field=model_name, exists=False, app_model=True, model_form=model_form)
+            context = {
+                "formFields": form_fields,
+            }
+            return JsonResponse(context, safe=True)
+        except Exception as e:
+            return JsonResponse({"error": str(e)})
+    else:
+        return JsonResponse({"error": "No model found"})
 
 
 def save_form(request):

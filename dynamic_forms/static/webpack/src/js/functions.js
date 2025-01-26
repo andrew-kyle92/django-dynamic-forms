@@ -579,3 +579,42 @@ export function gatherInputData(input) {
     }
     return inputData;
 }
+
+export function clearFormDiv(formDiv) {
+    if (formDiv.childElementCount > 0) {
+        while (formDiv.childElementCount > 0) {
+            formDiv.removeChild(formDiv.firstElementChild);
+        }
+    }
+}
+
+// Arguments:
+// el <object>: the element the error is being added to
+// errorClass <str>: the classname being added to the error element
+// relativeTo <object>: indicates that the error's placement is relative to this element. (default is null, in which error will just be added at the end of all children within el.)
+//  position <str>: use when relativeTo is not null, indicating if the error will be placed before or after the relative element. (default as after, which is default behavior of error placement.)
+export function addError(el, errorClass, msg, relativeTo=null, position="afterend") {
+    // creating the error p
+    let error = document.createElement("p");
+    error.classList.add(errorClass);
+    error.innerHTML = msg;
+    // checking if relativeTo is not null
+    if (relativeTo) {
+        if (typeof relativeTo === 'object') {
+            let errorPos = position === "afterend" ? position : "beforebegin";
+            relativeTo.insertAdjacentElement(errorPos, error);
+        }
+    }
+    else {
+        // append the child at the end its last child
+        el.appendChild(error);
+    }
+
+}
+
+export function removeErrors(el, errorClass) {
+    let errorEls = el.querySelectorAll("." + errorClass);
+    for (let i = 0; i < errorEls.length; i++) {
+        el.removeChild(errorEls[i]);
+    }
+}

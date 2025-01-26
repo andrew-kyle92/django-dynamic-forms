@@ -83,6 +83,25 @@
     </div>
 </div>
 
+<!-- for table modal -->
+<div id="forTableModal" class="modal fade" tabindex="-1" aria-labelledby="forTableModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="forTableModalLabel">Warning</h1>
+                <button type="button" class="btn-close cancel-btn" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Current form data will be cleared, and new inputs specific to the table will be created. Proceed with caution.
+            </div>
+            <div class="modal-footer">
+                <button id="forTableCloseBtn" type="button" class="btn btn-secondary cancel-btn" data-bs-dismiss="modal">Go Back</button>
+                <button id="forTableProceedBtn" type="button" class="btn btn-primary">Proceed</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Form Field Templates -->
 {% include 'dynamic_forms/snippets/form_fields.html' %}
 <!-- Form Sections Templates -->

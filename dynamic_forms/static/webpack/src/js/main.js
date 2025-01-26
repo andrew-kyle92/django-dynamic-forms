@@ -29,16 +29,26 @@ function getCookie(name) {
 export const csrftoken = getCookie('csrftoken');
 
 // ***** Fetch Requests *****
-export const getForm = async (field, exists="False", inputId="None") => {
+export const getForm = async (field, exists="False", inputId="None", modelForm="None") => {
     let url = '/get-form/?' + new URLSearchParams({
         "field": field,
         "exists": exists,
         "inputId": inputId,
+        "modelForm": modelForm,
     });
     return await fetch(url, {
        method: 'get'
     }).then(async response => {
-        return response.json()
+        return response.json();
+    });
+}
+
+export const getModelForm = async (modelName) => {
+    let url = "/get-model-form/?" + new URLSearchParams({modelName: modelName});
+    return await fetch(url, {
+       method: 'get'
+    }).then(async response => {
+        return response.json();
     });
 }
 
@@ -136,20 +146,74 @@ window.addEventListener("DOMContentLoaded", async () => {
     // for_table checkbox
     let tableCheckbox = document.getElementById("id_for_table");
     let tableInput = document.getElementById("id_table");
-    // initially hiding the checkbox
+    // creating the database table apply button. This button will add the inputs and remove the current form data
+    let formElement = document.querySelector("#formSection form"); // getting the main form
+    let applyBtn = document.createElement("button");
+    applyBtn.innerText = "Apply";
+    applyBtn.id = "tableApplyBtn";
+    applyBtn.className = "btn btn-primary mb-2";
+    applyBtn.type = "button";
+    formElement.appendChild(applyBtn);
+
+    // initially hiding the checkbox and applyBtn
     if (!tableCheckbox.checked) {
         tableInput.parentElement.setAttribute("hidden", "");
+        applyBtn.setAttribute("hidden", "");
     }
     else {
         tableInput.parentElement.removeAttribute("hidden");
+        applyBtn.setAttribute("hidden", "");
     }
+    const forTableModal = new bootstrap.Modal("#forTableModal");
     tableCheckbox.addEventListener("change", () => {
         if (!tableCheckbox.checked) {
             tableInput.parentElement.setAttribute("hidden", "");
+            applyBtn.setAttribute("hidden", "");
         }
         else {
             tableInput.parentElement.removeAttribute("hidden");
+            applyBtn.removeAttribute("hidden");
         }
+    });
+
+    // applyBtn logic
+    applyBtn.addEventListener("click", () => {
+        let error = false;
+        if (tableInput.value === "") {
+            // add error
+            let msg = "Input value must not be blank.";
+            functions.addError(tableInput.parentElement, "form-error", msg);
+            error = true;
+        }
+
+        if (!error) {
+            // removing any errors if they exist
+            functions.removeErrors(tableInput.parentElement, "form-error");
+            // show the modal
+            forTableModal.show();
+        }
+    });
+
+    // ***** forTableModal *****
+    let forTableCloseBtns = document.getElementsByClassName("cancel-btn");
+    for (let i = 0; i < forTableCloseBtns.length; i++) {
+        let btn = forTableCloseBtns[i];
+        btn.addEventListener("click", () => {
+            tableCheckbox.checked = false;
+        });
+    }
+
+    let forTableProceedBtn = document.getElementById("forTableProceedBtn");
+    forTableProceedBtn.addEventListener("click", async () => {
+        // clearing the form section
+        let formDiv = document.getElementById("formInputsDiv")
+        functions.clearFormDiv(formDiv);
+        // getting the selected table inputs
+        let res = await getModelForm(tableInput.value);
+        let formFields = JSON.parse(res.formFields);
+        console.log(formFields);
+        // hiding the modal
+        forTableModal.hide();
     });
 
     // form name input
@@ -356,6 +420,12 @@ window.addEventListener("DOMContentLoaded", async () => {
                 addNewMessage(message);
             }
         }
+    });
+
+    // ***** Table Checkbox *****
+    let tableDropDown = document.getElementById("id_for_table");
+    tableDropDown.addEventListener("change", () => {
+
     });
 
     // ***** Handling an existing form *****
