@@ -97,6 +97,8 @@ class FormUtils:
                 "input": field.as_widget(),
                 "helpText": field.help_text,
             }
+            if app_model:
+                fields[field.html_name]["data"] = field.subwidgets[0].data
 
         return json.dumps(fields)
 

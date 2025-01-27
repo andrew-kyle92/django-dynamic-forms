@@ -1,5 +1,5 @@
 // ***** All methods and functions for dynamic_forms *****
-import * as functions from "./functions";
+import * as dragAndDrop from './dragAndDrop';
 import { getDroppableSections, addRemoveField } from "./main";
 
 export function getChoicesToBeRemove(currentChoices=[], newChoices=[]) {
@@ -60,6 +60,10 @@ export function removeClass(el, className) {
     if (el.classList.contains(className)) {
         el.classList.remove(className);
     }
+}
+
+function replaceTemplateInput(inputClass, newData) {
+
 }
 
 export function setNewField(data, exists=false) {
@@ -617,4 +621,17 @@ export function removeErrors(el, errorClass) {
     for (let i = 0; i < errorEls.length; i++) {
         el.removeChild(errorEls[i]);
     }
+}
+
+export function dragStartLogic(el) {
+
+}
+
+// ***** Functions pertaining to adding modelform inputs
+const fieldConfigs = {
+    text: "text_input",
+}
+export async function getModelFieldType(fieldData) {
+    // getting the input type
+    return fieldConfigs[fieldData.type];
 }

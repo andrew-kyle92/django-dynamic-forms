@@ -128,7 +128,7 @@ export const addNewInput = async (data, formDiv, placeholder, exists=false) => {
         formDiv.insertBefore(newField, placeholder);
         formDiv.removeChild(placeholder);
     }
-    else if (!placeholder && exists) {
+    else if (!placeholder) {
         formDiv.appendChild(newField);
     }
 
