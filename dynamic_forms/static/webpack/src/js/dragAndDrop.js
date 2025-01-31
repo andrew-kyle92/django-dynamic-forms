@@ -1,11 +1,12 @@
 // ***** All functions related to drag and drop *****
 
 // ** imports **
-import {getDroppableSections, getForm} from './main'
+// import {getDroppableSections, getForm} from './main'
+import * as main from './main'
 import * as functions from "./functions";
 
 export function setPlaceHolderPosition(formMO, placeholder, event) {
-    let targetMOPositions = formMO.getBoundingClientRect()
+    let targetMOPositions = formMO.getBoundingClientRect();
     let positions = {
         top: Math.abs(event.clientY - targetMOPositions.top),
         right: Math.abs(event.clientX - targetMOPositions.right),
@@ -22,7 +23,6 @@ export function setPlaceHolderPosition(formMO, placeholder, event) {
         }
     }
 
-    // if (closest.position === "top" || closest.position === "bottom") {
     switch (closest.position) {
         case "left":
         case "top":
@@ -33,7 +33,6 @@ export function setPlaceHolderPosition(formMO, placeholder, event) {
             formMO.insertAdjacentElement("afterend", placeholder);
             break;
     }
-    // }
 }
 
 export function setDepth(targetDiv) {
@@ -73,7 +72,7 @@ export function setDrop(targetDiv, event) {
     // add dragover listener
 }
 
-export const addNewInput = async (data, formDiv, placeholder, exists=false) => {
+export const addNewInput = async (data, formDiv, exists=false) => {
     // cloning the element and adding all the specific settings
     let newField = functions.setNewField(data, exists);
 
@@ -86,6 +85,7 @@ export const addNewInput = async (data, formDiv, placeholder, exists=false) => {
     let formRow = newField.querySelector("#section-row");
     if (formRow) {
         formRow.setAttribute("id", newField.id + "_section-row");
+        main.addDroppableSection(formRow.id);
     }
 
     // checking if input type is radio or checkbox
@@ -103,7 +103,7 @@ export const addNewInput = async (data, formDiv, placeholder, exists=false) => {
     // adding the form to the settings modal
     let modalBody = inputModal.querySelector(".modal-body");
     let strExists = exists ? "True": "False" // For python's interpretation of boolean
-    let res = await getForm(formType, exists, newField.id);
+    let res = await main.getForm(formType, exists, newField.id);
     let formData = JSON.parse(res.form);
     let formKeys = Object.keys(formData);
     // creating and getting the form fields
@@ -123,6 +123,7 @@ export const addNewInput = async (data, formDiv, placeholder, exists=false) => {
     }
 
     // adding the element to the target div
+    let placeholder = main.getPlaceholder();
     if (placeholder) {
         formDiv.appendChild(newField);
         formDiv.insertBefore(newField, placeholder);
@@ -170,19 +171,15 @@ export const addNewInput = async (data, formDiv, placeholder, exists=false) => {
     return newField;
 }
 
-export function setDragOver(targetDiv, placeholder, formInputMO, e) {
+export function setDragOver(targetDiv, e) {
     // getting targeted mouse over element
-    // formInputMO = functions.getMouseOver(targetDiv, formInputMO, droppableSections);
-    // determining if formSection
-    // let isFormSection = targetDiv.id.includes("section-row");
+    // let formInputMO = functions.getMouseOver(targetDiv);
+
+    // getting the placeholder
+    let placeholder = main.getPlaceholder();
+
     // setting default target if currentTarget is null
-    let container = functions.getDroppableSection(formInputMO);
-    // if (isFormSection) {
-    //     container = targetDiv;
-    // }
-    // else {
-    //     container = targetDiv || e.target;
-    // }
+    let container = functions.getDroppableSection(targetDiv);
 
     // adding drag-over class to formInputsDiv
     container.classList.add("drag-over");
@@ -193,9 +190,22 @@ export function setDragOver(targetDiv, placeholder, formInputMO, e) {
         container.appendChild(placeholder);
     }
     else {
+        // form input moused-over
+        let formInputMO = main.getFormInputMO();
+        // if formInputMO is not null, check if it lives in the container
+        if (formInputMO) {
+            let childInContainer = functions.containerContainsChild(container, formInputMO);
+            if (!childInContainer) {
+                // if child not in container, set formInputMO to null, else leave it
+                formInputMO = null;
+            }
+        }
         // if there are children
-        // setPlaceHolderPosition(formInputMO, placeholder, e);
-        if (formInputMO && placeholder) {
+        if (container.childElementCount === 1 && container.firstElementChild.className.includes("input-placeholder")) {
+            // append the placeholder
+            container.appendChild(placeholder);
+        }
+        else if (formInputMO) {
             // if form input mouse over is not null determine where to place the placeholder
             // in relevance to the mouse over target
             setPlaceHolderPosition(formInputMO, placeholder, e);
@@ -215,8 +225,9 @@ export function setDragLeave(targetDiv, placeholder) {
     }
 }
 
-export function setExistingDrop(el, placeholder, targetDiv) {
+export function setExistingDrop(el, targetDiv) {
     // adding the element to the target div
+    let placeholder = main.getPlaceholder();
     if (placeholder) {
         targetDiv.insertBefore(el, placeholder);
         targetDiv.removeChild(placeholder);

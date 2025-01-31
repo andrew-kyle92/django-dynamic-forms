@@ -96,6 +96,11 @@ export function getDroppableSections() {
     return droppableSections;
 }
 
+export function addDroppableSection(elId) {
+    let ds = getDroppableSections();
+    ds.push(elId);
+}
+
 function getRemovedFields() {
     return removedFields;
 }
@@ -116,6 +121,30 @@ function addNewMessage(message) {
     domMessages.appendChild(newMessageDiv);
 }
 
+export function getPlaceholder() {
+    if (!placeholder) {
+        return null
+    }
+    return placeholder;
+}
+
+export function setCurrentDraggedInput(el) {
+    currentDraggedInput = el;
+}
+
+export function getCurrentDraggedInput() {
+    return currentDraggedInput;
+}
+
+export function setFormInputMO(el) {
+    formInputMO = el;
+}
+
+export function getFormInputMO() {
+    return formInputMO;
+}
+
+// ***** End Script Functions *****
 // ***** main logic *****
 window.addEventListener("DOMContentLoaded", async () => {
     // animate all dropdown carets
@@ -216,7 +245,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         for (let i = 0; i < formFieldKeys.length; i++) {
             let key = formFieldKeys[i];
             let field = formFields[key];
-            let data = {id: await functions.getModelFieldType(field.data)}
+            let data = {id: await functions.getModelFieldType(field.data), existing: false};
             // getting event target data
             let newField = await dragAndDrop.addNewInput(data, formInputsDiv, placeholder);
 
@@ -225,26 +254,28 @@ window.addEventListener("DOMContentLoaded", async () => {
             // adding functionality to remove-input
             functions.setRemoveLogic(newField);
 
-            // adding the dragover listener
-            newField.addEventListener("dragover", (ev) => {
-                // **  setting propagation
-                ev.stopPropagation();
-                // reassigning formInputMO
-                // formInputMO = dragAndDrop.setInputDragOver(ev, formInputMO, currentDraggedInput, newField);
-                formInputMO = newField;
+            functions.addListenerLogic(newField);
 
-                // dragAndDrop.setDragOver();
-                // dragAndDrop.newSetDragOver();
-            });
-
-            // adding the dragstart logic
-            newField.addEventListener("dragstart", (ev) => {
-                ev.stopPropagation();
-                let data = dragAndDrop.setInputDragStart(e, newField, placeholder);
-                ev.dataTransfer.setData("text", JSON.stringify(data));
-                // setting currentDraggedInput
-                currentDraggedInput = newField;
-            });
+            // // adding the dragover listener
+            // newField.addEventListener("dragover", (ev) => {
+            //     // **  setting propagation
+            //     ev.stopPropagation();
+            //     // reassigning formInputMO
+            //     // formInputMO = dragAndDrop.setInputDragOver(ev, formInputMO, currentDraggedInput, newField);
+            //     formInputMO = newField;
+            //
+            //     // dragAndDrop.setDragOver();
+            //     // dragAndDrop.newSetDragOver();
+            // });
+            //
+            // // adding the dragstart logic
+            // newField.addEventListener("dragstart", (ev) => {
+            //     ev.stopPropagation();
+            //     let data = dragAndDrop.setInputDragStart(e, newField, placeholder);
+            //     ev.dataTransfer.setData("text", JSON.stringify(data));
+            //     // setting currentDraggedInput
+            //     currentDraggedInput = newField;
+            // });
 
             // adding dragstart logic if specific form section
             let sectionRow = document.getElementById(`${newField.id}_section-row`);
@@ -328,136 +359,11 @@ window.addEventListener("DOMContentLoaded", async () => {
     // ** Form div element **
     const formInputsDiv = document.getElementById("formInputsDiv");
 
-    // ** dragover
-    formInputsDiv.addEventListener("dragover", (ev) => {
-        ev.preventDefault();
-        // adding dragover logic
-        // const currentTarget = ev.currentTarget || formInputsDiv;
-        dragAndDrop.setDragOver(formInputsDiv, placeholder, formInputMO, ev, droppableSections);
-    });
+    // setting listener logic
+    functions.addListenerLogic(formInputsDiv);
 
-    // ** dragleave
-    formInputsDiv.addEventListener("dragleave", () => {
-        // setting drag leave logic
-        dragAndDrop.setDragLeave(formInputsDiv, placeholder);
-    });
-
-    // ** on drop
-    formInputsDiv.addEventListener("drop", async (e) => {
-        e.preventDefault();
-        // **  setting propagation
-        e.stopPropagation();
-
-        // removing the border, if there is one
-        functions.removeClass(formInputsDiv, "drag-over");
-
-        // getting the id from the dragged object
-        // data = {"id": <str:form_type>, "existing": <boolean>}
-        let data = JSON.parse(e.dataTransfer.getData("text"));
-
-        // determining if a new or existing input is being dropped
-        if (data.existing) {
-            let element = document.getElementById(data.id);
-            // adding the element to the target div
-            dragAndDrop.setExistingDrop(element, placeholder, formInputsDiv);
-        }
-        else {
-            // getting event target data
-            let newField = await dragAndDrop.addNewInput(data, formInputsDiv, placeholder);
-
-            // adding functionality to remove-input
-            functions.setRemoveLogic(newField);
-
-            // adding the dragover listener
-            newField.addEventListener("dragover", (ev) => {
-                // **  setting propagation
-                ev.stopPropagation();
-                // reassigning formInputMO
-                // formInputMO = dragAndDrop.setInputDragOver(ev, formInputMO, currentDraggedInput, newField);
-                formInputMO = newField;
-
-                // dragAndDrop.setDragOver();
-                // dragAndDrop.newSetDragOver();
-            });
-
-            // adding the dragstart logic
-            newField.addEventListener("dragstart", (ev) => {
-                ev.stopPropagation();
-                let data = dragAndDrop.setInputDragStart(e, newField, placeholder);
-                ev.dataTransfer.setData("text", JSON.stringify(data));
-                // setting currentDraggedInput
-                currentDraggedInput = newField;
-            });
-
-            // adding dragstart logic if specific form section
-            let sectionRow = document.getElementById(`${newField.id}_section-row`);
-            if (sectionRow) {
-                // adding section id to the droppableSections array
-                droppableSections.push(sectionRow.id);
-                // settings section row dragover
-                sectionRow.addEventListener("dragover", (ev) => {
-                    ev.preventDefault();
-                    // **  setting propagation
-                    ev.stopPropagation();
-                    // to prevent dropping into self
-                    if (currentDraggedInput !== newField) {
-                        dragAndDrop.setDragOver(sectionRow, placeholder, formInputMO, ev, droppableSections);
-                    }
-                });
-
-                // setting section row dragleave
-                sectionRow.addEventListener("dragleave", () => {
-                    dragAndDrop.setDragLeave(sectionRow, placeholder);
-                });
-
-                sectionRow.addEventListener("drop", async (e) => {
-                    e.preventDefault();
-                    // **  setting propagation
-                    e.stopPropagation();
-
-                    // removing  the border, if there is one
-                    if (e.target.classList.contains("drag-over")) {
-                        sectionRow.classList.remove("drag-over");
-                    }
-
-                    // getting the id from the dragged object
-                    let d = JSON.parse(e.dataTransfer.getData("text"));
-
-                    // determining if a new or existing input is being dropped
-                    if (d.existing) {
-                        let element = document.getElementById(d.id);
-                        // adding the element to the target div
-                        dragAndDrop.setExistingDrop(element, placeholder, sectionRow);
-                    }
-                    else {
-                        // new field within form row
-                        let nf = await dragAndDrop.addNewInput(d, sectionRow, placeholder);
-
-                        // adding functionality to remove-input
-                        functions.setRemoveLogic(nf);
-
-                        // adding the dragover listener
-                        nf.addEventListener("dragover", (ev) => {
-                            // **  setting propagation
-                            ev.stopPropagation();
-
-                            // formInputMO = dragAndDrop.setInputDragOver(ev, formInputMO, currentDraggedInput, nf);
-                            formInputMO = nf;
-                        });
-
-                        // adding the dragstart logic
-                        nf.addEventListener("dragstart", (e) => {
-                            e.stopPropagation();
-                            let data = dragAndDrop.setInputDragStart(e, nf, placeholder);
-                            e.dataTransfer.setData("text", JSON.stringify(data));
-                            // setting currentDraggedInput
-                            currentDraggedInput = nf;
-                        });
-                    }
-                });
-            }
-        }
-    });
+    // setting drop logic
+    functions.setDropLogic(formInputsDiv);
 
     // ** Input Elements **
     // li elements from left pane
