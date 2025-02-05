@@ -40,7 +40,7 @@ class FormUtils:
         }
         return _models[field].__name__
 
-    def get_form_fields(self, field, exists=False, input_id=None, app_model=False, model_form=None):
+    def get_form_fields(self, field, exists=False, input_id=None, app_model=False, model_form=None, initial=None):
         app_label = "dynamic_forms"
         _forms = {
             # form input forms
@@ -89,7 +89,10 @@ class FormUtils:
             else:
                 form = _forms[field]()
         else:
-            form = _forms[field]()
+            if initial is not None:
+                form = _forms[field](initial=initial)
+            else:
+                form = _forms[field]()
 
         for field in form:
             fields[field.html_name] = {

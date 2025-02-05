@@ -12,7 +12,7 @@ class FruitsForm(ModelForm):
         model = Fruits
         fields = '__all__'
         widgets = {
-            "name": forms.TextInput(attrs={'class': 'form-control'}),
+            "name": forms.TextInput(attrs={'class': 'form-control', "placeholder": "Fruit name"}),
         }
 
 
@@ -22,6 +22,11 @@ class PizzaForm(ModelForm):
         model = Pizza
         fields = '__all__'
         widgets = {
-            "name": forms.TextInput(attrs={'class': 'form-control'}),
-            "toppings": forms.Textarea(attrs={'class': 'form-control', "rows": 5}),
+            "name": forms.TextInput(attrs={'class': 'form-control', "placeholder": "Pizza name"}),
+            "toppings": forms.CheckboxSelectMultiple(attrs={'class': 'form-control'}),
+            "cheese": forms.Select(attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(PizzaForm, self).__init__(*args, **kwargs)
+        # self.fields['toppings']['choices']['blank_choice'] = None

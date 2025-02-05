@@ -77,8 +77,9 @@ def get_form(request):
     field = request.GET.get("field", None)
     exists = get_bool_value(request.GET.get("exists", False))
     input_id = request.GET.get("inputId", None)
+    initial = request.GET.get("initial", None)
     if field is not None:
-        form = form_utils.get_form_fields(field=field, exists=exists, input_id=input_id)
+        form = form_utils.get_form_fields(field=field, exists=exists, input_id=input_id, initial=initial)
         return JsonResponse({"form": form})
     else:
         return JsonResponse({"form": None, "error": "No field found"})

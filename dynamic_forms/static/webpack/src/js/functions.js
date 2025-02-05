@@ -185,6 +185,37 @@ export function setRemoveLogic(newField) {
     });
 }
 
+/*
+arg: modelData
+iterates through the model data and creates an initial object for Django's initial argument when initializing a form
+ */
+export function getInitials(modelData) {
+    let attrs = modelData.attrs;
+    // initial json object
+    let initial = {
+        label: modelData.label, // hard coding label as it will always be in the form
+        input: modelData.input,
+    };
+    // parsing the model data to find all initial values
+    // placeholder
+    if (Object.keys(attrs).includes("placeholder")) {
+        initial.placeholder = attrs.placeholder;
+    }
+    // help_text
+    if (modelData.helpText.length > 0) {
+        initial.help_text = modelData.helpText;
+    }
+    // required
+    if (Object.keys(attrs).includes("required")) {
+        initial.required = true;
+    }
+    // input_classes
+    if (Object.keys(attrs).includes("class")) {
+        initial.input_classes = attrs.class;
+    }
+    return initial
+}
+
 export function createFormFields(formKeys, formData, modalBody, newField) {
     let formInputs = [];
     let formDiv = document.createElement("form");
@@ -211,14 +242,16 @@ export function createFormFields(formKeys, formData, modalBody, newField) {
     return formInputs;
 }
 
-export function addModelFieldData(formInputs, modelData) {
+export function addModelFieldData(fieldInput, formInputs, modelData) {
     for (let i = 0; i < formInputs.length; i++) {
-        let input = formInputs[i];
-        switch(input) {
-            case input.id.includes("id_label"):
+        let input = fieldInput.querySelector(formInputs[i]);
 
-        }
     }
+}
+
+function setModalFormModelFieldData(target, value) {
+    target.value = value;
+    target.dataset.currentValue = value;
 }
 
 export function setFormInputIds(newField, formInputs) {
@@ -756,10 +789,6 @@ export function removeErrors(el, errorClass) {
     for (let i = 0; i < errorEls.length; i++) {
         el.removeChild(errorEls[i]);
     }
-}
-
-export function dragStartLogic(el) {
-
 }
 
 export function containerContainsChild(container, child) {
