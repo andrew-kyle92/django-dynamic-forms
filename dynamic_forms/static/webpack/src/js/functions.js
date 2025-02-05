@@ -62,14 +62,51 @@ export function removeClass(el, className) {
     }
 }
 
-function replaceTemplateInput(inputClass, newData) {
+function replaceTemplateInput(parentEl, modelFieldData) {
+    // iterating through fieldElements (label, input, help_text)
+    let children = parentEl.childNodes;
+    for (let i = 0; i < children.length; i++) {
+        let child = children[i];
+        if (child.nodeName !== "#text") {
+            if (child.classList.contains("label")) {
+                child.innerHTML = modelFieldData.label;
+            } else if (child.classList.contains("input") || child.classList.contains("choices")) {
+                let parser = new DOMParser();
+                let newInput = parser.parseFromString(modelFieldData.input, "text/html");
+                if (child.classList.contains("input")) {
+                    // replacing the child with the new input
+                    let newNode = newInput.body.childNodes[0];
+                    parentEl.replaceChild(newNode, child);
+                    // reassigning child
+                    child = parentEl.childNodes[i]; // this seems redundant but this is in fact how we need to reassign child
+                    // adding the readonly attribute
+                    if (!child.getAttribute("readonly")) {
+                        child.setAttribute("readonly", true);
+                    }
+                    child.classList.add("input");
+                }
+                else {
 
+                }
+            }
+            else if (child.classList.contains("help-text")) {
+                child.innerHTML = modelFieldData["helpText"];
+            }
+        }
+    }
 }
 
-export function setNewField(data, exists=false) {
-    let formType = exists ? data.inputType : data.id;
+export function setNewField(data, exists=false, modelField=false) {
+    let formType = exists === true || modelField === true ? data.inputType : data.id;
     let newField = document.getElementById(formType).cloneNode(true);
-    newField.id = exists ? data.id : "id_" + crypto.randomUUID();
+    newField.id = exists === true ? data.id : modelField === true ? data.data["attrs"].id : "id_" + crypto.randomUUID();
+
+    // replacing the templated input with the modelField input, if modelField is true
+    if (modelField) {
+        let parentEl = newField.querySelector(".form-group");
+        replaceTemplateInput(parentEl, data);
+    }
+
     newField.removeAttribute("hidden");
     return newField;
 }
@@ -172,6 +209,16 @@ export function createFormFields(formKeys, formData, modalBody, newField) {
         }
     }
     return formInputs;
+}
+
+export function addModelFieldData(formInputs, modelData) {
+    for (let i = 0; i < formInputs.length; i++) {
+        let input = formInputs[i];
+        switch(input) {
+            case input.id.includes("id_label"):
+
+        }
+    }
 }
 
 export function setFormInputIds(newField, formInputs) {
@@ -673,61 +720,8 @@ export function setDropLogic(el, exists=false) {
 
                 // setting section listener logic
                 addListenerLogic(sectionRow);
-                //
-                // sectionRow.addEventListener("dragover", (ev) => {
-                //     ev.preventDefault();
-                //     // **  setting propagation
-                //     ev.stopPropagation();
-                //     // to prevent dropping into self
-                //     if (main.getCurrentDraggedInput !== newField) {
-                //         dragAndDrop.setDragOver(sectionRow, ev);
-                //     }
-                // });
-                //
-                // // setting section row dragleave
-                // sectionRow.addEventListener("dragleave", () => {
-                //     dragAndDrop.setDragLeave(sectionRow, main.getPlaceholder());
-                // });
-
+                // setting drop logic for the section row
                 setDropLogic(sectionRow);
-
-                // sectionRow.addEventListener("drop", async (e) => {
-                //
-                //     // getting the id from the dragged object
-                //     let d = JSON.parse(e.dataTransfer.getData("text"));
-                //
-                //     // determining if a new or existing input is being dropped
-                //     if (d.existing) {
-                //         let element = document.getElementById(d.id);
-                //         // adding the element to the target div
-                //         dragAndDrop.setExistingDrop(element, placeholder, sectionRow);
-                //     }
-                //     else {
-                //         // new field within form row
-                //         let nf = await dragAndDrop.addNewInput(d, sectionRow, placeholder);
-                //
-                //         // adding functionality to remove-input
-                //         functions.setRemoveLogic(nf);
-                //
-                //         // adding the dragover listener
-                //         nf.addEventListener("dragover", (ev) => {
-                //             // **  setting propagation
-                //             ev.stopPropagation();
-                //
-                //             // formInputMO = dragAndDrop.setInputDragOver(ev, formInputMO, currentDraggedInput, nf);
-                //             formInputMO = nf;
-                //         });
-                //
-                //         // adding the dragstart logic
-                //         nf.addEventListener("dragstart", (e) => {
-                //             e.stopPropagation();
-                //             let data = dragAndDrop.setInputDragStart(e, nf, placeholder);
-                //             e.dataTransfer.setData("text", JSON.stringify(data));
-                //             // setting currentDraggedInput
-                //             currentDraggedInput = nf;
-                //         });
-                //     }
-                // });
             }
         }
     });
@@ -776,8 +770,9 @@ export function containerContainsChild(container, child) {
 // ***** Functions pertaining to adding modelform inputs
 const fieldConfigs = {
     text: "text_input",
+    textarea: "text_area",
 }
-export async function getModelFieldType(fieldData) {
+export async function getModelFieldType(fieldType) {
     // getting the input type
-    return fieldConfigs[fieldData.type];
+    return fieldConfigs[fieldType];
 }

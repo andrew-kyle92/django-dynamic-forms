@@ -65,16 +65,30 @@ export function setDepth(targetDiv) {
     return level
 }
 
-export function setDrop(targetDiv, event) {
-    // removing the class 'drag-over'
-    functions.removeClass(targetDiv, "drag-over");
-
-    // add dragover listener
-}
-
-export const addNewInput = async (data, formDiv, exists=false) => {
+/*
+addNewInput function
+arguments: data, formDiv, exists, modelField
+data: <object> if modelField is false, data = {id:<str>(field_type), existing: false}
+      if modelField is true, data = {
+                                "label": <str> (label),
+                                "input": <str> (html field input),
+                                "helpText": <str> (help_text),
+                                "data": {
+                                    "name": <str>(field_name),
+                                    "is_hidden": <boolean>,
+                                    "required": <boolean>,
+                                    "value": <str or null>,
+                                    "attrs": {<object key/value pair of modelForm attrs>},
+                                    "template_name": <str>(path to Django widget template),
+                                    "type": <str>(input_type)
+                                }
+                            }
+exists: <boolean> if field exists in the database or not already
+modelForm: <boolean> if the field belongs to a Django ModelForm type
+ */
+export const addNewInput = async (data, formDiv, exists=false, modelField=false) => {
     // cloning the element and adding all the specific settings
-    let newField = functions.setNewField(data, exists);
+    let newField = functions.setNewField(data, exists, modelField);
 
     // adding id string to modal
     let inputModal = functions.setInputModal(newField);
@@ -102,7 +116,7 @@ export const addNewInput = async (data, formDiv, exists=false) => {
 
     // adding the form to the settings modal
     let modalBody = inputModal.querySelector(".modal-body");
-    let strExists = exists ? "True": "False" // For python's interpretation of boolean
+    // let strExists = exists ? "True": "False" // For python's interpretation of boolean
     let res = await main.getForm(formType, exists, newField.id);
     let formData = JSON.parse(res.form);
     let formKeys = Object.keys(formData);
@@ -120,6 +134,11 @@ export const addNewInput = async (data, formDiv, exists=false) => {
             let input = modalBody.querySelector(formInputs[i]);
             input.parentElement.setAttribute("hidden", "true");
         }
+    }
+
+    // adding modelField data to settings
+    if (modelField) {
+        functions.addModelFieldData(formInputs, data)
     }
 
     // adding the element to the target div

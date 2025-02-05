@@ -99,6 +99,7 @@ class FormUtils:
             }
             if app_model:
                 fields[field.html_name]["data"] = field.subwidgets[0].data
+                fields[field.html_name]["type"] = field.widget_type
 
         return json.dumps(fields)
 
@@ -218,8 +219,9 @@ class FormUtils:
 
     @staticmethod
     def get_model_form(model_name):
+        model_form = None
         for form in settings.MODEL_FORMS:
             if form._meta.model.__name__ == model_name:
-                return form
-            else:
-                return None
+                model_form = form
+
+        return model_form
