@@ -29,7 +29,10 @@ function getCookie(name) {
 export const csrftoken = getCookie('csrftoken');
 
 // ***** Fetch Requests *****
-export const getForm = async (field, exists="False", inputId="None", modelForm="None", initial="None") => {
+export const getForm = async (field, exists="False", inputId="None", modelForm="None", initial=false) => {
+    if (initial !== false) {
+        initial = JSON.stringify(initial);
+    }
     let url = '/get-form/?' + new URLSearchParams({
         "field": field,
         "exists": exists,

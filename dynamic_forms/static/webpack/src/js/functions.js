@@ -70,23 +70,20 @@ function replaceTemplateInput(parentEl, modelFieldData) {
         if (child.nodeName !== "#text") {
             if (child.classList.contains("label")) {
                 child.innerHTML = modelFieldData.label;
-            } else if (child.classList.contains("input") || child.classList.contains("choices")) {
+            } else if (child.classList.contains("input") || child.id === "choices") {
                 let parser = new DOMParser();
                 let newInput = parser.parseFromString(modelFieldData.input, "text/html");
+                // replacing the child with the new input
+                let newNode = newInput.body.childNodes[0];
+                parentEl.replaceChild(newNode, child);
+                // reassigning child
+                child = parentEl.childNodes[i]; // this seems redundant but this is how we need to reassign child
                 if (child.classList.contains("input")) {
-                    // replacing the child with the new input
-                    let newNode = newInput.body.childNodes[0];
-                    parentEl.replaceChild(newNode, child);
-                    // reassigning child
-                    child = parentEl.childNodes[i]; // this seems redundant but this is in fact how we need to reassign child
                     // adding the readonly attribute
                     if (!child.getAttribute("readonly")) {
                         child.setAttribute("readonly", true);
                     }
                     child.classList.add("input");
-                }
-                else {
-
                 }
             }
             else if (child.classList.contains("help-text")) {
@@ -190,7 +187,7 @@ arg: modelData
 iterates through the model data and creates an initial object for Django's initial argument when initializing a form
  */
 export function getInitials(modelData) {
-    let attrs = modelData.attrs;
+    let attrs = modelData.data.attrs;
     // initial json object
     let initial = {
         label: modelData.label, // hard coding label as it will always be in the form
@@ -800,6 +797,10 @@ export function containerContainsChild(container, child) {
 const fieldConfigs = {
     text: "text_input",
     textarea: "text_area",
+    checkboxselectmultiple: "checkbox_input",
+    checkbox: "checkbox_input",
+    select: "dropdown_input",
+    selectmultiple: "multiple_dropdown_input"
 }
 export async function getModelFieldType(fieldType) {
     // getting the input type
