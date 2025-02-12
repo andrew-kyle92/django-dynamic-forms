@@ -29,4 +29,30 @@ class PizzaForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(PizzaForm, self).__init__(*args, **kwargs)
-        # self.fields['toppings']['choices']['blank_choice'] = None
+        self.fields["toppings"].choices = self.fields["toppings"].choices.choices
+
+
+class PizzaFormNonModel(forms.Form):
+    cheese_choices = (
+        ('mozzarella', 'Mozzarella'),
+        ('provolone', 'Provolone'),
+        ('cheddar', 'Cheddar'),
+        ('ricotta', 'Ricotta')
+    )
+
+    toppings_choices = (
+        ('pepperoni', 'Pepperoni'),
+        ('sausage', 'Sausage'),
+        ('olives', 'Olives'),
+        ('spinach', 'Spinach'),
+        ('mushrooms', 'Mushrooms'),
+        ('bacon', 'Bacon'),
+        ('bell pepper', 'Bell Pepper'),
+        ('onions', 'Onions'),
+        ('cheese', 'Cheese'),
+        ('pineapple', 'Pineapple'),
+    )
+
+    name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', "placeholder": "Pizza name"}))
+    toppings = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple(attrs={"class": "form-check"}), choices=toppings_choices)
+    cheese = forms.ChoiceField(widget=forms.Select(attrs={"class": "form-select"}), choices=cheese_choices)

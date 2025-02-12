@@ -62,6 +62,37 @@ export function removeClass(el, className) {
     }
 }
 
+function addChoiceFieldChoices(choiceDiv, choices) {
+    // removing the dynamically created HTML that Django created for each child choice
+    while (choiceDiv.childElementCount > 0) {
+        choiceDiv.removeChild(choiceDiv.firstElementChild);
+    }
+    // creating choice elements for each choice
+    for (let i = 0; i < choices.length; i++) {
+        // ***** create the form group div *****
+        let formGroup = document.createElement("div");
+        formGroup.className = "choices-form-group form-check";
+        // add form group to choiceDiv
+        choiceDiv.appendChild(formGroup);
+        // ***** add the choice input *****
+        let choice = document.createElement("input");
+        choice.type = "checkbox"; // input type
+        choice.className = "form-check-input"; // classname
+        // adding the field data to the input
+        choice.id = choices[i]["attrs"]["id"]; // id
+        choice.value = choices[i]["value"]; // value
+        choice.name = choices[i]["name"]; // name
+        choice.selected = choices[i]["selected"]; // selected
+        formGroup.appendChild(choice);
+        // ***** adding the label element *****
+        let label = document.createElement("label");
+        label.className = "form-check-label";
+        // adding the field data to the label
+        label.innerText = choices[i]["label"]; // label text
+        label.for = choices[i]["name"]; // name
+    }
+}
+
 function replaceTemplateInput(parentEl, modelFieldData) {
     // iterating through fieldElements (label, input, help_text)
     let children = parentEl.childNodes;
@@ -70,7 +101,8 @@ function replaceTemplateInput(parentEl, modelFieldData) {
         if (child.nodeName !== "#text") {
             if (child.classList.contains("label")) {
                 child.innerHTML = modelFieldData.label;
-            } else if (child.classList.contains("input") || child.id === "choices") {
+            }
+            else if (child.classList.contains("input") || child.id === "choices") {
                 let parser = new DOMParser();
                 let newInput = parser.parseFromString(modelFieldData.input, "text/html");
                 // replacing the child with the new input
@@ -85,6 +117,10 @@ function replaceTemplateInput(parentEl, modelFieldData) {
                     }
                     child.classList.add("input");
                 }
+
+                if (child.id === "choices") {
+                    addChoiceFieldChoices(child, modelFieldData["data"]);
+                }
             }
             else if (child.classList.contains("help-text")) {
                 child.innerHTML = modelFieldData["helpText"];
@@ -96,7 +132,7 @@ function replaceTemplateInput(parentEl, modelFieldData) {
 export function setNewField(data, exists=false, modelField=false) {
     let formType = exists === true || modelField === true ? data.inputType : data.id;
     let newField = document.getElementById(formType).cloneNode(true);
-    newField.id = exists === true ? data.id : modelField === true ? data.data["attrs"].id : "id_" + crypto.randomUUID();
+    newField.id = exists === true ? data.id : modelField === true ? data.id : "id_" + crypto.randomUUID();
 
     // replacing the templated input with the modelField input, if modelField is true
     if (modelField) {

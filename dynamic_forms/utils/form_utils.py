@@ -99,15 +99,28 @@ class FormUtils:
                 "label": field.label,
                 "input": field.as_widget(),
                 "helpText": field.help_text,
+                "id": field.auto_id,
             }
             if app_model:
-                fields[field.html_name]["data"] = field.subwidgets[0].data
+                fields[field.html_name]["data"] = self.get_app_model_data(field)
                 fields[field.html_name]["type"] = field.widget_type
 
         return json.dumps(fields)
 
-    def create_json_field(self, field, value):
-        pass
+    @staticmethod
+    def get_app_model_data(field):
+        # data variable to return
+        data = None
+        multi_data_types = ["select", "checkbox", "radio", "checkboxselectmultiple", "radioselectmultiple", "multipleselect"]
+        # determining the type of field
+        field_type = field.widget_type
+        # checking if field type has multiple data instances
+        if field_type in multi_data_types:
+            data = [subwidget.data for subwidget in field.subwidgets]
+        else:
+            data = field.subwidgets[0].data
+        # returning the data
+        return data
 
     def save_form_to_db(self, form_data):
         # creating the main form.

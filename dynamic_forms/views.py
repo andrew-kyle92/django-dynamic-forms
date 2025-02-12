@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.views import View
 from django.views.generic import ListView
 
+from testapp.forms import PizzaFormNonModel
 from .forms import FormModelForm
 from .models import FormModel
 
