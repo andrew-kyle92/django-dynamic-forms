@@ -20,6 +20,7 @@ class TextInputField(ModelForm):
         for visible in self.visible_fields():
             # adding valueChanged dataset attribute
             visible.field.widget.attrs["data-value-changed"] = "false"
+            visible.field.widget.attrs["data-model-field"] = "false"
 
             if visible.widget_type == "text" or visible.widget_type == "number":
                 visible.field.widget.attrs["class"] = "form-control"
@@ -47,6 +48,7 @@ class TextAreaField(ModelForm):
         for visible in self.visible_fields():
             # adding valueChanged dataset attribute
             visible.field.widget.attrs["data-value-changed"] = "false"
+            visible.field.widget.attrs["data-model-field"] = "false"
 
             if visible.widget_type == "text" or visible.widget_type == "number":
                 visible.field.widget.attrs["class"] = "form-control"
@@ -74,6 +76,7 @@ class EmailInputField(ModelForm):
         for visible in self.visible_fields():
             # adding valueChanged dataset attribute
             visible.field.widget.attrs["data-value-changed"] = "false"
+            visible.field.widget.attrs["data-model-field"] = "false"
 
             if visible.widget_type == "text" or visible.widget_type == "number":
                 visible.field.widget.attrs["class"] = "form-control"
@@ -101,6 +104,7 @@ class DateInputField(ModelForm):
         for visible in self.visible_fields():
             # adding valueChanged dataset attribute
             visible.field.widget.attrs["data-value-changed"] = "false"
+            visible.field.widget.attrs["data-model-field"] = "false"
 
             if visible.widget_type == "text" or visible.widget_type == "number":
                 visible.field.widget.attrs["class"] = "form-control"
@@ -128,6 +132,7 @@ class DateTimeInputField(ModelForm):
         for visible in self.visible_fields():
             # adding valueChanged dataset attribute
             visible.field.widget.attrs["data-value-changed"] = "false"
+            visible.field.widget.attrs["data-model-field"] = "false"
 
             if visible.widget_type == "text" or visible.widget_type == "number":
                 visible.field.widget.attrs["class"] = "form-control"
@@ -155,6 +160,7 @@ class DropDownField(ModelForm):
         for visible in self.visible_fields():
             # adding valueChanged dataset attribute
             visible.field.widget.attrs["data-value-changed"] = "false"
+            visible.field.widget.attrs["data-model-field"] = "false"
 
             if visible.widget_type == "text" or visible.widget_type == "number":
                 visible.field.widget.attrs["class"] = "form-control"
@@ -182,6 +188,7 @@ class MultipleDropDownField(ModelForm):
         for visible in self.visible_fields():
             # adding valueChanged dataset attribute
             visible.field.widget.attrs["data-value-changed"] = "false"
+            visible.field.widget.attrs["data-model-field"] = "false"
 
             if visible.widget_type == "text" or visible.widget_type == "number":
                 visible.field.widget.attrs["class"] = "form-control"
@@ -209,6 +216,7 @@ class IntegerInputField(ModelForm):
         for visible in self.visible_fields():
             # adding valueChanged dataset attribute
             visible.field.widget.attrs["data-value-changed"] = "false"
+            visible.field.widget.attrs["data-model-field"] = "false"
 
             if visible.widget_type == "text" or visible.widget_type == "number":
                 visible.field.widget.attrs["class"] = "form-control"
@@ -236,6 +244,7 @@ class DecimalInputField(ModelForm):
         for visible in self.visible_fields():
             # adding valueChanged dataset attribute
             visible.field.widget.attrs["data-value-changed"] = "false"
+            visible.field.widget.attrs["data-model-field"] = "false"
 
             if visible.widget_type == "text" or visible.widget_type == "number":
                 visible.field.widget.attrs["class"] = "form-control"
@@ -263,6 +272,7 @@ class FileInputField(ModelForm):
         for visible in self.visible_fields():
             # adding valueChanged dataset attribute
             visible.field.widget.attrs["data-value-changed"] = "false"
+            visible.field.widget.attrs["data-model-field"] = "false"
 
             if visible.widget_type == "text" or visible.widget_type == "number":
                 visible.field.widget.attrs["class"] = "form-control"
@@ -290,6 +300,7 @@ class RadioInputField(ModelForm):
         for visible in self.visible_fields():
             # adding valueChanged dataset attribute
             visible.field.widget.attrs["data-value-changed"] = "false"
+            visible.field.widget.attrs["data-model-field"] = "false"
 
             if visible.widget_type == "text" or visible.widget_type == "number":
                 visible.field.widget.attrs["class"] = "form-control"
@@ -317,6 +328,7 @@ class CheckBoxInputField(ModelForm):
         for visible in self.visible_fields():
             # adding valueChanged dataset attribute
             visible.field.widget.attrs["data-value-changed"] = "false"
+            visible.field.widget.attrs["data-model-field"] = "false"
 
             if visible.widget_type == "text" or visible.widget_type == "number":
                 visible.field.widget.attrs["class"] = "form-control"

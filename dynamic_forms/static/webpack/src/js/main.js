@@ -30,18 +30,31 @@ export const csrftoken = getCookie('csrftoken');
 
 // ***** Fetch Requests *****
 export const getForm = async (field, exists="False", inputId="None", modelForm="None", initial=false) => {
-    if (initial !== false) {
-        initial = JSON.stringify(initial);
-    }
-    let url = '/get-form/?' + new URLSearchParams({
+    let bodyData = {
         "field": field,
         "exists": exists,
         "inputId": inputId,
         "modelForm": modelForm,
         "initial": initial,
-    });
+    }
+    // if (initial !== false) {
+    //     initial = JSON.stringify(initial);
+    // }
+    // let url = '/get-form/?' + new URLSearchParams({
+    //     "field": field,
+    //     "exists": exists,
+    //     "inputId": inputId,
+    //     "modelForm": modelForm,
+    //     "initial": initial,
+    // });
+    let url = '/get-form/';
     return await fetch(url, {
-       method: 'get'
+        method: 'post',
+        credentials: 'same-origin',
+        headers: {
+            "X-CSRFToken": csrftoken
+        },
+        body: JSON.stringify(bodyData),
     }).then(async response => {
         return response.json();
     });

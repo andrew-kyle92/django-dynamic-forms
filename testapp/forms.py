@@ -23,7 +23,7 @@ class PizzaForm(ModelForm):
         fields = '__all__'
         widgets = {
             "name": forms.TextInput(attrs={'class': 'form-control', "placeholder": "Pizza name"}),
-            "toppings": forms.CheckboxSelectMultiple(attrs={'class': 'form-control'}),
+            "toppings": forms.CheckboxSelectMultiple(),
             "cheese": forms.Select(attrs={'class': 'form-control'}),
         }
 

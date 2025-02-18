@@ -90,6 +90,7 @@ function addChoiceFieldChoices(choiceDiv, choices) {
         // adding the field data to the label
         label.innerText = choices[i]["label"]; // label text
         label.for = choices[i]["name"]; // name
+        formGroup.appendChild(label);
     }
 }
 
@@ -98,6 +99,7 @@ function replaceTemplateInput(parentEl, modelFieldData) {
     let children = parentEl.childNodes;
     for (let i = 0; i < children.length; i++) {
         let child = children[i];
+        let childId = child.id;
         if (child.nodeName !== "#text") {
             if (child.classList.contains("label")) {
                 child.innerHTML = modelFieldData.label;
@@ -118,7 +120,7 @@ function replaceTemplateInput(parentEl, modelFieldData) {
                     child.classList.add("input");
                 }
 
-                if (child.id === "choices") {
+                if (childId === "choices") {
                     addChoiceFieldChoices(child, modelFieldData["data"]);
                 }
             }
@@ -223,28 +225,50 @@ arg: modelData
 iterates through the model data and creates an initial object for Django's initial argument when initializing a form
  */
 export function getInitials(modelData) {
-    let attrs = modelData.data.attrs;
     // initial json object
     let initial = {
-        label: modelData.label, // hard coding label as it will always be in the form
-        input: modelData.input,
+        label: modelData["label"], // hard coding label as it will always be in the form
+        input: modelData["input"], // hard coded input
     };
-    // parsing the model data to find all initial values
-    // placeholder
-    if (Object.keys(attrs).includes("placeholder")) {
-        initial.placeholder = attrs.placeholder;
-    }
     // help_text
-    if (modelData.helpText.length > 0) {
-        initial.help_text = modelData.helpText;
+    if (modelData["helpText"].length > 0) {
+        initial.help_text = modelData["helpText"];
     }
-    // required
-    if (Object.keys(attrs).includes("required")) {
-        initial.required = true;
+    let attrs = modelData["data"]["attrs"];
+    // parsing the model data to find all initial values
+    let choiceFields = ["checkbox_input", "dropdown_input"]; // all possible choicefields
+    if (!attrs) {
+        if (Array.isArray(modelData["data"])) {
+            if (choiceFields.includes(modelData["inputType"])) {
+                // let choices = {};
+                let choices = "";
+                let count = 0;
+                modelData["data"].forEach(choice => {
+                    // choices[choice["value"]] = [choice["value"], choice["label"]];
+                    if (modelData["data"].length -1 === count) {
+                        choices += `${choice["value"]}, ${choice["label"]}`;
+                    }
+                    else {
+                        choices += `${choice["value"]}, ${choice["label"]}\n`;
+                    }
+                });
+                initial["choices"] = choices;
+            }
+        }
     }
-    // input_classes
-    if (Object.keys(attrs).includes("class")) {
-        initial.input_classes = attrs.class;
+    else {
+        // placeholder
+        if (Object.keys(attrs).includes("placeholder")) {
+            initial.placeholder = attrs.placeholder;
+        }
+        // required
+        if (Object.keys(attrs).includes("required")) {
+            initial.required = true;
+        }
+        // input_classes
+        if (Object.keys(attrs).includes("class")) {
+            initial.input_classes = attrs.class;
+        }
     }
     return initial
 }
@@ -303,7 +327,7 @@ export function setFormInputIds(newField, formInputs) {
 export function setValueChanged(input) {
     // setting data-current-value
    input.dataset.currentValue = "";
-   // on input, after .5 seconds, if the value is different from the current value, flag the change
+   // on input, after .25 seconds, if the value is different from the current value, flag the change
    input.addEventListener("input", () => {
        let currentValue = input.dataset.currentValue;
         setTimeout(() => {

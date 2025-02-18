@@ -73,16 +73,22 @@ class ViewFormView(View):
 
 # ********** Fetch Requests **********
 def get_form(request):
+    # getting form body data
+    form_data = json.loads(request.body)
     # initializing form_utils
     form_utils = FormUtils()
-    field = request.GET.get("field", None)
-    exists = get_bool_value(request.GET.get("exists", False))
-    input_id = request.GET.get("inputId", None)
-    initial = request.GET.get("initial", None)
+    # field = request.GET.get("field", None)
+    # exists = get_bool_value(request.GET.get("exists", False))
+    # input_id = request.GET.get("inputId", None)
+    # initial = request.GET.get("initial", None)
+    field = form_data["field"]
+    exists = form_data["exists"]
+    input_id = form_data["inputId"]
+    initial = form_data["initial"]
     if initial == "false" or initial is None:
         initial = None
-    else:
-        initial = json.loads(initial)
+    # else:
+    #     initial = json.loads(initial)
     if field is not None:
         form = form_utils.get_form_fields(field=field, exists=exists, input_id=input_id, initial=initial)
         return JsonResponse({"form": form})
