@@ -64,6 +64,8 @@ export function removeClass(el, className) {
 
 function addChoiceFieldChoices(choiceDiv, choices) {
     // removing the dynamically created HTML that Django created for each child choice
+    // adding the choices to a column div within the choices div
+    // this is in case they want to split the options into multiple columns
     while (choiceDiv.childElementCount > 0) {
         choiceDiv.removeChild(choiceDiv.firstElementChild);
     }
@@ -121,7 +123,8 @@ function replaceTemplateInput(parentEl, modelFieldData) {
                 }
 
                 if (childId === "choices") {
-                    addChoiceFieldChoices(child, modelFieldData["data"]);
+                    let choiceCol = child.firstElementChild;
+                    addChoiceFieldChoices(choiceCol, modelFieldData["data"]);
                 }
             }
             else if (child.classList.contains("help-text")) {
@@ -134,7 +137,8 @@ function replaceTemplateInput(parentEl, modelFieldData) {
 export function setNewField(data, exists=false, modelField=false) {
     let formType = exists === true || modelField === true ? data.inputType : data.id;
     let newField = document.getElementById(formType).cloneNode(true);
-    newField.id = exists === true ? data.id : modelField === true ? data.id : "id_" + crypto.randomUUID();
+    // newField.id = exists === true ? data.id : modelField === true ? data.id : "id_" + crypto.randomUUID();
+    newField.id = exists === true ? data.id : "id_" + crypto.randomUUID();
 
     // replacing the templated input with the modelField input, if modelField is true
     if (modelField) {
@@ -240,23 +244,38 @@ export function getInitials(modelData) {
     if (!attrs) {
         if (Array.isArray(modelData["data"])) {
             if (choiceFields.includes(modelData["inputType"])) {
+                let blankChoice = false;
+                let blankLabel = "";
                 // let choices = {};
                 let choices = "";
                 let count = 0;
                 modelData["data"].forEach(choice => {
                     // choices[choice["value"]] = [choice["value"], choice["label"]];
-                    if (modelData["data"].length -1 === count) {
-                        choices += `${choice["value"]}, ${choice["label"]}`;
+                    // checking if value is blank
+                    if (choice["value"] === "") {
+                        blankChoice = true;
+                        blankLabel = choice["label"];
+                    } else {
+                        if (modelData["data"].length - 1 === count) {
+                            choices += `${choice["value"]}, ${choice["label"]}`;
+                        } else {
+                            choices += `${choice["value"]}, ${choice["label"]}\n`;
+                        }
                     }
-                    else {
-                        choices += `${choice["value"]}, ${choice["label"]}\n`;
-                    }
+                    // iterating count
+                    count++;
                 });
+                // adding the choices to initial data
                 initial["choices"] = choices;
+
+                // checking if blank choice is true
+                if (blankChoice) {
+                    initial["blank_option"] = blankChoice;
+                    initial["blank_label"] = blankLabel;
+                }
             }
         }
-    }
-    else {
+    } else {
         // placeholder
         if (Object.keys(attrs).includes("placeholder")) {
             initial.placeholder = attrs.placeholder;
@@ -472,7 +491,9 @@ export function applySettings(formInputs, inputEl, newField, isFormSection) {
                         inputInput.setAttribute("required", "");
                     }
                     else {
-                        inputInput.removeAttribute("required");
+                        if (inputInput) {
+                            inputInput.removeAttribute("required");
+                        }
                     }
                     field.dataset.valueChanged = "false";
                     field.dataset.currentValue = `${field.checked}`;
@@ -587,9 +608,10 @@ export function applySettings(formInputs, inputEl, newField, isFormSection) {
             case `${newField.id}_id_choices`:
                 if (valueChanged) {
                     let dropDowns = ["multiple_dropdown_input", "dropdown_input"];
-                    let radioCheckInputs = ["radio_input", "checkbox_input"];
+                    let colInput = document.querySelector(`#${newField.id}_id_columns`) // columns input
+                    let rebuildCols = colInput ? colInput.dataset.valueChanged = "true" : false; // setting columns input data-value-changed to 'true'
                     let formType = newField.dataset.formType;
-                    let isDropDown = dropDowns.includes(formType);
+                    let isDropDown = dropDowns.includes(formType); // bool indicating input is a dropdown
                     let choices = {};
                     let currentChoices = field.dataset.choices;
                     let inputValues = field.value.split("\n");
@@ -609,31 +631,108 @@ export function applySettings(formInputs, inputEl, newField, isFormSection) {
                             // if input is a dropdown
                             if (inputInput) {
                                 inputInput.removeChild(child);
-                            }
-                            // if input is a radio or checkbox input
-                            else if (inputChoices) {
-                                inputChoices.removeChild(child);
+                            } else if (inputChoices) {
+                                // if input is a radio or checkbox input
+                                let childParent = child.parentElement
+                                childParent.removeChild(child);
+                                rebuildCols = true; // setting rebuildCols to true
                             }
                         });
                         // adding new choices
                         choicesToBeAdded.forEach((c) => {
                             let newChoice = getNewChoice(isDropDown, formType, choices[c], newField.id)
-                            if (isDropDown){ inputInput.appendChild(newChoice); }
-                            else { inputChoices.appendChild(newChoice); }
+                            if (isDropDown) {
+                                inputInput.appendChild(newChoice);
+                            } else {
+                                let colDivs = inputChoices.querySelectorAll(`.choice-col`);
+                                let lastDiv = colDivs[colDivs.length - 1];
+                                lastDiv.appendChild(newChoice);
+                            }
                         });
                     } else {
                         // adding the options
                         for (let key in choices) {
                             // adding the new choices
                             let newChoice = getNewChoice(isDropDown, formType, choices[key], newField.id)
-                            if (isDropDown){ inputInput.appendChild(newChoice); }
-                            else { inputChoices.appendChild(newChoice); }
+                            if (isDropDown) {
+                                inputInput.appendChild(newChoice);
+                            } else {
+                                let colDivs = inputChoices.querySelectorAll(`.choice-col`);
+                                let lastDiv = colDivs[colDivs.length - 1];
+                                lastDiv.appendChild(newChoice);
+                            }
                         }
                     }
                     field.dataset.choices = JSON.stringify(choices);
 
                     field.dataset.valueChanged = "false";
                     field.dataset.currentValue = JSON.stringify(choices);
+                }
+                break;
+            case `${newField.id}_id_columns`:
+                if (valueChanged) {
+                    let newColumnCount = parseInt(field.value); // selected column count
+                    let choiceDiv = document.getElementById(`${newField.id}_choices`); // div that holds all columns
+                    let colDivs = choiceDiv.querySelectorAll(".choice-col");
+                    // creating a temp div to hold all choices and adding to choiceDiv
+                    let tempDiv = document.createElement("div");
+                    tempDiv.id = "tempChoiceDiv";
+                    tempDiv.hidden = true;
+                    choiceDiv.appendChild(tempDiv);
+                    // adding all the choices to the temp div
+                    for (let i = 0; i < colDivs.length; i++) {
+                        let colDiv = colDivs[i];
+                        while (colDiv.childElementCount > 0) {
+                            tempDiv.appendChild(colDiv.children[0]);
+                        }
+                    }
+                    // removing/adding the amount of columns needed
+                    if (newColumnCount > colDivs.length) {
+                        // adding new columns
+                        for (let i = 1; i < newColumnCount; i++) { // starting at one because one colDiv is in the choiceDiv already
+                            // cloning the first choice-col of the choices div
+                            let newColDiv = colDivs[0].cloneNode(true);
+                            choiceDiv.appendChild(newColDiv);
+                        }
+                    } else {
+                        // removing columns
+                        while (colDivs.length !== newColumnCount) {
+                            choiceDiv.removeChild(colDivs[0]);
+                        }
+                    }
+                    // breaking up the choices then appending to the respective columns
+                    let colIndex = 0; // the column int to add the choice to
+                    let choicePerCol = Math.floor(tempDiv.childElementCount / newColumnCount); // choices split by the num of cols
+                    let choiceCount = Math.abs(tempDiv.childElementCount);
+                    let counter = 0; // a counter to keep track of how many choices are added to each column
+                    let columns = choiceDiv.querySelectorAll(".choice-col");
+                    for (let i = 0; i < choiceCount; i++) {
+                        // checking the counter int
+                        if (counter < choicePerCol) {
+                            columns[colIndex].appendChild(tempDiv.children[0]);
+                        } else if (counter === choicePerCol) {
+                            // setting the counter back to 0
+                            counter = 0;
+                            if (colIndex === columns.length - 1) {
+                                if (i === choiceCount - 1) {
+                                    columns[colIndex].appendChild(tempDiv.children[0]);
+                                }
+                            } else {
+                                // increasing the colIndex
+                                colIndex++;
+                                // appending the choice to the new div
+                                columns[colIndex].appendChild(tempDiv.children[0]);
+                            }
+                        }
+                        // increasing the counter
+                        counter++;
+                    }
+                    // removing the tempDiv
+                    choiceDiv.removeChild(tempDiv);
+                    // setting value changed to false
+                    field.dataset.valueChanged = "false";
+                    // setting the currentValue;
+                    field.dataset.currentValue = `${newColumnCount}`;
                 }
                 break;
             case `${newField.id}_id_min_value`:
@@ -715,6 +814,10 @@ export function gatherInputData(input) {
     let formData = new FormData(formDiv);
     for (let [key, value] of formData.entries()) {
         if (key !== "csrfmiddlewaretoken") {
+            if (key === "blank_option") {
+                let blankOptionInput = document.getElementById(`${input.id}_id_blank_option`);
+                value = blankOptionInput.checked;
+            }
             inputData.formData[key] = value;
         }
     }
@@ -758,9 +861,11 @@ export function addListenerLogic(el) {
         el.addEventListener("dragover", (ev) => {
             // **  setting propagation
             ev.stopPropagation();
-            console.log(el);
+
             // reassigning formInputMO
             main.setFormInputMO(el);
+
+            // dragAndDrop.setPlaceHolderPosition(main.getFormInputMO(), main.getPlaceholder(), ev);
         });
 
         // adding the dragstart logic

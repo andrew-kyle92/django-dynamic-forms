@@ -106,6 +106,7 @@ class CheckboxInput(BaseFieldModel):
     """Model for checkbox input field"""
     input = models.TextField(blank=True, null=True)
     choices = models.TextField(blank=True, null=True, help_text="List of choices, in this format: <strong><code>value, label</code></strong>. Add each choice to a new line.")
+    columns = models.CharField(blank=False, null=False, default="1", help_text="Choose how many columns to split the options into. Min. 1, Max. 3. Default is 1.", max_length=1, choices=(("1", "1"), ("2", "2"), ("3", "3")))
     form = models.ForeignKey(FormModel, related_name='checkbox_input_fields', on_delete=models.CASCADE, null=True, blank=True)
 
 
@@ -113,4 +114,5 @@ class RadioInput(BaseFieldModel):
     """Model for radio input field"""
     input = models.TextField(blank=True, null=True)
     choices = models.TextField(blank=True, null=True, help_text="List of choices, in this format: <strong><code>value, label</code></strong>. Add each choice to a new line.")
+    columns = models.CharField(blank=False, null=False, default="1", help_text="Choose how many columns to split the options into. Min. 1, Max. 3. Default is 1.", max_length=1, choices=(("1", "1"), ("2", "2"), ("3", "3")))
     form = models.ForeignKey(FormModel, related_name='radio_input_fields', on_delete=models.CASCADE, null=True, blank=True)

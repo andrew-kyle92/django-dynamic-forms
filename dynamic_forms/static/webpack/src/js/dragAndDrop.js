@@ -188,6 +188,9 @@ export const addNewInput = async (data, formDiv, exists=false, modelField=false)
         // applying all the settings
         functions.applySettings(formInputs, inputEl, newField, isFormSection);
         inputModal.querySelector(".btn-close").click();
+        if (document.activeElement) {
+            document.activeElement.blur();
+        }
     });
     // if exists apply the settings button to add the existing model data
     if (exists) {
@@ -274,6 +277,9 @@ export function setInputDragStart(e, newField, placeholder) {
     // creating the placeholder element
     placeholder = document.createElement("div");
     placeholder.classList.add("input-placeholder");
+
+    // setting the placeholder, globally
+    main.setPlaceholder(placeholder);
 
     return data
 }

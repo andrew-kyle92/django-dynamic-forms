@@ -65,7 +65,7 @@ class FormUtils:
         }
 
         # checking kwargs for non-dynamic-form-app ModelForm
-        if model_form is not None:
+        if model_form:
             _forms[model_form._meta.model.__name__] = model_form
             if exists:
                 app_label = model_form._meta.app_label
@@ -89,7 +89,7 @@ class FormUtils:
             else:
                 form = _forms[field]()
         else:
-            if initial is not None:
+            if initial:
                 form = _forms[field](initial=initial)
             else:
                 form = _forms[field]()

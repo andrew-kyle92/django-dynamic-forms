@@ -7,7 +7,7 @@ import * as bootstrap from 'bootstrap';
 // importing dragAndDrop.js and functions.js
 import * as dragAndDrop from "./dragAndDrop.js";
 import * as functions from "./functions";
-import {addNewInput, newSetDragOver} from "./dragAndDrop.js";
+import {addNewInput} from "./dragAndDrop.js";
 // ***** End Import *****
 
 // ########## Getting the csrf token for the fetch calls ##########
@@ -29,7 +29,7 @@ function getCookie(name) {
 export const csrftoken = getCookie('csrftoken');
 
 // ***** Fetch Requests *****
-export const getForm = async (field, exists="False", inputId="None", modelForm="None", initial=false) => {
+export const getForm = async (field, exists="False", inputId="None", modelForm=false, initial=false) => {
     let bodyData = {
         "field": field,
         "exists": exists,
@@ -37,16 +37,6 @@ export const getForm = async (field, exists="False", inputId="None", modelForm="
         "modelForm": modelForm,
         "initial": initial,
     }
-    // if (initial !== false) {
-    //     initial = JSON.stringify(initial);
-    // }
-    // let url = '/get-form/?' + new URLSearchParams({
-    //     "field": field,
-    //     "exists": exists,
-    //     "inputId": inputId,
-    //     "modelForm": modelForm,
-    //     "initial": initial,
-    // });
     let url = '/get-form/';
     return await fetch(url, {
         method: 'post',
@@ -143,6 +133,10 @@ export function getPlaceholder() {
         return null
     }
     return placeholder;
+}
+
+export function setPlaceholder(el) {
+    placeholder = el;
 }
 
 export function setCurrentDraggedInput(el) {
@@ -342,6 +336,10 @@ window.addEventListener("DOMContentLoaded", async () => {
         let mainFormData = new FormData(mainForm);
         for (let [key, value] of mainFormData.entries()) {
             if (key !== "csrfmiddlewaretoken") {
+                if (key === "for_table") {
+                let forTableCheckbox = document.querySelector(".mainForm").querySelector("#id_for_table");
+                value = forTableCheckbox.checked;
+            }
                 formData.formData[key] = value;
             }
         }
@@ -402,7 +400,7 @@ window.addEventListener("DOMContentLoaded", async () => {
                 // child
                 let child = object.children[j];
                 // adding the field input/section
-                let nf = await addNewInput(child, sectionRow, true, true);
+                let nf = await addNewInput(child, sectionRow, true, false);
 
                 // adding the remove logic
                 functions.setRemoveLogic(nf);
