@@ -107,14 +107,14 @@ function replaceTemplateInput(parentEl, modelFieldData) {
                 child.innerHTML = modelFieldData.label;
             }
             else if (child.classList.contains("input") || child.id === "choices") {
-                let parser = new DOMParser();
-                let newInput = parser.parseFromString(modelFieldData.input, "text/html");
-                // replacing the child with the new input
-                let newNode = newInput.body.childNodes[0];
-                parentEl.replaceChild(newNode, child);
-                // reassigning child
-                child = parentEl.childNodes[i]; // this seems redundant but this is how we need to reassign child
                 if (child.classList.contains("input")) {
+                     let parser = new DOMParser();
+                    let newInput = parser.parseFromString(modelFieldData.input, "text/html");
+                    // replacing the child with the new input
+                    let newNode = newInput.body.childNodes[0];
+                    parentEl.replaceChild(newNode, child);
+                    // reassigning child
+                    child = parentEl.childNodes[i]; // this seems redundant but this is how we need to reassign child
                     // adding the readonly attribute
                     if (!child.getAttribute("readonly")) {
                         child.setAttribute("readonly", true);

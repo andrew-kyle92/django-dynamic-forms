@@ -1,5 +1,7 @@
 from django.db import models
 
+from tinymce.widgets import TinyMCE
+
 from .forms import FormModel
 
 

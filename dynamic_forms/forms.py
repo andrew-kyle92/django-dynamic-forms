@@ -3,6 +3,8 @@ from django.apps import apps
 from django.forms import modelformset_factory, ModelForm
 from django.conf import settings
 
+from tinymce.widgets import TinyMCE
+
 from .models import (TextInput, TextAreaInput, EmailInput, DateInput, DateTimeInput, DropDownInput,
                      MultipleSelectDropDownInput, IntegerInput, DecimalInput, CheckboxInput, RadioInput,
                      FileInput, FormModel, FormRow, DividerLine, SectionHeader, TextBlock, CollapsibleSection)
@@ -448,8 +450,11 @@ class TextBlockForm(ModelForm):
             elif visible.widget_type == "select" or visible.widget_type == "nullbooleanselect":
                 visible.field.widget.attrs["class"] = "form-select"
             elif visible.widget_type == "textarea":
-                visible.field.widget.attrs["class"] = "form-control"
-                visible.field.widget.attrs["rows"] = 5
+                if visible.field.name == "text":
+                    visible.field.widget = TinyMCE(attrs={'cols': 40, 'rows': 10}, mce_attrs=settings.TINYMCE_DEFAULT_CONFIG)
+                else:
+                    visible.field.widget.attrs["class"] = "form-control"
+                    visible.field.widget.attrs["rows"] = 5
             elif visible.widget_type == "checkbox":
                 visible.field.widget.attrs["class"] = "form-check-input"
 
