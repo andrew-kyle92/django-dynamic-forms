@@ -450,8 +450,8 @@ class TextBlockForm(ModelForm):
             elif visible.widget_type == "select" or visible.widget_type == "nullbooleanselect":
                 visible.field.widget.attrs["class"] = "form-select"
             elif visible.widget_type == "textarea":
-                if visible.field.name == "text":
-                    visible.field.widget = TinyMCE(attrs={'cols': 40, 'rows': 10}, mce_attrs=settings.TINYMCE_DEFAULT_CONFIG)
+                if visible.name == "text":
+                    visible.field.widget = TinyMCE(attrs={'cols': 40, 'rows': 10, "data-value-changed": "false"}, mce_attrs=settings.TINYMCE_DEFAULT_CONFIG)
                 else:
                     visible.field.widget.attrs["class"] = "form-control"
                     visible.field.widget.attrs["rows"] = 5

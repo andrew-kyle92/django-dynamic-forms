@@ -1,6 +1,36 @@
 // ***** All methods and functions for dynamic_forms *****
 import * as dragAndDrop from './dragAndDrop';
 import * as main from "./main";
+import {initializeTinyMCE} from "./init_tinymce.js"
+import tinymce from "../../../tinymce/tinymce.min.js";
+
+export async function initializeEditor(selector) {
+    await tinymce.init({
+        selector: selector,
+        branding: false,
+        height: "320px",
+        width: "100%",
+        menubar: "file edit view insert format tools table help",
+        plugins: "advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table code help wordcount",
+        toolbar: "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect |" +
+            " alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist checklist |" +
+            " forecolor backcolor casechange permanentpen formatpainter removeformat | pagebreak | charmap emoticons |" +
+            " fullscreen  preview save print | insertfile image media pageembed template link anchor codesample |" +
+            " a11ycheck ltr rtl | showcomments addcomment code",
+        custom_undo_redo_levels: 10,
+        codesample_global_prismjs: true,
+    });
+}
+
+function getEditorContent(elId) {
+    let editor = tinymce.get(elId);
+    return editor.getContent();
+}
+
+function setEditorContent(elId, content) {
+    let editor = tinymce.get(elId);
+    editor.setContent(content);
+}
 
 export function getChoicesToBeRemove(currentChoices=[], newChoices=[]) {
     if (currentChoices.length > 0) {
@@ -363,7 +393,7 @@ export function setValueChanged(input) {
    });
 }
 
-export function applySettings(formInputs, inputEl, newField, isFormSection) {
+export function applySettings(formInputs, inputEl, newField, isFormSection, initializing=false) {
     // form label
     let inputLabel = !isFormSection ? inputEl.querySelector(".label") : null;
     // form input if not radio or checkbox type
@@ -755,6 +785,30 @@ export function applySettings(formInputs, inputEl, newField, isFormSection) {
                     field.dataset.valueChanged = "false";
                     field.dataset.currentValue = field.value;
                 }
+                break;
+            case `${newField.id}_id_text`:
+                if (initializing) {
+                    setEditorContent(field.id, field.dataset.currentValue);
+                    // getting the form text div
+                    let textDiv = newField.querySelector(".text-block");
+                    textDiv.innerHTML = field.dataset.currentValue;
+                    field.dataset.valueChanged = "false";
+                } else {
+                    let content = getEditorContent(field.id);
+                    if (content !== field.dataset.currentValue) {
+                        valueChanged = true;
+                    }
+                    if (valueChanged) {
+                        // getting the form text div
+                        let textDiv = newField.querySelector(".text-block");
+                        // adding the content
+                        textDiv.innerHTML = `${content}`;
+                        field.dataset.currentValue = content;
+                        field.dataset.valueChanged = "false";
+                        field.value = content;
+                    }
+                }
+                break;
         }
     });
 }

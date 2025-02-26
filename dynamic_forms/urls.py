@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 
 from . import views
 
@@ -12,4 +12,6 @@ urlpatterns = [
     path('get-model-form/', views.get_model_form, name='get-model-form'),
     path('save-form/', views.save_form, name='save-form'),
     path('get-form-layout/', views.get_form_layout, name='get-form-layout'),
+    # tinymce url
+    path('tinymce/', include('tinymce.urls')),
 ]

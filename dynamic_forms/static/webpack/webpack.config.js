@@ -2,9 +2,9 @@ const path = require("path");
 const autoprefixer = require("autoprefixer");
 
 module.exports = {
-    mode: "development",
+    mode: "production",
     entry: {
-        form_builder: ["./src/css/styles.css", "./src/js/main.js", './src/js/dragAndDrop.js',],
+        form_builder: ["./src/css/styles.css", "./src/js/main.js", './src/js/dragAndDrop.js', './src/js/init_tinymce.js'],
     },
     output: {
         filename: "[name].bundle.js",

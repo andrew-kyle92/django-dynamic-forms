@@ -4,6 +4,8 @@
 // import {getDroppableSections, getForm} from './main'
 import * as main from './main'
 import * as functions from "./functions";
+import {initializeTinyMCE} from "./init_tinymce.js"
+import {initializeEditor} from "./functions";
 
 export function setPlaceHolderPosition(formMO, placeholder, event) {
     let targetMOPositions = formMO.getBoundingClientRect();
@@ -150,12 +152,19 @@ export const addNewInput = async (data, formDiv, exists=false, modelField=false)
 
     // adding the element to the target div
     let placeholder = main.getPlaceholder();
-    if (placeholder) {
+    let placeholderInDiv = false;
+    for (let i = 0; i < formDiv.childElementCount; i++) {
+        if (formDiv.children[i].className.includes("input-placeholder")) {
+            placeholderInDiv = true;
+            break;
+        }
+    }
+    if (placeholder && placeholderInDiv) {
         formDiv.appendChild(newField);
         formDiv.insertBefore(newField, placeholder);
         formDiv.removeChild(placeholder);
     }
-    else if (!placeholder) {
+    else if (!placeholder || !!placeholder) {
         formDiv.appendChild(newField);
     }
 
@@ -192,9 +201,16 @@ export const addNewInput = async (data, formDiv, exists=false, modelField=false)
             document.activeElement.blur();
         }
     });
+
+    // if the field is a text_block, initialize the editor
+    if (newField.dataset.formType === "text_block") {
+        await initializeEditor(`#${newField.id} .tinymce`);
+    }
+
     // if exists apply the settings button to add the existing model data
     if (exists) {
-        saveBtn.click();
+        // saveBtn.click();
+        functions.applySettings(formInputs, inputEl, newField, isFormSection, true);
     }
 
     return newField;
