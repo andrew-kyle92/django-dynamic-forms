@@ -7,6 +7,7 @@ import tinymce from "../../../tinymce/tinymce.min.js";
 export async function initializeEditor(selector) {
     await tinymce.init({
         selector: selector,
+        theme: 'silver',
         branding: false,
         height: "320px",
         width: "100%",
