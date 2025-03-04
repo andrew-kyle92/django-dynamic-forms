@@ -1019,6 +1019,8 @@ const fieldConfigs = {
     textarea: "text_area",
     checkboxselectmultiple: "checkbox_input",
     checkbox: "checkbox_input",
+    email: "email_input",
+    number: "integer_input",
     select: "dropdown_input",
     selectmultiple: "multiple_dropdown_input"
 }

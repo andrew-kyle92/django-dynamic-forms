@@ -27,7 +27,7 @@ class IndexView(View):
 
 class FormBuilderView(View):
     title = "New Form"
-    template = "dynamic_forms/base_form.html"
+    template = "dynamic_forms/form_builder.html"
 
     def get(self, request, *args, **kwargs):
         form = FormModelForm()
@@ -55,7 +55,7 @@ class FormListView(ListView):
 
 
 class ViewFormView(View):
-    template = "dynamic_forms/base_form.html"
+    template = "dynamic_forms/form_builder.html"
 
     def get(self, request, form_id, *args, **kwargs):
         # getting the form instance
@@ -105,6 +105,7 @@ def get_model_form(request):
         try:
             model_form = form_utils.get_model_form(model_name=model_name)
             form_fields = form_utils.get_form_fields(field=model_name, exists=False, app_model=True, model_form=model_form)
+            print(form_fields)
             context = {
                 "formFields": form_fields,
             }
