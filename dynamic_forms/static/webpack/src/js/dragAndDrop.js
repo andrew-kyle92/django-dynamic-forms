@@ -194,6 +194,8 @@ export const addNewInput = async (data, formDiv, exists=false, modelField=false)
     let formGroupClass = isFormSection ? ".form-row" : ".form-group";
     let inputEl = newField.querySelector(`fieldset ${formGroupClass}`);
     saveBtn.addEventListener("click", () => {
+        // check for form errors
+        // let formValid = functions.checkForm();
         // applying all the settings
         functions.applySettings(formInputs, inputEl, newField, isFormSection);
         inputModal.querySelector(".btn-close").click();

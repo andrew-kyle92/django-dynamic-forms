@@ -82,16 +82,16 @@ class MultipleSelectDropDownInput(BaseFieldModel):
 class IntegerInput(BaseFieldModel):
     """Model for integer input field"""
     input = models.TextField(blank=True, null=True)
-    min_value = models.IntegerField(blank=True, null=True, help_text="Minimum value for the input")
-    max_value = models.IntegerField(blank=True, null=True, help_text="Maximum value for the input")
+    min_value = models.IntegerField(blank=True, null=True, help_text="Minimum value for the input", default=10)
+    max_value = models.IntegerField(blank=True, null=True, help_text="Maximum value for the input", default=100)
     form = models.ForeignKey(FormModel, related_name='integer_input_fields', on_delete=models.CASCADE, null=True, blank=True)
 
 
 class DecimalInput(BaseFieldModel):
     """Model for decimal input field"""
     input = models.TextField(blank=True, null=True)
-    min_value = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, help_text="Minimum value for the input")
-    max_value = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, help_text="Maximum value for the input")
+    min_value = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, help_text="Minimum value for the input", default=10)
+    max_value = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, help_text="Maximum value for the input", default=100)
     form = models.ForeignKey(FormModel, related_name='decimal_input_fields', on_delete=models.CASCADE, null=True, blank=True)
 
 
