@@ -54,7 +54,7 @@ class FormListView(ListView):
         return context
 
 
-class ViewFormView(View):
+class EditFormView(View):
     template = "dynamic_forms/form_builder.html"
 
     def get(self, request, form_id, *args, **kwargs):
@@ -71,16 +71,20 @@ class ViewFormView(View):
         return render(request, self.template, context)
 
 
+class RenderFormView(View):
+    template = "dynamic_forms/base_form.html"
+    title = "Form"
+
+    def get(self, request, form_id, *args, **kwargs):
+        pass
+
+
 # ********** Fetch Requests **********
 def get_form(request):
     # getting form body data
     form_data = json.loads(request.body)
     # initializing form_utils
     form_utils = FormUtils()
-    # field = request.GET.get("field", None)
-    # exists = get_bool_value(request.GET.get("exists", False))
-    # input_id = request.GET.get("inputId", None)
-    # initial = request.GET.get("initial", None)
     field = form_data["field"]
     exists = form_data["exists"]
     input_id = form_data["inputId"]

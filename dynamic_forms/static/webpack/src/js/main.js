@@ -37,7 +37,7 @@ export const getForm = async (field, exists="False", inputId="None", modelForm=f
         "modelForm": modelForm,
         "initial": initial,
     }
-    let url = '/get-form/';
+    let url = '/forms/get-form/';
     return await fetch(url, {
         method: 'post',
         credentials: 'same-origin',
@@ -51,7 +51,7 @@ export const getForm = async (field, exists="False", inputId="None", modelForm=f
 }
 
 export const getModelForm = async (modelName) => {
-    let url = "/get-model-form/?" + new URLSearchParams({modelName: modelName});
+    let url = "/forms/get-model-form/?" + new URLSearchParams({modelName: modelName});
     return await fetch(url, {
        method: 'get'
     }).then(async response => {
@@ -60,7 +60,7 @@ export const getModelForm = async (modelName) => {
 }
 
 const getFormLayout = async (formId) => {
-    let url = '/get-form-layout/?' + new URLSearchParams({
+    let url = '/forms/get-form-layout/?' + new URLSearchParams({
        form_id:  formId,
     });
 

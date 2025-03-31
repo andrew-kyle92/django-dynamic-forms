@@ -241,3 +241,12 @@ class FormUtils:
                 model_form = form
 
         return model_form
+
+    @staticmethod
+    def build_form_for_render(form_id):
+        """Build a form object, similar to Django's built-in form class
+        but also includes the HTML template layout, as well."""
+        form = FormModel.objects.get(form_id=form_id)
+        form_layout = form.layout
+        rendered_form = {}
+

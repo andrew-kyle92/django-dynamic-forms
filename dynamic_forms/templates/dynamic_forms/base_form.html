@@ -1,4 +1,10 @@
 {% extends 'theme/base.html' %}
 
 {% block content %}
+    <div id="formDiv">
+        <form class="form-container" id="form-{{ form.form_id }}" action="{% url 'form' form_id=form.form_id %}" enctype="application/x-www-form-urlencoded" novalidate>
+            {% csrf_token %}
+
+        </form>
+    </div>
 {% endblock %}
