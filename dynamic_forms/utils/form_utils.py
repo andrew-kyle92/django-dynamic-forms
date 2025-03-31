@@ -1,5 +1,6 @@
 from django.apps import apps
 from django.conf import settings
+from django.http import QueryDict
 
 from dynamic_forms.forms import (TextInputField, TextAreaField, EmailInputField, DateInputField, DateTimeInputField,
                                  DropDownField,
@@ -243,10 +244,46 @@ class FormUtils:
         return model_form
 
     @staticmethod
-    def build_form_for_render(form_id):
+    def get_input_types():
+        input_types = {
+            "form_inputs": [
+                # form input forms
+                "text_input",
+                "text_area",
+                "email_input",
+                "date_input",
+                "datetime_input",
+                "dropdown_input",
+                "multiple_dropdown_input",
+                "integer_input",
+                "decimal_input",
+                "checkbox_input",
+                "radio_input",
+                "file_input",
+            ],
+            "form_sections": [
+                # form section forms
+                "form_row",
+                "divider_line",
+                "section_header",
+                "text_block",
+                "collapsible_section",
+            ]
+        }
+        return input_types
+
+    def build_form_for_render(self, form_id):
         """Build a form object, similar to Django's built-in form class
         but also includes the HTML template layout, as well."""
         form = FormModel.objects.get(form_id=form_id)
-        form_layout = form.layout
-        rendered_form = {}
+        form_layout = json.loads(form.layout)
+        rendered_form = {
+            "id": form_id,
+            "name": form.name,
+            "form_description": form.description,
+            "form_objects": form_layout["formObjects"],
+            "input_types": self.get_input_types(),
+        }
+
+
 

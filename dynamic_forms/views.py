@@ -76,7 +76,13 @@ class RenderFormView(View):
     title = "Form"
 
     def get(self, request, form_id, *args, **kwargs):
-        pass
+        form_utils = FormUtils()
+        form = form_utils.build_form_for_render(form_id)
+        context = {
+            'title': self.title,
+            'form': form,
+        }
+        return render(request, self.template, context)
 
 
 # ********** Fetch Requests **********
