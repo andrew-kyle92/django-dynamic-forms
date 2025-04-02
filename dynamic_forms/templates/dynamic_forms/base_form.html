@@ -1,10 +1,18 @@
 {% extends 'theme/base.html' %}
+{% load static form_extras %}
 
 {% block content %}
     <div id="formDiv">
-        <form class="form-container" id="form-{{ form.form_id }}" action="{% url 'form' form_id=form.form_id %}" enctype="application/x-www-form-urlencoded" novalidate>
+        <form class="form-container" id="form-{{ form.id }}" action="{% url 'forms:form' form_id=form.id %}" enctype="application/x-www-form-urlencoded" novalidate>
             {% csrf_token %}
-
+            {# Rendering the form layout #}
+            {% for key, value in form.form_objects.items %}
+                {# getting the snippet type for determining the pathing to the correct snippet #}
+                {% with snippet_type=value.inputType|get_snippet_path:form.input_types %}
+                    {# adding the snippet and passing in the respective variables #}
+                    {% include snippet_type with object=value input_types=form.input_types %}
+                {% endwith %}
+            {% endfor %}
         </form>
     </div>
 {% endblock %}

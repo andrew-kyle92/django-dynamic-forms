@@ -1,15 +1,15 @@
 {% load admin_urls %}
 <nav id="siteNav" class="navbar navbar-expand-lg bg-body-tertiary sticky-top">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/">Form Builder</a>
+        <a class="navbar-brand" href="{% url 'forms:index' %}">Form Builder</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item"><a class="nav-link" href="{% url "admin:index" %}">Admin Site</a></li>
-                <li><a class="nav-link" href="{% url "new-form" %}">Build New Form</a></li>
-                <li><a class="nav-link" href="{% url "forms-list" %}">Forms List</a></li>
+                <li><a class="nav-link" href="{% url "forms:new-form" %}">Build New Form</a></li>
+                <li><a class="nav-link" href="{% url "forms:forms-list" %}">Forms List</a></li>
             </ul>
         </div>
     </div>

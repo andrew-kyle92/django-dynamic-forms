@@ -3,7 +3,7 @@
 {% block content %}
     <div class="container main-top d-flex justify-content-between my-3">
         <h2>Forms List</h2>
-        <a href="{% url 'new-form' %}">Add new form</a>
+        <a href="{% url 'forms:new-form' %}">Add new form</a>
     </div>
 
     <div class="container main-middle">
@@ -22,7 +22,7 @@
                         <td>{{ form.name }}</td>
                         <td>{{ form.created }}</td>
                         <td>{{ form.modified }}</td>
-                        <td><a href="{% url 'edit-form' form_id=form.form_id %}">View</a> | Preview</td>
+                        <td><a href="{% url 'forms:edit-form' form_id=form.form_id %}">View</a> | <a href="{% url 'forms:form' form_id=form.form_id %}">Preview</a></td>
                     </tr>
                 {% endfor %}
             </tbody>

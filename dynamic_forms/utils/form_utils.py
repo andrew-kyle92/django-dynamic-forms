@@ -284,6 +284,4 @@ class FormUtils:
             "form_objects": form_layout["formObjects"],
             "input_types": self.get_input_types(),
         }
-
-
-
+        return rendered_form
