@@ -16,7 +16,7 @@
     <div id="sideNav" class="container col-3 me-3">
         <div class="nav-section d-flex">
             <button id="saveForm" type="button" class="btn btn-primary me-3" title="Save form">Save</button>
-            <a id="previewForm" class="btn btn-outline-primary" role="button" type="button" title="Preview form" href="{% if existing_form %}{% url 'forms:form' form_id=form.form_id.value %}{% else %}#{% endif %}"><i class="fa-solid fa-eye"></i></a>
+            <a id="previewForm" class="btn btn-outline-primary" role="button" type="button" title="Preview form" href="{% if existing_form %}{% url 'forms:form' form_id=form.form_id.value %}?preview=true{% else %}#{% endif %}"><i class="fa-solid fa-eye"></i></a>
         </div>
 
         <div id="domMessages" class="my-3 mx-auto w-auto"></div>

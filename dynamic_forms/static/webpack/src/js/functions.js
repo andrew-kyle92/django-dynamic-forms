@@ -513,7 +513,7 @@ export function applySettings(formInputs, inputEl, newField, isFormSection, init
                         }
                     }
                     field.dataset.valueChanged = "false";
-                    field.dataset.currentValue = `${!field.checked}`;
+                    field.dataset.currentValue = `${!!field.checked}`;
                 }
                 break;
             case `${newField.id}_id_required`:
@@ -810,6 +810,14 @@ export function applySettings(formInputs, inputEl, newField, isFormSection, init
                     }
                 }
                 break;
+            case `${newField}_id_max_length`:
+                if (valueChanged) {
+                    // changing the input
+                    inputInput.setAttribute("maxlength", field.value);
+                    field.dataset.valueChanged = "false";
+                    field.dataset.currentValue = field.value;
+                }
+                break;
         }
     });
 }
@@ -867,11 +875,23 @@ export function gatherInputData(input) {
     // getting all the formData
     let formDiv = document.getElementById(`${input.id}_form`);
     let formData = new FormData(formDiv);
+    let isFormInput = formData.get("field_name") !== null;
+    if (isFormInput) {
+        if (formData.get("floating_label") === null) {
+            formData.set("floating_label", "false");
+        }
+    }
     for (let [key, value] of formData.entries()) {
         if (key !== "csrfmiddlewaretoken") {
             if (key === "blank_option") {
                 let blankOptionInput = document.getElementById(`${input.id}_id_blank_option`);
                 value = blankOptionInput.checked;
+            } else if (key === "floating_label") {
+                let floatingLabelInput = document.getElementById(`${input.id}_id_floating_label`);
+                value = !!floatingLabelInput.checked;
+            } else if (key === "required") {
+                let requiredInput = document.getElementById(`${input.id}_id_required`);
+                value = !!requiredInput.checked;
             }
             inputData.formData[key] = value;
         }

@@ -1,11 +1,11 @@
 {% load form_extras %}
-<div id="{{ object.id }}" class="{% for class in object.form_data.input_classes %}{{ class }} {% endfor %}">
+<div id="{{ object.id }}" class="{{ object.formData.input_classes }}">
     {# adding each additional child by including the template and passing in the child as 'object' #}
     {% if object.children|length > 0 %}
         {% for child in object.children %}
             {# building the template string #}
-            {% with template=object.inputType|get_snippet_path:input_types %}
-                {% include template with object=child %}
+            {% with template_path=child.inputType|get_snippet_path:input_types %}
+                {% include template_path with object=child %}
             {% endwith %}
         {% endfor %}
     {% endif %}

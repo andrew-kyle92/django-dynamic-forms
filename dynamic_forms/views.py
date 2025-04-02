@@ -76,11 +76,18 @@ class RenderFormView(View):
     title = "Form"
 
     def get(self, request, form_id, *args, **kwargs):
+        preview = request.GET.get("preview", None)
+        if preview:
+            if preview == "true":
+                preview = True
+            else:
+                preview = False
         form_utils = FormUtils()
         form = form_utils.build_form_for_render(form_id)
         context = {
             'title': self.title,
             'form': form,
+            'preview': preview,
         }
         return render(request, self.template, context)
 

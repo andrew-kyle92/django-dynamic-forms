@@ -2,17 +2,24 @@
 {% load static form_extras %}
 
 {% block content %}
-    <div id="formDiv">
+    {% if preview %}
+        <div id="previewDiv" class="w-25 ms-3 mt-3">
+            <a href="{% url 'forms:edit-form' form_id=form.id %}" class="btn btn-secondary" title="Back to form"><i class="fa-solid fa-circle-chevron-left"></i></a>
+        </div>
+    {% endif %}
+    <div id="formDiv" class="container w-75 mt-5">
         <form class="form-container" id="form-{{ form.id }}" action="{% url 'forms:form' form_id=form.id %}" enctype="application/x-www-form-urlencoded" novalidate>
             {% csrf_token %}
             {# Rendering the form layout #}
             {% for key, value in form.form_objects.items %}
                 {# getting the snippet type for determining the pathing to the correct snippet #}
-                {% with snippet_type=value.inputType|get_snippet_path:form.input_types %}
+                {% with template_path=value.inputType|get_snippet_path:form.input_types %}
                     {# adding the snippet and passing in the respective variables #}
-                    {% include snippet_type with object=value input_types=form.input_types %}
+                    {% include template_path with object=value input_types=form.input_types %}
                 {% endwith %}
             {% endfor %}
+
+            <button type="submit" class="btn btn-primary btn-lg">Submit</button>
         </form>
     </div>
 {% endblock %}

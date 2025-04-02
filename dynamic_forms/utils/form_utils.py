@@ -169,19 +169,18 @@ class FormUtils:
         # the formdata retrieved from JavaScript sets a checkboxes value to 'on' when checked
         if form_data["formData"].get("required", False):
             required_field = form_data["formData"]["required"]
-            if required_field == "on" or required_field == "":
-                if required_field == "on":
-                    form_data["formData"]["required"] = True
-                else:
-                    form_data["formData"]["required"] = False
+            # if required_field == "true" or required_field == "false":
+            if required_field:
+                form_data["formData"]["required"] = True
+            else:
+                form_data["formData"]["required"] = False
 
         if form_data["formData"].get("floating_label", False):
             floating_label = form_data["formData"]["floating_label"]
             if floating_label:
-                if floating_label == "on":
-                    form_data["formData"]["floating_label"] = True
-                else:
-                    form_data["formData"]["floating_label"] = False
+                form_data["formData"]["floating_label"] = True
+            else:
+                form_data["formData"]["floating_label"] = False
 
         for key, value in form_data["formData"].items():
             if key == "order" and kwargs.get("order"):

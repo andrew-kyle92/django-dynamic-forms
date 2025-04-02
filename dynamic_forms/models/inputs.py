@@ -9,6 +9,7 @@ from .forms import FormModel
 class BaseFieldModel(models.Model):
     """Abstract base class for all field input model types"""
     input_id = models.CharField(max_length=255, default='')
+    field_name = models.SlugField(max_length=100, unique=False, help_text='The name of the HTML field, for <code>label/input</code> referencing.', default='')
     label = models.CharField(max_length=255, help_text="Label for field input", default="")
     placeholder = models.CharField(max_length=255, blank=True, null=True, help_text="Placeholder for field input. <strong>This is required for floating labels.</strong>")
     help_text = models.CharField(max_length=255, blank=True, null=True, help_text="Help text for field input")
@@ -34,6 +35,7 @@ class BaseFieldModel(models.Model):
 class TextInput(BaseFieldModel):
     """Model for text input field"""
     input = models.TextField(blank=True, null=True)
+    max_length = models.IntegerField(blank=True, null=True, default=50)
     form = models.ForeignKey(FormModel, related_name='text_input_fields', on_delete=models.CASCADE, null=True, blank=True)
 
 
@@ -52,6 +54,7 @@ class EmailInput(BaseFieldModel):
 class DateInput(BaseFieldModel):
     """Model for date input field"""
     input = models.TextField(blank=True, null=True)
+    max_length = models.IntegerField(blank=True, null=True, default=50)
     form = models.ForeignKey(FormModel, related_name='date_input_fields', on_delete=models.CASCADE, null=True, blank=True)
 
 
