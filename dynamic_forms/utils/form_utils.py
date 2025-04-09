@@ -1,12 +1,11 @@
 from django.apps import apps
 from django.conf import settings
-from django.http import QueryDict
 
 from dynamic_forms.forms import (TextInputField, TextAreaField, EmailInputField, DateInputField, DateTimeInputField,
                                  DropDownField,
                                  MultipleDropDownField, IntegerInputField, DecimalInputField, FileInputField,
                                  RadioInputField,
-                                 CheckBoxInputField, FormRowForm, DividerLineForm, SectionHeaderForm, TextBlockForm,
+                                 CheckBoxInputField, FormRowForm, DividerLineForm, HorizontalRuleForm, SectionHeaderForm, TextBlockForm,
                                  CollapsibleSectionForm)
 
 from dynamic_forms.models import *
@@ -35,6 +34,7 @@ class FormUtils:
             # form section forms
             "form_row": FormRow,
             "divider_line": DividerLine,
+            "horizontal_rule": HorizontalRule,
             "section_header": SectionHeader,
             "text_block": TextBlock,
             "collapsible_section": CollapsibleSection,
@@ -60,6 +60,7 @@ class FormUtils:
             # form section forms
             "form_row": FormRowForm,
             "divider_line": DividerLineForm,
+            "horizontal_rule": HorizontalRuleForm,
             "section_header": SectionHeaderForm,
             "text_block": TextBlockForm,
             "collapsible_section": CollapsibleSectionForm,
@@ -264,6 +265,7 @@ class FormUtils:
                 # form section forms
                 "form_row",
                 "divider_line",
+                "horizontal_rule",
                 "section_header",
                 "text_block",
                 "collapsible_section",

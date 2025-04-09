@@ -1,0 +1,46 @@
+{% load form_extras %}
+<div class="form-group {{ object.formData.parent_classes }} {% if object.formData.floating_label %}form-floating{% endif %}">
+    {# field label #}
+    <label class="form-label" for="{{ object.formData.field_name }}">{{ object.formData.label }}</label>
+    {# outer choices div #}
+    {% if object.formData.columns|to_int > 1 %}
+        <div class="choices d-flex">
+        {# splitting the choices into the number of columns #}
+        {% with choices=object.formData.choices|break_to_columns:object.formData.columns %}
+            {# adding each choice to the specific column #}
+            {% for column in choices %}
+                <div class="col-3 choice-col">
+                {% for choice in column %}
+                    <div class="choice-form-group form-check">
+                        {% with name=object.field_name|add:"_"|add:forloop.counter0 %}
+                        <input id="{{ name }}" name="{{ name }}" type="checkbox" class="form-check-input {{ object.formData.input_classes }}" value="{{ choice.value }}">
+                        <label class="form-check-label" for="{{ name }}">{{ choice.label }}</label>
+                        {% endwith %}
+                    </div>
+                {% endfor %}
+                </div>
+            {% endfor %}
+        {% endwith %}
+        </div>
+    {% else %}
+        <div class="choices">
+            {# splitting the choices into the number of columns #}
+        {% with choices=object.formData.choices|break_to_columns:object.formData.columns %}
+            {# adding each choice to the specific column #}
+            {% for column in choices %}
+                <div class="col choice-col">
+                {% for choice in column %}
+                    <div class="choice-form-group form-check">
+                        {% with name=object.field_name|add:"_"|add:forloop.counter0 %}
+                        <input id="{{ name }}" name="{{ name }}" type="checkbox" class="form-check-input {{ object.formData.input_classes }}" value="{{ choice.value }}">
+                        <label class="form-check-label" for="{{ name }}">{{ choice.label }}</label>
+                        {% endwith %}
+                    </div>
+                {% endfor %}
+                </div>
+            {% endfor %}
+        {% endwith %}
+        </div>
+    {% endif %}
+    <div class="form-text">{{ object.formData.help_text }}</div>
+</div>

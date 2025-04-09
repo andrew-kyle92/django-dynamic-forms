@@ -26,6 +26,10 @@ class DividerLine(BaseSection):
     form = models.ForeignKey(FormModel, related_name="divider_line_fields", on_delete=models.CASCADE, blank=True, null=True)
 
 
+class HorizontalRule(BaseSection):
+    form = models.ForeignKey(FormModel, related_name="horizontal_rule_fields", on_delete=models.CASCADE, blank=True, null=True)
+
+
 class SectionHeader(BaseSection):
     title = models.CharField(max_length=255, null=False, blank=False, help_text="Title of the section")
     description = models.CharField(max_length=255, null=False, blank=False, help_text="Description of the section")

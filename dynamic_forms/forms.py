@@ -7,7 +7,8 @@ from tinymce.widgets import TinyMCE
 
 from .models import (TextInput, TextAreaInput, EmailInput, DateInput, DateTimeInput, DropDownInput,
                      MultipleSelectDropDownInput, IntegerInput, DecimalInput, CheckboxInput, RadioInput,
-                     FileInput, FormModel, FormRow, DividerLine, SectionHeader, TextBlock, CollapsibleSection)
+                     FileInput, FormModel, FormRow, DividerLine, SectionHeader, TextBlock, CollapsibleSection,
+                     HorizontalRule)
 
 
 # ***** Form Field Forms *****
@@ -382,6 +383,33 @@ class DividerLineForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(DividerLineForm, self).__init__(*args, **kwargs)
+
+        for visible in self.visible_fields():
+            # adding valueChanged dataset attribute
+            visible.field.widget.attrs["data-value-changed"] = "false"
+
+            if visible.widget_type == "text" or visible.widget_type == "number":
+                visible.field.widget.attrs["class"] = "form-control"
+            elif visible.widget_type == "date":
+                visible.field.widget = forms.DateInput(attrs={"class": "form-control", "type": "date"})
+            elif visible.widget_type == "datetime":
+                visible.field.widget = forms.DateTimeInput(attrs={"class": "form-control", "type": "datetime"})
+            elif visible.widget_type == "select" or visible.widget_type == "nullbooleanselect":
+                visible.field.widget.attrs["class"] = "form-select"
+            elif visible.widget_type == "textarea":
+                visible.field.widget.attrs["class"] = "form-control"
+                visible.field.widget.attrs["rows"] = 5
+            elif visible.widget_type == "checkbox":
+                visible.field.widget.attrs["class"] = "form-check-input"
+
+
+class HorizontalRuleForm(ModelForm):
+    class Meta:
+        model = HorizontalRule
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(HorizontalRuleForm, self).__init__(*args, **kwargs)
 
         for visible in self.visible_fields():
             # adding valueChanged dataset attribute

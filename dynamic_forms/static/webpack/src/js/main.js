@@ -354,7 +354,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         let res = await saveFormToServer(mainForm, formData);
         if (res.res === "success") {
             if (document.URL.includes("new-form")) {
-                window.location = `forms/view-form/${res.form_id}/`;
+                window.location = `/forms/edit-form/${res.form_id}/`;
             }
             else {
                 let message = "Form updated"

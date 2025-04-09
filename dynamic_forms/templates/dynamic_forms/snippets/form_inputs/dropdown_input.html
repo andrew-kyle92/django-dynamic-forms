@@ -1,0 +1,29 @@
+{% load form_extras %}
+<div class="form-group {{ object.formData.parent_classes }} {% if object.formData.floating_label %}form-floating{% endif %}">
+    {% if object.formData.floating_label %}
+        <select class="form-select" name="{{ object.formData.field_name }}" class="{{ object.formData.input_classes }}" {% if object.formData.floating_label %}aria-label="{{ object.formData.label }}"{% endif %}>
+        {% if object.formData.blank_option %}
+            <option value="">{{ object.formData.blank_label }}</option>
+        {% endif %}
+        {% with choices=object.formData.choices|get_choices %}
+            {% for choice in choices %}
+                <option value="{{ choice.value }}">{{ choice.label }}</option>
+            {% endfor %}
+        {% endwith %}
+        </select>
+        <label class="form-label" for="{{ object.formData.field_name }}">{{ object.formData.label }}</label>
+    {% else %}
+        <label class="form-label" for="{{ object.formData.field_name }}">{{ object.formData.label }}</label>
+        <select class="form-select" name="{{ object.formData.field_name }}" class="{{ object.formData.input_classes }}">
+        {% if object.formData.blank_option %}
+            <option value="">{{ object.formData.blank_label }}</option>
+        {% endif %}
+        {% with choices=object.formData.choices|get_choices %}
+            {% for choice in choices %}
+                <option value="{{ choice.value }}">{{ choice.label }}</option>
+            {% endfor %}
+        {% endwith %}
+        </select>
+    {% endif %}
+    <div class="form-text">{{ object.formData.help_text }}</div>
+</div>
