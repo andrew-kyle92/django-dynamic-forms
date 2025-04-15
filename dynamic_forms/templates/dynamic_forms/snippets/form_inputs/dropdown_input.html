@@ -19,9 +19,11 @@
             <option value="">{{ object.formData.blank_label }}</option>
         {% endif %}
         {% with choices=object.formData.choices|get_choices %}
-            {% for choice in choices %}
-                <option value="{{ choice.value }}">{{ choice.label }}</option>
-            {% endfor %}
+            {% if choices is not None %}
+                {% for choice in choices %}
+                    <option value="{{ choice.value }}">{{ choice.label }}</option>
+                {% endfor %}
+            {% endif %}
         {% endwith %}
         </select>
     {% endif %}

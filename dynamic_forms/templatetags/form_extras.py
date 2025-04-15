@@ -49,5 +49,8 @@ def break_to_columns(value, arg):
 @register.filter
 def get_choices(value):
     choices_split = value.split('\n')
-    choices = [{"value": choice.split(",")[0].strip(), "label": choice.split(",")[1].strip()} for choice in choices_split]
+    if len(choices_split) == 1 and choices_split[0] == '':
+        return None
+    else:
+        choices = [{"value": choice.split(",")[0].strip(), "label": choice.split(",")[1].strip()} for choice in choices_split]
     return choices
