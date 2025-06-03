@@ -9,7 +9,7 @@
         <label for="{{ object.formData.field_name|slugify }}">{{ form_data.label }}</label>
     {% else %}
         <label for="{{ object.formData.field_name|slugify }}" class="form-label">{{ form_data.label }}</label>
-        <input type="number" class="{{ form_data.input_classes }}" name="{{ object.formData.field_name|slugify }}" minlength="{{ form.min_length }}" maxlength="{{ form_data.max_length }}"
+        <input type="number" class="{{ form_data.input_classes }} form-control" name="{{ object.formData.field_name|slugify }}" minlength="{{ form.min_length }}" maxlength="{{ form_data.max_length }}"
                {% if form_data.placeholder|length > 0 %}placeholder="{{ form_data.placeholder }}"{% endif %} {% if form_data.required %}required{% endif %}
         >
     {% endif %}

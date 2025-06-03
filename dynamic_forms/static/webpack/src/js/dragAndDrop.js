@@ -24,7 +24,6 @@ export function setPlaceHolderPosition(formMO, placeholder, event) {
             closest.position = key;
         }
     }
-
     switch (closest.position) {
         case "left":
         case "top":
@@ -101,6 +100,7 @@ export const addNewInput = async (data, formDiv, exists=false, modelField=false)
     let formRow = newField.querySelector("#section-row");
     if (formRow) {
         formRow.setAttribute("id", newField.id + "_section-row");
+        // adding form row id to droppable sections
         main.addDroppableSection(formRow.id);
     }
 
@@ -159,8 +159,8 @@ export const addNewInput = async (data, formDiv, exists=false, modelField=false)
             break;
         }
     }
+
     if (placeholder && placeholderInDiv) {
-        formDiv.appendChild(newField);
         formDiv.insertBefore(newField, placeholder);
         formDiv.removeChild(placeholder);
     }

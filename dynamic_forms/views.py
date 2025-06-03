@@ -142,6 +142,8 @@ def save_form(request):
             return JsonResponse({"res": "success", "form_id": main_form.form_id})
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)})
+    else:
+        return JsonResponse({"success": False, "error": "Method not supported"})
 
 
 def get_form_layout(request):

@@ -402,12 +402,13 @@ export function applySettings(formInputs, inputEl, newField, isFormSection, init
     // form section row
     // if radio or checkbox type
     let inputChoices = !isFormSection ? inputEl.querySelector(`#${newField.id}_choices`) : null;
+    console.log(inputChoices);
     // form help_text
     let inputHelpText = !isFormSection ? inputEl.querySelector(".help-text") : null;
     // form title
     let inputTitle = isFormSection ? inputEl.querySelector(".title") : null;
     // form description
-    let inputDescription = !isFormSection ? inputEl.querySelector(".description") : null;
+    let inputDescription = isFormSection ? inputEl.querySelector(".description") : null;
     // applying all the settings
     formInputs.forEach((input) => {
         let field = document.querySelector(input);
@@ -689,6 +690,7 @@ export function applySettings(formInputs, inputEl, newField, isFormSection, init
                                 inputInput.appendChild(newChoice);
                             } else {
                                 let colDivs = inputChoices.querySelectorAll(`.choice-col`);
+                                console.log(colDivs);
                                 let lastDiv = colDivs[colDivs.length - 1];
                                 lastDiv.appendChild(newChoice);
                             }
@@ -783,6 +785,13 @@ export function applySettings(formInputs, inputEl, newField, isFormSection, init
             case `${newField.id}_id_title`:
                 if (valueChanged) {
                     inputTitle.innerText = field.value;
+                    field.dataset.valueChanged = "false";
+                    field.dataset.currentValue = field.value;
+                }
+                break;
+            case `${newField.id}_id_description`:
+                if (valueChanged) {
+                    inputDescription.innerText = field.value;
                     field.dataset.valueChanged = "false";
                     field.dataset.currentValue = field.value;
                 }
@@ -957,7 +966,9 @@ export function addListenerLogic(el) {
 export function setDropLogic(el, exists=false) {
     el.addEventListener("drop", async (ev) =>{
         ev.preventDefault();
-        ev.stopPropagation();
+        if (el.id !== "formInputsDiv") {
+            ev.stopPropagation();
+        }
 
         // removing the border, if there is one
         removeClass(el, "drag-over");

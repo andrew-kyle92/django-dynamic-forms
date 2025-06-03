@@ -158,6 +158,32 @@ export function getFormInputMO() {
 // ***** End Script Functions *****
 // ***** main logic *****
 window.addEventListener("DOMContentLoaded", async () => {
+    // ** key press/up logic
+    let formSaved = false;
+    let canSave = true;
+    const keysPressed = {};
+    window.addEventListener("keydown", (ev) => {
+        keysPressed[ev.key] = true;
+        if (keysPressed["Control"] && keysPressed["s"]) {
+            ev.preventDefault();
+            if (!formSaved && canSave) {
+                formSaved = true;
+                canSave = false;
+                saveBtn.click();
+                setTimeout(() => {
+                    canSave = true;
+                    formSaved = false;
+                }, 1000);
+            }
+        }
+    });
+
+    window.addEventListener("keyup", (ev) => {
+        delete keysPressed[ev.key];
+    });
+
+    // ***************
+
     // animate all dropdown carets
     const dropdownBtns = document.getElementsByClassName("dropdown-caret");
     for (let i = 0; i < dropdownBtns.length; i++) {
@@ -393,6 +419,7 @@ window.addEventListener("DOMContentLoaded", async () => {
             let sectionRow = document.getElementById(`${newField.id}_section-row`);
             if (sectionRow) {
                 functions.addListenerLogic(sectionRow);
+                functions.setDropLogic(sectionRow);
             }
 
             // adding children, if any
